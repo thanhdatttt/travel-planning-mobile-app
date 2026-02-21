@@ -26,6 +26,11 @@ enum userRole {
   moderator
 }
 
+enum otpType {
+  register
+  reset
+}
+
 // models
 model User {
   id            String @id @default(uuid())
@@ -53,7 +58,7 @@ model AuthProvider {
   userId        String
 
   provider      authProvider @default(local)
-  providerId    String?
+  providerId    String
   hashPassword  String?
 
   createdAt     DateTime     @default(now())
@@ -68,7 +73,7 @@ model AuthProvider {
 model Session {
   id        String   @id @default(uuid())
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String   
@@ -81,9 +86,11 @@ model EmailOTP {
   id        String   @id @default(uuid())
   email     String
   otp       String
+  type      otpType  @default(register)
   verified  Boolean  @default(false)
   expiresAt DateTime
   createdAt DateTime @default(now())
 
   @@index([email])
+  @@index([expiresAt])
 }
