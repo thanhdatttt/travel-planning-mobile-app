@@ -1,3 +1,4 @@
+import axios from "axios";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { prisma } from "../libs/prisma";
@@ -7,7 +8,6 @@ import { createResponse } from "../utils/response";
 import { genAccessToken, genRefreshToken, REFRESH_TOKEN_TTL } from "../utils/jwt";
 import { EMAIL_TOKEN_TTL, generateOTP } from "../utils/otp";
 import { sendOTPResetPass, sendOTPVerification } from "../utils/email";
-import axios from "axios";
 
 export const signUp = async (req: Request, res: Response) => {
     try {
@@ -44,7 +44,7 @@ export const signUp = async (req: Request, res: Response) => {
         });
         if (!otpRecord) {
             return res.status(403)
-                .json(createResponse({ message: "Email not verified" }));
+            .json(createResponse({ message: "Email not verified" }));
         }
 
         // create new user
@@ -63,7 +63,7 @@ export const signUp = async (req: Request, res: Response) => {
         });
         // delete OTP after creating user
         await prisma.emailOTP.deleteMany({
-            where: { email }
+            where: { email, type: "register" }
         });
 
         return res.status(201).json(createResponse({message: "Sign up successfully", data: user}));
@@ -159,6 +159,111 @@ export const signOut = async (req: Request,res: Response) =>{
     }
 }
 
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const {email, newPassword} = req.body;
+        if (!email || !newPassword) {
+            return res.status(400)
+            .json(createResponse({ message: "Bad request", error: "Missing fields" }));
+        }
+
+        // check verify otp
+        const otpRecord = await prisma.emailOTP.findFirst({
+            where: {
+                email,
+                type: "reset",
+                verified: true,
+                expiresAt: { gt: new Date() }
+            },
+            orderBy: { createdAt: "desc" }
+        });
+        if (!otpRecord) {
+            return res.status(403)
+            .json(createResponse({ message: "Forbidden", error: "OTP not verified or expired" }));
+        }
+
+        // check local provider
+        const user = await prisma.user.findUnique({
+            where: { email },
+            include: { authProviders: true }
+        });
+        if (!user) {
+            return res.status(404)
+            .json(createResponse({ message: "Not found", error: "User not found" }));
+        }
+        const localAuth = user.authProviders.find(p => p.provider === "local");
+        if (!localAuth) {
+            return res.status(400)
+            .json(createResponse({ message: "Bad request", error: "Account uses social login" }));
+        }
+
+        // update new password and delete otp
+        await prisma.$transaction([
+            prisma.authProvider.update({
+                where: { id: localAuth.id },
+                data: { hashPassword: await bcrypt.hash(newPassword, 10) }
+            }),
+            prisma.emailOTP.deleteMany({
+                where: { email, type: "reset" }
+            })
+        ]);
+
+        return res.status(200)
+        .json(createResponse({ message: "Password reset successfully" }));
+    } catch (err: any) {
+        console.log("Error when reseting password: ", err.message);
+        return res.status(500).json(createResponse({message: "System error", error: err.message}));
+    }
+}
+
+export const refreshToken = async (req: Request, res: Response) => {
+    try {
+        const {refreshToken} = req.body;
+        if (!refreshToken) {
+            return res.status(401)
+            .json(createResponse({ message: "Unauthorized", error: "Missing refresh token" }));
+        }
+
+        // check session
+        const session = await prisma.session.findFirst({
+            where: {
+                token: refreshToken,
+                expiresAt: { gt: new Date() }
+            }
+        });
+        if (!session) {
+            return res.status(403)
+            .json(createResponse({ message: "Forbidden", error: "Invalid or expired refresh token" }));
+        }
+
+        // generate new token
+        const newAccessToken = genAccessToken(session.userId);
+        const newRefreshToken = genRefreshToken(session.userId);
+        // rotate refresh token
+        await prisma.$transaction([
+            prisma.session.delete({
+                where: { id: session.id }
+            }),
+            prisma.session.create({
+                data: {
+                    userId: session.userId,
+                    token: newRefreshToken,
+                    expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
+                }
+            })
+        ]);
+
+        return res.status(200).json(createResponse({
+            message: "Token refreshed successfully",
+            data: { accessToken: newAccessToken, refreshToken: newRefreshToken }
+        }));
+    } catch (err: any) {
+        console.log("Error when getting refresh token: ", err.message);
+        return res.status(500).json(createResponse({message: "System error", error: err.message}));
+    }
+}
+
+// otp
 export const verifyOTP = async (req: Request, res: Response) => {
     try {
         const { email, otp, type } = req.body;
@@ -288,6 +393,7 @@ export const sendOTP = async (req: Request, res: Response) => {
 const ggClient = new OAuth2Client({
     clientId: config.GG_CLIENT_ID as string,
 });
+
 export const googleAuth = async (req: Request, res: Response) => {
     try {
         const {idToken} = req.body;

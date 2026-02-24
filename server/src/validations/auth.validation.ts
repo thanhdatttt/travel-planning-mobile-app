@@ -24,3 +24,18 @@ export const userSignInSchema = {
         password: z.string().min(1, "Password is required"),
     }),
 }
+
+export const resetPasswordSchema = {
+    body: z.object({
+        email: z.string()
+        .min(1, "Email is required")
+        .email("Email is invalid"),
+        newPassword: z.string()
+        .min(1, "Password is required")
+        .min(8, "Password must be at least 8 characters")
+        .regex(/[A-Z]/, "Must have uppercase character")
+        .regex(/[a-z]/, "Must have lowercase character")
+        .regex(/[0-9]/, "Must have number")
+        .regex(/[@$!%*?&]/, "Must have at least 1 special character (@$!%*?&)"),
+    }),
+}
