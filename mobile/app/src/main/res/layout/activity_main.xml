@@ -41,6 +41,8 @@
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:autofillHints=""
             android:background="@drawable/edit_textbox"
             android:hint="@string/username_or_email"
@@ -60,11 +62,14 @@
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:autofillHints=""
             android:background="@drawable/edit_textbox"
             android:hint="@string/password"
             android:inputType="textPassword" />
 
+        <!--  forgot password  -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,6 +77,7 @@
             android:text="@string/forgot_password"
             android:textColor="#777777" />
 
+        <!--    login button    -->
         <Button
             android:layout_width="match_parent"
             android:layout_height="55dp"
@@ -80,7 +86,7 @@
             android:text="@string/login"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,10 +96,11 @@
             android:orientation="horizontal">
 
             <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="1dp" android:background="#000000" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" or " android:textSize="16sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/or" android:textSize="16sp"/>
             <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="1dp" android:background="#000000" />
         </LinearLayout>
 
+        <!--    social login    -->
         <Button
             android:layout_width="match_parent"
             android:layout_height="55dp"
