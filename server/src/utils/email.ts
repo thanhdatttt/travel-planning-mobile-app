@@ -27,7 +27,7 @@ export const sendOTPVerification = async (email: string, otp: string) => {
                         letter-spacing: 0.5px;
                         text-align: center;
                     ">
-                        WELCOME TO TOURGUILD
+                        WELCOME TO TOURGUIDE
                     </h2>
 
                     <p style="
@@ -68,7 +68,7 @@ export const sendOTPVerification = async (email: string, otp: string) => {
                         text-align: center;
                         margin: 0;
                     ">
-                        © 2026 TourGuild. All rights reserved.
+                        © 2026 TourGuide. All rights reserved.
                     </p>
                 </div>
             `,
@@ -143,7 +143,7 @@ export const sendOTPResetPass = async (email: string, otp: string) => {
                         text-align: center;
                         margin: 0;
                     ">
-                        © 2026 TourGuild. All rights reserved.
+                        © 2026 TourGuide. All rights reserved.
                     </p>
                 </div>
             `,

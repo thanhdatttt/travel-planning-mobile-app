@@ -18,6 +18,9 @@ export const requireAuth = async (req: Request & {user?: any}, res: Response, ne
             const decoded = jwt.verify(token, config.JWT_SECRET_KEY as string) as { userId: string; role: string };
             const user = await prisma.user.findUnique({
                 where: { id: decoded.userId },
+                include: {
+                    authProviders: true,
+                }
             });
             if (!user) {
                 return res.status(404)
