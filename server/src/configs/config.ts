@@ -11,9 +11,10 @@ export const config = {
     JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
     JWT_REFRESH_SECRET_KEY: process.env.JWT_REFRESH_SECRET_KEY,
 
-    // RESEND
-    RESEND_API_KEY: process.env.RESEND_API_KEY,
-    RESEND_SEND_EMAIL: process.env.RESEND_SEND_EMAIL,
+    // NODEMAILER
+    EMAIL_SEND: process.env.EMAIL_SEND,
+    EMAI_USER: process.env.EMAIL_USER,
+    EMAIL_PASS: process.env.EMAIL_PASS,
 
     // GOOGLE
     GG_CLIENT_ID: process.env.GG_CLIENT_ID,
