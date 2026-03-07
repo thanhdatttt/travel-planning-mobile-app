@@ -1,7 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.TravelPlanning" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/main_yellow</item>
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    </style>
+
+    <style name="Theme.TravelPlanning" parent="Base.Theme.TravelPlanning" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenBackground">@color/main_yellow</item>
+        <item name="postSplashScreenTheme">@style/Theme.TravelPlanning</item>
     </style>
 </resources>
