@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">travelPlanning</string>
+    <string name="login">Đăng nhập</string>
+    <string name="don_t_have_an_account_register">Chưa có tài khoản? Đăng ký ngay</string>
+    <string name="discover">Khám phá</string>
+    <string name="ai">AI</string>
+    <string name="map">Bản đồ</string>
+    <string name="account">Tài khoản</string>
+</resources>

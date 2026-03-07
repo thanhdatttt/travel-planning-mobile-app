@@ -15,4 +15,10 @@
     <string name="already_have_an_account_login">Already had an account? Login</string>
     <string name="next">Next</string>
     <string name="the_otp_code_has_been_sent_to_your_email_please_check_it_and_enter_it_below">The OTP code has been sent to your email. Please check it and enter it below.</string>
+
+    //main screen nav bar
+    <string name="discover">Discover</string>
+    <string name="ai">AI</string>
+    <string name="map">Map</string>
+    <string name="account">Account</string>
 </resources>
