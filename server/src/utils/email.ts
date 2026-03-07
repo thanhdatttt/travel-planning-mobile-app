@@ -1,14 +1,21 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { config } from "../configs/config";
 
-const resend = new Resend(config.RESEND_API_KEY as string);
+// init transporter
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: config.EMAI_USER as string,
+        pass: config.EMAIL_PASS as string,
+    }
+});
 
 export const sendOTPVerification = async (email: string, otp: string) => {
     try {
-        await resend.emails.send({
-            from: config.RESEND_SEND_EMAIL as string,
-            to: [email],
-            subject: "Email OTP verification",
+        await transporter.sendMail({
+            from: config.EMAIL_SEND,
+            to: email,
+            subject: "TourGuide Email Verification",
             html: `
                 <div style="
                     max-width: 600px;
@@ -81,10 +88,10 @@ export const sendOTPVerification = async (email: string, otp: string) => {
 
 export const sendOTPResetPass = async (email: string, otp: string) => {
     try {
-        await resend.emails.send({
-            from: config.RESEND_SEND_EMAIL as string,
+        await transporter.sendMail({
+            from: config.EMAIL_SEND,
             to: [email],
-            subject: "Reset password OTP",
+            subject: "TourGuide Reset Password",
             html: `
                 <div style="
                     max-width: 600px;
