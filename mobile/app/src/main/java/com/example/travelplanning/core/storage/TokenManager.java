@@ -1,4 +1,4 @@
-package com.example.travelplanning.models;
+package com.example.travelplanning.core.storage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,13 +16,30 @@ public class TokenManager {
                 .apply();
     }
 
+    public static void saveAccessToken(Context context, String accessToken) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(ACCESS_TOKEN, accessToken).apply();
+    }
+
+
+    public static void saveRefreshToken(Context context, String refreshToken) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(REFRESH_TOKEN, refreshToken).apply();
+    }
+
     public static String getAccessToken(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(ACCESS_TOKEN, null);
     }
 
+
     public static String getRefreshToken(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(REFRESH_TOKEN, null);
+    }
+
+    public static void clearTokens(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().clear().apply();
     }
 }

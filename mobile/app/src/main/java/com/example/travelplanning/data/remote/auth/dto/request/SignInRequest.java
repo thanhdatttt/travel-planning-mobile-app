@@ -1,20 +1,19 @@
 package com.example.travelplanning.data.remote.auth.dto.request;
 
-public class LoginRequest {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Value;
 
-    private final String usernameOrEmail;
-    private final String password;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class SignInRequest {
 
-    public LoginRequest(String usernameOrEmail, String password) {
-        this.usernameOrEmail = usernameOrEmail;
-        this.password = password;
-    }
+    private String usernameOrEmail;
+    private String password;
 
-    public String getUsernameOrEmail() {
-        return usernameOrEmail;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }

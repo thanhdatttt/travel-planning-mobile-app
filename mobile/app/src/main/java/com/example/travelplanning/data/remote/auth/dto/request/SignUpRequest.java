@@ -1,26 +1,21 @@
 package com.example.travelplanning.data.remote.auth.dto.request;
 
-public class RegisterRequest {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Value;
+
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class SignUpRequest {
 
     private String email;
+    private String username;
     private String password;
-    private String name;
 
-    public RegisterRequest(String email, String password, String name) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

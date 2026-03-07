@@ -4,9 +4,7 @@ plugins {
 
 android {
     namespace 'com.example.travelplanning'
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.example.travelplanning"
@@ -18,7 +16,16 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        buildConfig true
+        viewBinding true
+    }
+
     buildTypes {
+
+        debug {
+            buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:5000/\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -42,6 +49,9 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    // lombok
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
     // retrofit
     implementation libs.retrofit
     // gson

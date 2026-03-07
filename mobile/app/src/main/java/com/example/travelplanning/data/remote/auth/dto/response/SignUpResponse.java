@@ -1,19 +1,22 @@
 package com.example.travelplanning.data.remote.auth.dto.response;
-public class RegisterResponse {
 
-    private int id;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Value;
+
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class SignUpResponse {
+
     private String email;
-    private String name;
 
-    public int getId() {
-        return id;
-    }
+    private String username;
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

@@ -28,7 +28,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@prisma/client": "^7.4.1",
+    "@prisma/client": "^7.4.2",
     "@types/axios": "^0.9.36",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
@@ -39,7 +39,7 @@
     "@types/pg": "^8.16.0",
     "i": "^0.3.7",
     "npm": "^11.10.1",
-    "prisma": "^7.4.1",
+    "prisma": "^7.4.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }

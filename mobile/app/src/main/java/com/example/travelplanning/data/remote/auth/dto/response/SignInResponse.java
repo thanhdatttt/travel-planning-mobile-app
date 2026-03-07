@@ -2,19 +2,18 @@ package com.example.travelplanning.data.remote.auth.dto.response;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LoginResponse {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Value;
 
-    @SerializedName("access_token")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class SignInResponse {
+
     private String accessToken;
-
-    @SerializedName("user_id")
-    private int userId;
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
+    private String refreshToken;
 }
