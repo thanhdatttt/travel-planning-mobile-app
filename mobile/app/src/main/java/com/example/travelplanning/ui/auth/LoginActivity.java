@@ -7,7 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.ActivityLoginBinding;
-import com.example.travelplanning.ui.home.MainActivity;
+import com.example.travelplanning.ui.main.MainActivity;
 import com.example.travelplanning.viewmodel.auth.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
