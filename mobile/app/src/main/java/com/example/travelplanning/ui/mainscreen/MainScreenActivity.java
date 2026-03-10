@@ -1,6 +1,7 @@
 package com.example.travelplanning.ui.mainscreen;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 
 import androidx.appcompat.app.AppCompatActivity;

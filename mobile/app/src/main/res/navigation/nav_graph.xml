@@ -7,8 +7,9 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.travelplanning.ui.home.HomeFragment"
-        android:label="Home" />
+        android:name="com.example.travelplanning.ui.mainscreen.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home"/>
 
     <fragment
         android:id="@+id/nav_account"
