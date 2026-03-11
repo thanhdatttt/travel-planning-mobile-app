@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/ivIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/recycler_icon_size"
+        android:layout_height="@dimen/recycler_icon_size"
         android:contentDescription="icon"
         android:src="@drawable/ic_user"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,9 +23,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Thông tin cá nhân"
+        android:text="@string/profile"
         android:textColor="#212121"
-        android:textSize="16sp"
+        android:textSize="@dimen/recycler_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivArrow"
         app:layout_constraintStart_toEndOf="@+id/ivIcon"

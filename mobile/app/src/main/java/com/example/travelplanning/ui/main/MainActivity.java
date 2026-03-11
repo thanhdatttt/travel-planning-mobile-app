@@ -1,21 +1,26 @@
-package com.example.travelplanning.ui.splash;
+package com.example.travelplanning.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.core.splashscreen.SplashScreen;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.travelplanning.R;
+import com.example.travelplanning.databinding.ActivityMainBinding;
+import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
+import com.example.travelplanning.ui.splash.SplashActivity;
+
 import androidx.core.graphics.Insets;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.travelplanning.R;
-import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
-
-public class SplashActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private boolean isReady = false;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +28,12 @@ public class SplashActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         splashScreen.setKeepOnScreenCondition(() -> !isReady);
 
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             isReady = true; //let splash screen dismiss
@@ -40,9 +47,9 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
     private void navigateToMainScreen() {
-        Intent intent = new Intent(SplashActivity.this, MainScreenActivity.class);
+        Intent intent = new Intent(MainActivity.this, MainScreenActivity.class);
         startActivity(intent);
-
         finish();
     }
+
 }
