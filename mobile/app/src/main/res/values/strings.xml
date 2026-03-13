@@ -23,4 +23,13 @@
     <string name="account">Account</string>
     <string name="title_activity_main_screen">MainScreenActivity</string>
     <string name="profile">Profile</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="_0_0_0_0_0_0">0 0 0 0 0 0</string>
+    <string name="haven_t_received_the_code_resend">Haven\'t received the code? Resend</string>
+    <string name="create_account">Create account</string>
+    <string name="username">Username</string>
+    <string name="enter_username">Enter username</string>
+    <string name="enter_password">Enter password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="create">Create</string>
 </resources>
