@@ -24,7 +24,7 @@ android {
     buildTypes {
 
         debug {
-            buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:5000/\""
+            buildConfigField "String", "BASE_URL", '\"http://10.0.2.2:3000/\"'
         }
         release {
             minifyEnabled false
@@ -65,7 +65,8 @@ dependencies {
 
     //ui
     implementation(libs.core.splashscreen)
-    implementation "androidx.navigation:navigation-fragment:2.9.7"
-    implementation "androidx.navigation:navigation-ui:2.9.7"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.10.0"
+    implementation libs.navigation.fragment
+    implementation libs.navigation.ui
+    implementation libs.lifecycle.viewmodel
+    implementation libs.lifecycle.livedata
 }

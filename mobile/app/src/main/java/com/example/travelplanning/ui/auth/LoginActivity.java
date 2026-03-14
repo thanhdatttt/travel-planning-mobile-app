@@ -27,7 +27,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupObservers() {
-
         viewModel.getIsLoading().observe(this, loading -> {
             binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
             binding.btnLogin.setEnabled(!loading);
@@ -49,8 +48,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupListeners() {
         binding.btnLogin.setOnClickListener(v -> {
-            String email = binding.edtEmail.getText().toString().trim();
-            String pass = binding.edtPassword.getText().toString().trim();
+            String email = binding.edtLoginUsername.getText().toString().trim();
+            String pass = binding.edtLoginPassword.getText().toString().trim();
             viewModel.login(email, pass);
         });
 

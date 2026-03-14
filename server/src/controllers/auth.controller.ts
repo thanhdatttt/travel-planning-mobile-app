@@ -24,7 +24,7 @@ export const signUp = async (req: Request, res: Response) => {
     if (existingEmail) {
       return res
         .status(400)
-        .json(createResponse({ message: "Email already registered" }));
+        .json(createResponse({ message: "Bad request", error: "Email already registered" }));
     }
 
     // check existing username
@@ -54,7 +54,7 @@ export const signUp = async (req: Request, res: Response) => {
     if (!otpRecord) {
       return res
         .status(403)
-        .json(createResponse({ message: "Email not verified" }));
+        .json(createResponse({ message: "Forbidden", error: "Email not verified" }));
     }
 
     // create new user
@@ -335,7 +335,7 @@ export const verifyOTP = async (req: Request, res: Response) => {
     if (!email || !otp || (type !== "register" && type !== "reset")) {
       return res
         .status(400)
-        .json(createResponse({ message: "Missing or invalid fields" }));
+        .json(createResponse({ message: "Bad request", error: "Missing or invalid fields" }));
     }
 
     // check otp exist or expired
@@ -362,7 +362,7 @@ export const verifyOTP = async (req: Request, res: Response) => {
     // verify
     const isMatch = await bcrypt.compare(otp, record.otp);
     if (!isMatch) {
-      return res.status(400).json(createResponse({ message: "Invalid OTP" }));
+      return res.status(400).json(createResponse({ message: "Bad request", error: "Invalid OTP" }));
     }
     await prisma.emailOTP.update({
       where: { id: record.id, type: type },

@@ -14,6 +14,9 @@
         android:theme="@style/Theme.TravelPlanning"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.auth.RegisterEmailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main_screen"
@@ -26,9 +29,7 @@
         </activity>
         <activity
             android:name=".ui.auth.LoginActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false"></activity>
         <activity
             android:name=".ui.mainscreen.MainScreenActivity"
             android:exported="false"
