@@ -17,4 +17,10 @@
         android:label="Account"
         tools:layout="@layout/fragment_account" />
 
+    <fragment
+        android:id="@+id/nav_map"
+        android:name="com.example.travelplanning.ui.map.MapFragment"
+        android:label="Map"
+        tools:layout="@layout/fragment_map" />
+
 </navigation>

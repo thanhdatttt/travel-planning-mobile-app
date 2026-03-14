@@ -68,4 +68,5 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment:2.9.7"
     implementation "androidx.navigation:navigation-ui:2.9.7"
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.10.0"
+    implementation 'org.osmdroid:osmdroid-android:6.1.20'
 }

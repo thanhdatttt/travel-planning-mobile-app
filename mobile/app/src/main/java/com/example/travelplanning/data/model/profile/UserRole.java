@@ -1,4 +1,4 @@
-package com.example.travelplanning.data.model;
+package com.example.travelplanning.data.model.profile;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
