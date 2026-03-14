@@ -33,6 +33,10 @@
             android:name=".ui.mainscreen.MainScreenActivity"
             android:exported="false"
             android:theme="@style/Theme.TravelPlanning" />
+
+        <activity
+            android:name=".ui.admin.AdminActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

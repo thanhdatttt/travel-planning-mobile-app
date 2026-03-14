@@ -30,13 +30,14 @@
     // "noUnusedParameters": true,
     // "noFallthroughCasesInSwitch": true,
     // "noPropertyAccessFromIndexSignature": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
 
     // Recommended Options
     "strict": true,
     "esModuleInterop": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*"]
 }

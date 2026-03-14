@@ -1,11 +1,10 @@
-package com.example.travelplanning.data.model;
+package com.example.travelplanning.data.model.profile;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
@@ -16,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
+public class UserProfile {
     String id;
     String email;
     String username;
