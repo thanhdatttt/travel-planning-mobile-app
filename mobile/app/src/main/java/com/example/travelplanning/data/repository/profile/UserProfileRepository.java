@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 
 import com.example.travelplanning.core.network.ApiServiceFactory;
 import com.example.travelplanning.data.remote.core.ApiResponse;
+import com.example.travelplanning.data.remote.profile.dto.request.UpdateMeRequest;
 import com.example.travelplanning.data.remote.profile.dto.response.UserProfileResponse;
 import com.example.travelplanning.data.remote.profile.UserApi;
 import com.example.travelplanning.data.model.profile.UserProfile;
@@ -58,6 +59,36 @@ public class UserProfileRepository {
             @Override
             public void onFailure(@NonNull Call<ApiResponse<UserProfileResponse>> call, @NonNull Throwable t) {
                 callback.onError("Lỗi kết nối mạng: " + t.getMessage());
+            }
+        });
+    }
+
+    public void updateUserProfile(UserProfile userProfile, UserProfileCallback<UserProfile> callback) {
+        UpdateMeRequest request = userProfileMapper.mapToRequest(userProfile);
+
+        userApi.updateProfile(request).enqueue(new Callback<ApiResponse<UserProfileResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<UserProfileResponse>> call,
+                                   @NonNull Response<ApiResponse<UserProfileResponse>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<UserProfileResponse> apiResponse = response.body();
+
+                    if (apiResponse.getData() != null) {
+                        UserProfile updatedUser = userProfileMapper.mapToDomain(apiResponse.getData());
+                        callback.onSuccess(updatedUser);
+                    } else {
+                        callback.onError(apiResponse.getMessage() != null ?
+                                apiResponse.getMessage() : "Cập nhật thông tin thất bại");
+                    }
+                } else {
+                    callback.onError("Lỗi máy chủ (" + response.code() + "). Vui lòng thử lại.");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<UserProfileResponse>> call, @NonNull Throwable t) {
+                callback.onError("Không thể kết nối đến máy chủ: " + t.getLocalizedMessage());
             }
         });
     }

@@ -23,4 +23,13 @@
     <string name="account">Account</string>
     <string name="title_activity_main_screen">MainScreenActivity</string>
     <string name="profile">Profile</string>
+    <string name="nearby">Nearby</string>
+
+    //account menu
+    <string name="personal_info">Personal Information</string>
+    <string name="setting">Setting</string>
+    <string name="my_reviews">My Reviews</string>
+    <string name="my_fav_location">Favorite Locations</string>
+    <string name="admin_board">Admin Board</string>
+    <string name="version">Version 1.0.0</string>
 </resources>

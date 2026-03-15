@@ -8,5 +8,5 @@ import lombok.Getter;
 public class AccountOption {
     private int id;
     private int iconRes;
-    private String title;
+    private int titleRes;
 }
