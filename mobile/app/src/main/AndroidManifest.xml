@@ -33,6 +33,11 @@
             android:name=".ui.mainscreen.MainScreenActivity"
             android:exported="false"
             android:theme="@style/Theme.TravelPlanning" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
     </application>
 
 </manifest>
