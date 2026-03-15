@@ -54,7 +54,7 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     // step 2: verify otp
-    public void verifyOTP(String email, String otp) {
+    public void verifyOTP(String email, String otp, String type) {
         if (email.isEmpty() || otp.isEmpty()) {
             errorMessage.setValue("Please enter email and OTP.");
             return;
@@ -64,7 +64,7 @@ public class RegisterViewModel extends AndroidViewModel {
         OTPVerifyRequest request = OTPVerifyRequest.builder()
                 .email(email)
                 .otp(otp)
-                .type("register")
+                .type(type)
                 .build();
         authRepository.verifyOTP(request, new AuthRepository.AuthCallback<Void>() {
             @Override
@@ -82,8 +82,8 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     // step 3: register
-    public void register(String email, String password, String confirmPassword) {
-        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+    public void register(String email, String username, String password, String confirmPassword) {
+        if (email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             errorMessage.setValue("Please enter required fields.");
             return;
         }
@@ -95,6 +95,7 @@ public class RegisterViewModel extends AndroidViewModel {
         isLoading.setValue(true);
         SignUpRequest request = SignUpRequest.builder()
                 .email(email)
+                .username(username)
                 .password(password)
                 .build();
         authRepository.register(request, new AuthRepository.AuthCallback<SignUpResponse>() {

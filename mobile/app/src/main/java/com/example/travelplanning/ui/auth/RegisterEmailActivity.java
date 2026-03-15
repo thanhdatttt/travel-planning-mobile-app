@@ -2,9 +2,7 @@ package com.example.travelplanning.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.ActivityRegisterEmailBinding;
@@ -22,11 +20,12 @@ public class RegisterEmailActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
 
+        setupObservers();
+        setupListeners();
     }
 
     private void setupObservers() {
         viewModel.getIsLoading().observe(this, loading -> {
-            binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
             binding.btnEmailContinue.setEnabled(!loading);
         });
 
@@ -37,9 +36,26 @@ public class RegisterEmailActivity extends AppCompatActivity {
         viewModel.getOtpSent().observe(this, sent -> {
             if (sent != null && sent) {
                 // OTP sent successfully, navigate to OTP verification screen
-                startActivity(new Intent(this, RegisterOTPActivity.class)
-                        .putExtra("email", binding.edtEmail.getText().toString().trim()));
+                startActivity(new Intent(this, OTPVerificationActivity.class)
+                        .putExtra("email", binding.edtRegisterEmail.getText().toString().trim())
+                        .putExtra("type", "register"));
+                finish(); // close this activity
             }
         });
+    }
+
+    private void setupListeners() {
+        binding.btnEmailContinue.setOnClickListener(v -> {
+            String email = binding.edtRegisterEmail.getText().toString().trim();
+            viewModel.senOTP(email);
+        });
+
+        binding.tvLogin.setOnClickListener(v -> {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish(); // close this activity and go back to login
+        });
+
+        binding.btnGoogle.setOnClickListener(v -> Toast.makeText(this, "Google Login...", Toast.LENGTH_SHORT).show());
+        binding.btnFacebook.setOnClickListener(v -> Toast.makeText(this, "Facebook Login...", Toast.LENGTH_SHORT).show());
     }
 }

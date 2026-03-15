@@ -54,7 +54,12 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.tvRegister.setOnClickListener(v -> {
-            Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, RegisterEmailActivity.class));
+            finish(); // close this activity and go to register
+        });
+
+        binding.tvForgotPassword.setOnClickListener(v -> {
+            startActivity(new Intent(this, ResetPasswordActivity.class));
         });
 
         binding.btnGoogle.setOnClickListener(v -> Toast.makeText(this, "Google Login...", Toast.LENGTH_SHORT).show());
