@@ -13,30 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelplanning.R;
 
-public class AccountListAdapter extends ListAdapter<AccountOption, AccountListAdapter.AccountViewHolder> {
+import java.util.List;
 
-    private static final DiffUtil.ItemCallback<AccountOption> DIFF_CALLBACK =
-        new DiffUtil.ItemCallback<AccountOption>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull AccountOption oldItem, @NonNull AccountOption newItem) {
-                return oldItem.getId() == newItem.getId();
-            }
-
-            @Override
-            public boolean areContentsTheSame(@NonNull AccountOption oldItem, @NonNull AccountOption newItem) {
-                // So sánh toàn bộ nội dung của object
-                return oldItem.getIconRes() == newItem.getIconRes() &&
-                        oldItem.getTitle().equals(newItem.getTitle());
-            }
-        };
-
+public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountViewHolder> {
+    private final List<AccountOption> items;
+    private final OnItemClickListener listener;
     public interface OnItemClickListener {
         void onItemClick(AccountOption option);
     }
-    private final OnItemClickListener listener;
 
-    protected AccountListAdapter(OnItemClickListener listener) {
-        super(DIFF_CALLBACK);
+    protected AccountAdapter(List<AccountOption> items ,OnItemClickListener listener) {
+        this.items = items;
         this.listener = listener;
     }
 
@@ -50,9 +37,14 @@ public class AccountListAdapter extends ListAdapter<AccountOption, AccountListAd
 
     @Override
     public void onBindViewHolder(@NonNull AccountViewHolder holder, int position) {
-        AccountOption option = getItem(position);
+        AccountOption option = items.get(position);
         holder.bind(option);
         holder.itemView.setOnClickListener(v -> listener.onItemClick(option));
+    }
+
+    @Override
+    public int getItemCount() {
+        return items != null ? items.size() : 0;
     }
 
     static class AccountViewHolder extends RecyclerView.ViewHolder {
@@ -66,10 +58,8 @@ public class AccountListAdapter extends ListAdapter<AccountOption, AccountListAd
         }
 
         public void bind(AccountOption option) {
-            tvTitle.setText(option.getTitle());
+            tvTitle.setText(itemView.getContext().getString(option.getTitleRes()));
             ivIcon.setImageResource(option.getIconRes());
         }
     }
-
-
 }
