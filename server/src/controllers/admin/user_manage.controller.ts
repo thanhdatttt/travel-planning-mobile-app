@@ -1,44 +1,31 @@
 import axios from "axios";
 import { Request, Response } from "express";
 import { prisma } from "../../libs/prisma";
+import bcrypt from "bcrypt";
 import { config } from "../../configs/config";
 import { createResponse } from "../../utils/response";
+import { userRole } from "../../generated/prisma/browser";
 
+//MISSING IS INACTIVE LOGIC, ROLE logic
 export const getList = async (req: Request, res: Response) => {
-    const {fullName = "", email = "", role = "", isBanned = false, sortBy = "name", sortOrder = "asc"} = req.query;
-    
-    const where: any = {
-        AND: [
-            {
-                OR: [
-                    { name: { contains: String(fullName), mode: 'insensitive' } },
-                    { email: { contains: String(email), mode: 'insensitive' } },
-                ]
-            }
-        ]
-    };
+    const {username = "", email = "", role = "", isBanned = false, isInactive = false, sortBy = "username", sortOrder = "asc", isDeleted = false} = req.query;
 
-    if (role) {
-        where.AND.push({ role: String(role) });
-    }
-
-    // if (isBanned !== undefined) {
-    //     const bannedBool = isBanned === 'true' || isBanned === true;
-    //     where.AND.push({ isBanned: bannedBool });
-    // }
-
+    console.log("Query params: ", req.query);
     const users = await prisma.user.findMany({
-        where,
+        where: {
+            AND: [
+                {
+                    OR: [
+                        { username: { contains: String(username), mode: 'insensitive' } },
+                        { email: { contains: String(email), mode: 'insensitive' } },
+                    ]
+                },
+                {isDeleted: isDeleted === 'true' || Boolean(isDeleted) === true},
+                {isBanned: isBanned === 'true' || Boolean(isBanned) === true},
+            ]
+        },
         orderBy: {
             [String(sortBy)]: sortOrder as 'asc' | 'desc'
-        },
-        select: {
-            id: true,
-            fullName: true,
-            email: true,
-            role: true,
-            // isBanned: true,
-            createdAt: true,
         }
     });
 
@@ -48,4 +35,116 @@ export const getList = async (req: Request, res: Response) => {
             data: users
         })
     );
+}
+
+export const toggleBan = async (req: Request, res: Response) => {
+    const {id} = req.params;
+    const {ban} = req.body;
+
+    const updatedUser = await prisma.user.update({
+        where: { id: String(id)},
+        data: {isBanned: Boolean(ban)}
+    });
+
+    return res.status(200).json(
+        createResponse({
+            message: ban ? "User banned successfully" : "User unbanned successfully",
+            data: updatedUser
+        })
+    );
+}
+
+export const toggleSoftDeleteUser = async (req: Request, res: Response) => {
+    const {id} = req.params;
+    const {delete: isDeleted} = req.body;
+
+    const updatedUser = await prisma.user.update({
+        where: { id: String(id)},
+        data: {isDeleted: Boolean(isDeleted)}
+    });
+
+    return res.status(200).json(
+        createResponse({
+            message: isDeleted ? "User soft-deleted successfully" : "User un-soft-deleted successfully",
+            data: updatedUser
+        })
+    );
+}
+
+export const updatePassword = async (req: Request, res: Response) => {
+    const {id} = req.params;
+    const {newPassword} = req.body;
+
+    const User = await prisma.user.findUnique({
+        where: {id: String(id)},
+        include: {authProviders: true}
+    });
+
+    if (!User) {
+        return res.status(404).json(
+            createResponse({
+                message: "User not found"
+            })
+        );
+    }
+
+    const localAuth = User.authProviders.find((p) => p.provider === "local");
+    if (!localAuth) {
+      return res.status(400).json(
+        createResponse({
+          message: "Bad request",
+          error: "Account uses social login",
+        }),
+      );
+    }
+
+    await prisma.authProvider.update({
+        where: {id: String(localAuth?.id)},
+        data: {
+            hashPassword: await bcrypt.hash(newPassword, 10)
+        }
+    });
+
+    return res.status(200).json(
+        createResponse({
+            message: "Password updated successfully"
+        })
+    ); 
+}
+
+export const demoteFromModerator = async (req: Request, res: Response) => {
+    const {id} = req.params;
+
+    const updatedUser = await prisma.user.findUnique({
+        where: { id: String(id)},
+    });
+
+    if(!updatedUser) {
+        return res.status(404).json(
+            createResponse({
+                message: "User not found"
+            })
+        );
+    }
+
+    if (updatedUser.role !== userRole.moderator) {
+        return res.status(400).json(
+            createResponse({
+                message: "User is not a moderator"
+            })
+        );
+    }
+
+    const demotedUser = await prisma.user.update({
+        where: { id: String(id)},
+        data: {role: userRole.user}
+    });
+
+    return res.status(200).json(
+        createResponse({
+            message: "User demoted from moderator successfully",
+            data: demotedUser
+        })
+    );
+
 }
