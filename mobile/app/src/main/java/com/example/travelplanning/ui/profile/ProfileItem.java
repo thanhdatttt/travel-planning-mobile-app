@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 @Data
 @AllArgsConstructor
 public class ProfileItem {
-    private String label;
+    private int labelRes;
     private String value;
     private String fieldKey;
     private boolean isEditable;

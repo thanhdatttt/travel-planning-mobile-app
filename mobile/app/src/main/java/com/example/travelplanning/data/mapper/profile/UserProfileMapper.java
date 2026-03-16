@@ -17,6 +17,7 @@ public class UserProfileMapper implements BaseMapper<UserProfileResponse, UserPr
         return UserProfile.builder()
                 .id(dto.getId())
                 .username(dto.getUsername())
+                .address(dto.getAddress())
                 .bio(dto.getBio())
                 .phone(dto.getPhone())
                 .role(domainRole)

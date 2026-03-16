@@ -60,7 +60,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         }
 
         public void bind(ProfileItem item, boolean isEditMode) {
-            tvLabel.setText(item.getLabel());
+            String labelText = itemView.getContext().getString(item.getLabelRes());
+            tvLabel.setText(labelText);
 
             // Xóa TextWatcher cũ trước khi bind dữ liệu mới để tránh lỗi ghi đè dữ liệu sai item
             if (currentTextWatcher != null) {
@@ -71,6 +72,13 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
                 tvValue.setVisibility(View.GONE);
                 etValue.setVisibility(View.VISIBLE);
                 etValue.setText(item.getValue());
+
+                if (item.getFieldKey().equals("birthdate")) {
+                    etValue.setHint("YYYY-MM-DD"); // VD: 2000-03-06
+                }
+//                else {
+//                    etValue.setHint("");
+//                }
 
                 currentTextWatcher = new TextWatcher() {
                     @Override
