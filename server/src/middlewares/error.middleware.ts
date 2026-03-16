@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createResponse } from "../utils/response.js";
+import { createResponse } from "../utils/response";
 
 
 export const notFoundHandler = (req: Request, res: Response, next: NextFunction) => {
