@@ -12,6 +12,7 @@ import {
 } from "../utils/jwt";
 import { EMAIL_TOKEN_TTL, generateOTP } from "../utils/otp";
 import { sendOTPResetPass, sendOTPVerification } from "../utils/email";
+import { updateSocialUser } from "../utils/social";
 
 export const signUp = async (req: Request, res: Response) => {
   try {
@@ -511,52 +512,14 @@ export const googleAuth = async (req: Request, res: Response) => {
           createResponse({ message: "Unauthorized", error: "Invalid token" }),
         );
     }
-
-    // check exist provider
-    const existingProvider = await prisma.authProvider.findUnique({
-      where: {
-        provider_providerId: {
-          provider: "google",
-          providerId: payload.sub, // google id
-        },
-      },
-      include: { user: true },
+    
+    const user = await updateSocialUser({
+      email: payload.email,
+      provider: "google",
+      providerId: payload.sub,
+      fullName: `${payload.given_name || ''} ${payload.family_name || ''}`.trim(),
+      avatarUrl: payload.picture ?? null,
     });
-    let user;
-    // get user when exist provider
-    if (existingProvider) {
-      user = existingProvider.user;
-    } else {
-      user = await prisma.user.findUnique({
-        where: { email: payload.email },
-      });
-      // create new user if user not exist
-      if (!user) {
-        user = await prisma.user.create({
-          data: {
-            email: payload.email,
-            avatarUrl: payload.picture ?? null,
-            username: `gg_user_${payload.given_name}_${Date.now()}`,
-            fullName: `${payload.given_name} ${payload.family_name}`,
-            authProviders: {
-              create: {
-                provider: "google",
-                providerId: payload.sub,
-              },
-            },
-          },
-        });
-      } else {
-        // add new provider if user exist
-        await prisma.authProvider.create({
-          data: {
-            provider: "google",
-            providerId: payload.sub,
-            userId: user.id,
-          },
-        });
-      }
-    }
 
     // gen token
     const accessToken = genAccessToken(user.id);
@@ -610,50 +573,13 @@ export const facebookAuth = async (req: Request, res: Response) => {
         }),
       );
     }
-    const existingProvider = await prisma.authProvider.findUnique({
-      where: {
-        provider_providerId: {
-          provider: "facebook",
-          providerId: facebookId,
-        },
-      },
-      include: { user: true },
+    const user = await updateSocialUser({
+      email,
+      provider: "facebook",
+      providerId: facebookId,
+      fullName: name,
+      avatarUrl: picture?.data?.url ?? null,
     });
-    let user;
-    if (existingProvider) {
-      // get user when exist provider
-      user = existingProvider.user;
-    } else {
-      user = await prisma.user.findUnique({
-        where: { email },
-      });
-      if (!user) {
-        // create new user if user not exist
-        user = await prisma.user.create({
-          data: {
-            email,
-            username: `fb_user_${Date.now()}`,
-            fullName: name,
-            avatarUrl: picture?.data?.url,
-            authProviders: {
-              create: {
-                provider: "facebook",
-                providerId: facebookId,
-              },
-            },
-          },
-        });
-      } else {
-        // add new provider if user exist
-        await prisma.authProvider.create({
-          data: {
-            provider: "facebook",
-            providerId: facebookId,
-            userId: user.id,
-          },
-        });
-      }
-    }
 
     // gen token
     const accessTokenJWT = genAccessToken(user.id);

@@ -3,19 +3,21 @@ package com.example.travelplanning.ui.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import com.example.travelplanning.databinding.ActivityRegisterEmailBinding;
+
+import com.example.travelplanning.databinding.ActivityResetEmailVerificationBinding;
 import com.example.travelplanning.viewmodel.auth.RegisterViewModel;
 
-public class RegisterEmailActivity extends AppCompatActivity {
-    private ActivityRegisterEmailBinding binding;
+public class ResetEmailVerificationActivity extends AppCompatActivity {
+    private ActivityResetEmailVerificationBinding binding;
     private RegisterViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityRegisterEmailBinding.inflate(getLayoutInflater());
+        binding = ActivityResetEmailVerificationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
@@ -26,7 +28,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
 
     private void setupObservers() {
         viewModel.getIsLoading().observe(this, loading -> {
-            binding.btnEmailContinue.setEnabled(!loading);
+            binding.btnEmailResetContinue.setEnabled(!loading);
         });
 
         viewModel.getErrorMessage().observe(this, msg -> {
@@ -35,26 +37,19 @@ public class RegisterEmailActivity extends AppCompatActivity {
 
         viewModel.getOtpSent().observe(this, sent -> {
             if (sent != null && sent) {
-                // OTP sent successfully, navigate to OTP verification screen
+                // OTP sent successfully
                 startActivity(new Intent(this, OTPVerificationActivity.class)
-                        .putExtra("email", binding.edtRegisterEmail.getText().toString().trim())
-                        .putExtra("type", "register"));
+                        .putExtra("email", binding.edtResetEmail.getText().toString().trim())
+                        .putExtra("type", "reset"));
                 finish(); // close this activity
             }
         });
     }
 
     private void setupListeners() {
-        binding.btnEmailContinue.setOnClickListener(v -> {
-            String email = binding.edtRegisterEmail.getText().toString().trim();
-            viewModel.sendOTP(email, "register");
+        binding.btnEmailResetContinue.setOnClickListener(v -> {
+            String email = binding.edtResetEmail.getText().toString().trim();
+            viewModel.sendOTP(email, "reset");
         });
-
-        binding.tvLogin.setOnClickListener(v -> {
-            startActivity(new Intent(this, LoginActivity.class));
-        });
-
-        binding.btnGoogle.setOnClickListener(v -> Toast.makeText(this, "Google Login...", Toast.LENGTH_SHORT).show());
-        binding.btnFacebook.setOnClickListener(v -> Toast.makeText(this, "Facebook Login...", Toast.LENGTH_SHORT).show());
     }
 }

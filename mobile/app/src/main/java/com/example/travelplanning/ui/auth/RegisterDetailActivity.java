@@ -45,9 +45,11 @@ public class RegisterDetailActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        String username = binding.edtRegisterUser.getText().toString().trim();
-        String pass = binding.edtRegisterPass.getText().toString().trim();
-        String confirmPass = binding.edtRegisterConfirm.getText().toString().trim();
-        viewModel.register(email, username, pass, confirmPass);
+        binding.btnCreateAccount.setOnClickListener(v -> {
+            String username = binding.edtRegisterUser.getText().toString().trim();
+            String pass = binding.edtRegisterPass.getText().toString().trim();
+            String confirmPass = binding.edtRegisterConfirm.getText().toString().trim();
+            viewModel.register(email, username, pass, confirmPass);
+        });
     }
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import com.example.travelplanning.data.remote.auth.dto.request.OTPRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.OTPVerifyRequest;
+import com.example.travelplanning.data.remote.auth.dto.request.ResetPasswordRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.SignUpRequest;
 import com.example.travelplanning.data.remote.auth.dto.response.SignUpResponse;
 import com.example.travelplanning.data.repository.auth.AuthRepository;
@@ -20,6 +21,7 @@ public class RegisterViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> otpSent = new MutableLiveData<>();
     private final MutableLiveData<Boolean> otpVerified = new MutableLiveData<>();
     private final MutableLiveData<SignUpResponse> registerSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> resetPassSuccess = new MutableLiveData<>();
 
     public RegisterViewModel(@NonNull Application application) {
         super(application);
@@ -27,7 +29,7 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     // step 1: send otp
-    public void senOTP(String email) {
+    public void sendOTP(String email, String type) {
         if (email.isEmpty()) {
             errorMessage.setValue("Please enter email.");
             return;
@@ -36,7 +38,7 @@ public class RegisterViewModel extends AndroidViewModel {
         isLoading.setValue(true);
         OTPRequest request = OTPRequest.builder()
                 .email(email)
-                .type("register")
+                .type(type)
                 .build();
         authRepository.sendOTP(request, new AuthRepository.AuthCallback<Void>() {
             @Override
@@ -103,6 +105,38 @@ public class RegisterViewModel extends AndroidViewModel {
             public void onSuccess(SignUpResponse data) {
                 isLoading.setValue(false);
                 registerSuccess.setValue(data);
+            }
+
+            @Override
+            public void onError(String message) {
+                isLoading.setValue(false);
+                errorMessage.setValue(message);
+            }
+        });
+    }
+
+    // reset password
+    public void resetPassword(String email, String newPassword, String confirmPassword) {
+        if (email.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
+            errorMessage.setValue("Please enter required fields.");
+            return;
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            errorMessage.setValue("Passwords do not match.");
+            return;
+        }
+
+        isLoading.setValue(true);
+        ResetPasswordRequest request = ResetPasswordRequest.builder()
+                .email(email)
+                .newPassword(newPassword)
+                .build();
+        authRepository.resetPassword(request, new AuthRepository.AuthCallback<Void>() {
+            @Override
+            public void onSuccess(Void data) {
+                isLoading.setValue(false);
+                resetPassSuccess.setValue(true);
             }
 
             @Override

@@ -61,7 +61,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
         });
 
         binding.tvResend.setOnClickListener(v -> {
-            viewModel.senOTP(email);
+            viewModel.sendOTP(email, type);
         });
     }
 }

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.ActivityLoginBinding;
 import com.example.travelplanning.ui.main.MainActivity;
+import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
 import com.example.travelplanning.viewmodel.auth.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
         viewModel.getLoginSuccess().observe(this, res -> {
             if (res != null) {
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, MainScreenActivity.class));
                 finish();
             }
         });
@@ -55,7 +56,6 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.tvRegister.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterEmailActivity.class));
-            finish(); // close this activity and go to register
         });
 
         binding.tvForgotPassword.setOnClickListener(v -> {
