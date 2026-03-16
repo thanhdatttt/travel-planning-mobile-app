@@ -2,11 +2,10 @@ import axios from "axios";
 import { Request, Response } from "express";
 import { prisma } from "../../libs/prisma";
 import bcrypt from "bcrypt";
-import { config } from "../../configs/config";
 import { createResponse } from "../../utils/response";
 import { userRole } from "../../generated/prisma/browser";
 
-//MISSING IS INACTIVE LOGIC, ROLE logic
+//MISSING IS INACTIVE LOGIC
 export const getList = async (req: Request, res: Response) => {
     const {username = "", email = "", role = "", isBanned = false, isInactive = false, sortBy = "username", sortOrder = "asc", isDeleted = false} = req.query;
 
@@ -22,6 +21,7 @@ export const getList = async (req: Request, res: Response) => {
                 },
                 {isDeleted: isDeleted === 'true' || Boolean(isDeleted) === true},
                 {isBanned: isBanned === 'true' || Boolean(isBanned) === true},
+                {role: role.toLocaleString() == "user" ? userRole.user : role.toLocaleString() == "moderator" ? userRole.moderator : userRole.admin}
             ]
         },
         orderBy: {
