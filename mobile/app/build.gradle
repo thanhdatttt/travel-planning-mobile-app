@@ -24,7 +24,8 @@ android {
     buildTypes {
 
         debug {
-            buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:5000/\""
+            //http://10.0.2.2:5000
+            buildConfigField "String", "BASE_URL", "\"http://192.168.1.205:5000/\""
         }
         release {
             minifyEnabled false
@@ -69,4 +70,5 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:2.9.7"
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.10.0"
     implementation "com.fasterxml.jackson.core:jackson-databind:2.21.1"
+    implementation "com.google.android.material:material:1.13.0"
 }

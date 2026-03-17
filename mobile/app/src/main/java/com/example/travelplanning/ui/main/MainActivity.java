@@ -9,6 +9,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.travelplanning.R;
+import com.example.travelplanning.core.storage.TokenManager;
 import com.example.travelplanning.databinding.ActivityMainBinding;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
 import com.example.travelplanning.ui.splash.SplashActivity;
@@ -27,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
         super.onCreate(savedInstanceState);
+
+        //hard code token for testing
+        String manualAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YWUxYmFkOS0yOTdhLTQ1YTctYjNjNy05YjIwOWE4M2U5NGIiLCJpYXQiOjE3NzM2NTM2ODAsImV4cCI6MTc3Mzc0MDA4MH0.hj3kWqXMQnod33ZOCJJNL9eVCN849_99Q3nhwqlc2jk";
+        String manualRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YWUxYmFkOS0yOTdhLTQ1YTctYjNjNy05YjIwOWE4M2U5NGIiLCJpYXQiOjE3NzM2NTM2ODAsImV4cCI6MjM3ODQ1MzY4MH0.i3QRwUdbe2sB1KRVVbAzybRX8Mog9kbksNFz6G5xSbI";
+        TokenManager.saveTokens(this, manualAccessToken, manualRefreshToken);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

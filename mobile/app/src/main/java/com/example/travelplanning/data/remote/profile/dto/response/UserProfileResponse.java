@@ -1,7 +1,9 @@
 package com.example.travelplanning.data.remote.profile.dto.response;
 
-import com.example.travelplanning.data.model.profile.UserRole;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
+
+import java.time.LocalDate;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,12 +16,13 @@ public class UserProfileResponse {
     private String id;
     private String email;
     private String username;
-    private String fullName;
 
+    private LocalDate dob;
+    private String fullName;
     private String phone;
     private String address;
     private String avatarUrl;
     private String bio;
-    private JsonNode preference;
+    private Gson preference;
     private String role;
 }
