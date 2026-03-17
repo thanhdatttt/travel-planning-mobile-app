@@ -4,10 +4,12 @@ import { prisma } from "../../libs/prisma";
 import bcrypt from "bcrypt";
 import { createResponse } from "../../utils/response";
 import { userRole } from "../../generated/prisma/browser";
+import { toLowerCase } from "zod";
 
 //MISSING IS INACTIVE LOGIC
 export const getList = async (req: Request, res: Response) => {
-    const {username = "", email = "", role = "", isBanned = false, isInactive = false, sortBy = "username", sortOrder = "asc", isDeleted = false} = req.query;
+    const {username = "", email = "", isBanned = false, isInactive = false, sortBy = "username", sortOrder = "asc", isDeleted = false} = req.query;
+    const role = req.query.role as string;
 
     console.log("Query params: ", req.query);
     const users = await prisma.user.findMany({
@@ -21,7 +23,7 @@ export const getList = async (req: Request, res: Response) => {
                 },
                 {isDeleted: isDeleted === 'true' || Boolean(isDeleted) === true},
                 {isBanned: isBanned === 'true' || Boolean(isBanned) === true},
-                {role: role.toLocaleString() == "user" ? userRole.user : role.toLocaleString() == "moderator" ? userRole.moderator : userRole.admin}
+                {role: role?.toLowerCase() === "user" ? userRole.user : role?.toLowerCase() === "moderator" ? userRole.moderator : userRole.admin}
             ]
         },
         orderBy: {
