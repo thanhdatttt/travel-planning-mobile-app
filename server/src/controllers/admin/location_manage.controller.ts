@@ -6,9 +6,11 @@ import { createResponse } from "../../utils/response";
 import { locationType, userRole } from "../../generated/prisma/browser";
 import { equal } from "node:assert";
 
+const MAX_VALUE = 32767;
+
 export const getList = async (req: Request, res: Response) => {
-    const {name = "", sortBy = "name", sortOrder = "asc", minPrice, maxPrice, 
-        minDistance, maxDistance, minRating, maxRating} = req.query;
+    const {name = "", sortBy = "name", sortOrder = "asc", minPrice = 0, maxPrice = MAX_VALUE, 
+        minDistance = 0, maxDistance = MAX_VALUE, minRating = 0, maxRating = 10} = req.query;
     const type = req.query.type as string;
 
     const locations = await prisma.location.findMany({
@@ -20,6 +22,16 @@ export const getList = async (req: Request, res: Response) => {
                 { avgRating: {gte: Number(minRating)}},
                 { avgRating: {lte: Number(maxRating)}},
                 { type: type?.toLowerCase() === "attraction" ? locationType.attraction : locationType.restaurant}
-            ]}
-        }),
+            ]},
+        orderBy: {
+            [String(sortBy)]: sortOrder
+        }
+        });
+
+        return res.status(200).json(
+            createResponse({
+                message: "Locations retrieved successfully",
+                data: locations
+            })
+        );
 }

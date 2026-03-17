@@ -14,6 +14,6 @@ import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
 
 public interface AdminApi{
-    @GET("admin/users")
+    @GET("/api/admin/user/list")
     Call<ApiResponse<UserListResponse>> GetAllUsers();
 }

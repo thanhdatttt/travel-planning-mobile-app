@@ -48,12 +48,12 @@ export const updatePasswordSchema = {
 export const locationListQuerySchema = {
     query: z.object({
         name: z.string().default(""),
-        minPrice: z.preprocess((val : string) => parseFloat(val), z.number().min(0).default(0)),
-        maxPrice: z.preprocess((val : string) => parseFloat(val), z.number().min(0).max(Number.MAX_VALUE).default(Number.MAX_VALUE)),
-        minDistance: z.preprocess((val : string) => parseFloat(val), z.number().min(0).default(0)),
-        maxDistance: z.preprocess((val : string) => parseFloat(val), z.number().min(0).max(Number.MAX_VALUE).default(Number.MAX_VALUE)),
-        minRating: z.preprocess((val : string) => parseFloat(val), z.number().min(0).default(0)),
-        maxRating: z.preprocess((val : string) => parseFloat(val), z.number().min(0).max(10).default(10)),
+        minPrice: z.coerce.number().min(0).default(0),
+        maxPrice: z.coerce.number().min(0).max(Number.MAX_VALUE).default(Number.MAX_VALUE),
+        minDistance: z.coerce.number().min(0).default(0),
+        maxDistance: z.coerce.number().min(0).max(Number.MAX_VALUE).default(Number.MAX_VALUE),
+        minRating: z.coerce.number().min(0).default(0),
+        maxRating: z.coerce.number().min(0).max(10).default(10),
         sortBy: z.enum(["name", "price", "distance", "rating"]).default("name"),
         sortOrder: z.enum(["asc", "desc"]).default("asc"),
         type: z.string().default("")
