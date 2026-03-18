@@ -14,6 +14,25 @@
         android:theme="@style/Theme.TravelPlanning"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.auth.ResetEmailVerificationActivity"
+            android:exported="false" />
+        <!-- Auth activities -->
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.RegisterDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.OTPVerificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.RegisterEmailActivity"
+            android:exported="false" /> <!-- Main activities -->
+        <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main_screen"
@@ -24,11 +43,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.auth.LoginActivity"
-            android:exported="false">
-        </activity>
-
         <activity
             android:name=".ui.mainscreen.MainScreenActivity"
             android:exported="false"

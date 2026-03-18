@@ -11,46 +11,41 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/email_verification"
+            android:text="@string/reset_password"
             android:textColor="@color/text"
             android:textSize="36sp"
             android:textStyle="bold"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/enter_your_email_to_verify_your_account"
             android:textSize="18sp"
-            android:text="@string/the_otp_code_has_been_sent_to_your_email_please_check_it_and_enter_it_below"
-            android:textColor="@color/text_secondary"
-            android:textAlignment="center" />
+            android:textColor="@color/text_secondary" />
 
-        <!--    verify otp    -->
+        <!--    Enter email    -->
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30sp"
-            android:text="@string/verify_otp"
+            android:layout_marginTop="40sp"
+            android:text="@string/enter_your_email"
             android:textStyle="bold"
             android:textSize="26sp"
-            android:textColor="@color/text"
-            android:textAlignment="center" />
+            android:textColor="@color/text" />
         <EditText
-            android:id="@+id/edtOtpCode"
+            android:id="@+id/edtResetEmail"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:autofillHints="otp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:autofillHints=""
             android:background="@drawable/edit_textbox"
-            android:gravity="center"
-            android:hint="@string/_0_0_0_0_0_0"
-            android:inputType="number"
-            android:maxLength="6"
-            android:letterSpacing="0.5"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:hint="@string/example_gmail_com"
+            android:inputType="textEmailAddress" />
         <Button
-            android:id="@+id/btnVerifyOtp"
+            android:id="@+id/btnEmailResetContinue"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:layout_marginTop="20dp"
@@ -59,16 +54,6 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="20sp" />
-
-        <!--    resend    -->
-        <TextView
-            android:id="@+id/tvResend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:text="@string/haven_t_received_the_code_resend"
-            android:textColor="@color/text"
-            android:textStyle="bold" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
