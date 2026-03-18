@@ -3,7 +3,6 @@ package com.example.travelplanning.viewmodel.auth;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.example.travelplanning.data.remote.auth.dto.request.SignInRequest;
 import com.example.travelplanning.data.remote.auth.dto.response.SignInResponse;

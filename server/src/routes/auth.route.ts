@@ -1,7 +1,11 @@
 import express from "express";
 import * as authController from "../controllers/auth.controller";
 import { validate } from "../middlewares/validate.middleware";
-import { resetPasswordSchema, userSignInSchema, userSignUpSchema } from "../validations/auth.validation";
+import {
+  resetPasswordSchema,
+  userSignInSchema,
+  userSignUpSchema,
+} from "../validations/auth.schema";
 
 const router = express.Router();
 
@@ -16,7 +20,11 @@ router.post("/otp/verify", authController.verifyOTP);
 router.post("/otp/send", authController.sendOTP);
 
 // reset password
-router.post("/reset-password", validate(resetPasswordSchema), authController.resetPassword);
+router.post(
+  "/reset-password",
+  validate(resetPasswordSchema),
+  authController.resetPassword,
+);
 
 // oauth
 router.post("/google", authController.googleAuth);

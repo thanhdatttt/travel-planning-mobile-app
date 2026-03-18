@@ -25,7 +25,7 @@ android {
     buildTypes {
 
         debug {
-            buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:5000/\""
+            buildConfigField "String", "BASE_URL", '\"http://10.0.2.2:5000/\"'
         }
         release {
             minifyEnabled false
@@ -70,4 +70,10 @@ dependencies {
     implementation libs.navigation.ui
     implementation libs.lifecycle.viewmodel
     implementation libs.osmdroid.android
+    implementation libs.lifecycle.livedata
+    implementation libs.navigation.fragment
+    implementation libs.navigation.ui
+    implementation libs.lifecycle.viewmodel
+    implementation libs.jackson.databind
+    implementation libs.material
 }

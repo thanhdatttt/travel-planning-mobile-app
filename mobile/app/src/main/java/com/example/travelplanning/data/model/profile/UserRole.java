@@ -1,19 +1,19 @@
 package com.example.travelplanning.data.model.profile;
 
-import com.google.gson.annotations.SerializedName;
-import lombok.Getter;
+import com.example.travelplanning.data.enum_converter.MappableEnum;
 
-@Getter
-public enum UserRole {
-    @SerializedName("user")
-    USER("user"),
-
-    @SerializedName("admin")
-    ADMIN("admin");
+public enum UserRole implements MappableEnum {
+    USER("user"), ADMIN("admin"), MODERATOR("moderator"), UNKNOWN("unknown");
 
     private final String value;
 
     UserRole(String value) {
         this.value = value;
     }
+
+    @Override
+    public String getStringValue() {
+        return this.value;
+    }
+
 }
