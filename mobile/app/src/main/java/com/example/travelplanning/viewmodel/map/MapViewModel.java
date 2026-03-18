@@ -1,31 +1,51 @@
 package com.example.travelplanning.viewmodel.map;
 
-import android.util.Pair;
+import android.app.Application;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.example.travelplanning.data.remote.map.dto.response.PhotonResponse;
+import com.example.travelplanning.data.repository.map.MapRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MapViewModel extends ViewModel {
+public class MapViewModel extends AndroidViewModel {
 
+    private final MapRepository repository;
+    private final MutableLiveData<PhotonResponse> searchResults = new MutableLiveData<>();
+    private final MutableLiveData<List<PhotonResponse.Feature>> autocompleteResults = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
-    private final MutableLiveData<List<Pair<String, LatLng>>> mapData = new MutableLiveData<>();
-
-    public LiveData<List<Pair<String, LatLng>>> getMapData() {
-        return mapData;
+    public MapViewModel(@NonNull Application application) {
+        super(application);
+        repository = new MapRepository(application);
     }
 
-    public void loadSampleData() {
-        List<Pair<String, LatLng>> sampleData = new ArrayList<>();
+    public LiveData<PhotonResponse> getSearchResults() { return searchResults; }
+    public LiveData<List<PhotonResponse.Feature>> getAutocompleteResults() { return autocompleteResults; }
+    public LiveData<String> getErrorMessage() { return errorMessage; }
 
-        sampleData.add(new Pair<>("Đại học KHTN (Cơ sở 1)", new LatLng(10.762622, 106.681305)));
-        sampleData.add(new Pair<>("Chợ Bến Thành", new LatLng(10.7725, 106.6980)));
-        sampleData.add(new Pair<>("Bưu điện Thành phố", new LatLng(10.7798, 106.6990)));
+    public void performSearch(String keyword, double lat, double lon, String bbox) {
+        repository.searchPlaces(keyword, lat, lon, bbox, new MapRepository.PlaceCallback<PhotonResponse>() {
+            @Override
+            public void onSuccess(PhotonResponse data) { searchResults.postValue(data); }
+            @Override
+            public void onError(String error) { errorMessage.postValue(error); }
+        });
+    }
 
-        mapData.setValue(sampleData);
+    public void fetchAutocomplete(String keyword, double lat, double lon, String bbox) {
+        repository.searchPlaces(keyword, lat, lon, bbox, new MapRepository.PlaceCallback<PhotonResponse>() {
+            @Override
+            public void onSuccess(PhotonResponse data) {
+                if (data != null && data.features != null) {
+                    autocompleteResults.postValue(data.features);
+                }
+            }
+            @Override
+            public void onError(String error) {}
+        });
     }
 }
