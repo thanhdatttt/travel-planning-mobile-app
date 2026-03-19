@@ -24,14 +24,27 @@
                 android:textSize="36sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvRegister"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/don_t_have_an_account_register"
-                android:textColor="@color/text_secondary"
-                android:textSize="18sp" />
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/don_t_have_an_account"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/tvRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/register"
+                    android:textColor="@color/main_yellow"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,6 +66,7 @@
                 android:inputType="text"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+                android:textColor="@color/black"
                 android:autofillHints="emailAddress" />
 
             <TextView
@@ -75,6 +89,7 @@
                 android:inputType="textPassword"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+                android:textColor="@color/black"
                 android:autofillHints="password" />
 
             <TextView
@@ -83,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/forgot_password"
+                android:textStyle="bold"
                 android:textColor="@color/text_secondary" />
 
             <Button

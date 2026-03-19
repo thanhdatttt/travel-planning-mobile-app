@@ -3,7 +3,7 @@
 
     // login and register
     <string name="login">Login</string>
-    <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="username_or_email">Username or email</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="continue_with_facebook">Continue with Facebook</string>
@@ -14,12 +14,12 @@
     <string name="enter_your_email">Enter your email</string>
     <string name="example_gmail_com">Example@gmail.com</string>
     <string name="email_verification">Email verification</string>
-    <string name="already_have_an_account_login">Already had an account? Login</string>
+    <string name="already_have_an_account">Already have an account?</string>
     <string name="next">Next</string>
     <string name="the_otp_code_has_been_sent_to_your_email_please_check_it_and_enter_it_below">The OTP code has been sent to your email. Please check it and enter it below.</string>
     <string name="verify_otp">Verify OTP</string>
     <string name="_0_0_0_0_0_0">0 0 0 0 0 0</string>
-    <string name="haven_t_received_the_code_resend">Haven\'t received the code? Resend</string>
+    <string name="haven_t_received_the_code">Haven\'t received the code?</string>
     <string name="create_account">Create account</string>
     <string name="username">Username</string>
     <string name="enter_username">Enter username</string>

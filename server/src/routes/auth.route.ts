@@ -3,6 +3,7 @@ import * as authController from "../controllers/auth.controller";
 import { validate } from "../middlewares/validate.middleware";
 import {
   resetPasswordSchema,
+  sendOTPSchema,
   userSignInSchema,
   userSignUpSchema,
 } from "../validations/auth.schema";
@@ -17,7 +18,7 @@ router.post("/refresh", authController.refreshToken);
 
 // otp
 router.post("/otp/verify", authController.verifyOTP);
-router.post("/otp/send", authController.sendOTP);
+router.post("/otp/send", validate(sendOTPSchema), authController.sendOTP);
 
 // reset password
 router.post(

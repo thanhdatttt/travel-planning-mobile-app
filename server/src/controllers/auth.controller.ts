@@ -90,8 +90,6 @@ export const signUp = async (req: Request, res: Response) => {
 
 export const signIn = async (req: Request, res: Response) => {
   try {
-    console.log("DEBUG SIGN IN");
-
     const { usernameOrEmail, password } = req.body;
 
     // check existing user

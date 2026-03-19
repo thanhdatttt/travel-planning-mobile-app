@@ -39,3 +39,10 @@ export const resetPasswordSchema = {
       .regex(/[@$!%*?&]/, "Must have at least 1 special character (@$!%*?&)"),
   }),
 };
+
+export const sendOTPSchema = {
+  body: z.object({
+    email: z.string().min(1, "Email is required").email("Email is invalid"),
+    type: z.string().min(1, "Email is required"),
+  }),
+}

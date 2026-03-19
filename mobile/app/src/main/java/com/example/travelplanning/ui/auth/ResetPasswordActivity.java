@@ -2,6 +2,7 @@ package com.example.travelplanning.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -36,6 +37,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private void setupObservers() {
         viewModel.getIsLoading().observe(this, loading -> {
+            binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
             binding.btnReset.setEnabled(!loading);
         });
 

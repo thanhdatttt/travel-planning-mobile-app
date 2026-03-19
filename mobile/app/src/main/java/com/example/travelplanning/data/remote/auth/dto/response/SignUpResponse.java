@@ -1,6 +1,6 @@
 package com.example.travelplanning.data.remote.auth.dto.response;
 
-import com.example.travelplanning.data.model.User;
+import com.example.travelplanning.data.model.profile.UserProfile;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,5 +14,5 @@ import lombok.Value;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignUpResponse {
-    private User user;
+    private UserProfile user;
 }

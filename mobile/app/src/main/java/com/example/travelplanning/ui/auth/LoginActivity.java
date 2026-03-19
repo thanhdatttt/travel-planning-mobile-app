@@ -7,7 +7,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.ActivityLoginBinding;
-import com.example.travelplanning.ui.main.MainActivity;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
 import com.example.travelplanning.viewmodel.auth.LoginViewModel;
 
@@ -59,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.tvForgotPassword.setOnClickListener(v -> {
-            startActivity(new Intent(this, ResetPasswordActivity.class));
+            startActivity(new Intent(this, ResetEmailVerificationActivity.class));
         });
 
         binding.btnGoogle.setOnClickListener(v -> Toast.makeText(this, "Google Login...", Toast.LENGTH_SHORT).show());
