@@ -1,7 +1,7 @@
+import { requireAuth, requireRole } from "./middlewares/auth.middleware";
 import cors from "cors";
 import express from "express";
-import authRoute from "./routes/auth.route";
-import { requireAuth, requireRole } from "./middlewares/auth.middleware";
+import authRoutes from "./routes/auth/index.routes";
 import userRoutes from "./routes/user/index.routes";
 import adminRoutes from "./routes/admin/index.routes";
 
@@ -12,8 +12,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // routes
-app.use("/api/auth", authRoute);
+// public
+app.use("/api", authRoutes);
 
+// protected
 app.use(requireAuth);
 app.use("/api", userRoutes);
 app.use("/api/admin", requireRole('admin'), adminRoutes);
