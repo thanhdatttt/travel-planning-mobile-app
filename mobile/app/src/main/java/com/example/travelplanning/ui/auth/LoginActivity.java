@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.ActivityLoginBinding;
 import com.example.travelplanning.ui.main.MainActivity;
+import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
 import com.example.travelplanning.viewmodel.auth.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
@@ -27,7 +28,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupObservers() {
-
         viewModel.getIsLoading().observe(this, loading -> {
             binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
             binding.btnLogin.setEnabled(!loading);
@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
         viewModel.getLoginSuccess().observe(this, res -> {
             if (res != null) {
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, MainScreenActivity.class));
                 finish();
             }
         });
@@ -49,13 +49,17 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupListeners() {
         binding.btnLogin.setOnClickListener(v -> {
-            String email = binding.edtEmail.getText().toString().trim();
-            String pass = binding.edtPassword.getText().toString().trim();
+            String email = binding.edtLoginUsername.getText().toString().trim();
+            String pass = binding.edtLoginPassword.getText().toString().trim();
             viewModel.login(email, pass);
         });
 
         binding.tvRegister.setOnClickListener(v -> {
-            Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, RegisterEmailActivity.class));
+        });
+
+        binding.tvForgotPassword.setOnClickListener(v -> {
+            startActivity(new Intent(this, ResetPasswordActivity.class));
         });
 
         binding.btnGoogle.setOnClickListener(v -> Toast.makeText(this, "Google Login...", Toast.LENGTH_SHORT).show());
