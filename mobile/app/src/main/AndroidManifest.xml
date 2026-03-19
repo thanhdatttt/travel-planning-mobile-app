@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -47,6 +47,9 @@
             android:name=".ui.mainscreen.MainScreenActivity"
             android:exported="false"
             android:theme="@style/Theme.TravelPlanning" />
+
+
+
     </application>
 
 </manifest>
