@@ -12,7 +12,7 @@ import {
 } from "../utils/jwt";
 import { EMAIL_TOKEN_TTL, generateOTP } from "../utils/otp";
 import { sendOTPResetPass, sendOTPVerification } from "../utils/email";
-import { updateSocialUser } from "../utils/social";
+import { finalizeLogin, updateSocialUser } from "../utils/social";
 
 export const signUp = async (req: Request, res: Response) => {
   try {
@@ -132,22 +132,7 @@ export const signIn = async (req: Request, res: Response) => {
       );
     }
 
-    // generate tokens
-    const accessToken = genAccessToken(user.id);
-    const refreshToken = genRefreshToken(user.id);
-    await prisma.session.create({
-      data: {
-        userId: user.id,
-        token: refreshToken,
-        expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
-      },
-    });
-    return res.status(200).json(
-      createResponse({
-        message: "Sign in successfully",
-        data: { accessToken, refreshToken },
-      }),
-    );
+   return await finalizeLogin(user, res, "Sign in successfully");
   } catch (err: any) {
     console.log("Error when signing in: ", err.message);
     return res
@@ -490,6 +475,7 @@ export const sendOTP = async (req: Request, res: Response) => {
 // oauth
 const ggClient = new OAuth2Client({
   clientId: config.GG_CLIENT_ID as string,
+  clientSecret: config.GG_CLIENT_SECRET as string,
 });
 
 export const googleAuth = async (req: Request, res: Response) => {
@@ -519,23 +505,7 @@ export const googleAuth = async (req: Request, res: Response) => {
       avatarUrl: payload.picture ?? null,
     });
 
-    // gen token
-    const accessToken = genAccessToken(user.id);
-    const refreshToken = genRefreshToken(user.id);
-    await prisma.session.create({
-      data: {
-        userId: user.id,
-        token: refreshToken,
-        expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
-      },
-    });
-
-    return res.status(200).json(
-      createResponse({
-        message: "Google auth successfully",
-        data: { accessToken, refreshToken, user },
-      }),
-    );
+    return await finalizeLogin(user, res, "Google auth successfully");
   } catch (err: any) {
     console.log("Error when google auth: ", err.message);
     return res
@@ -571,6 +541,7 @@ export const facebookAuth = async (req: Request, res: Response) => {
         }),
       );
     }
+
     const user = await updateSocialUser({
       email,
       provider: "facebook",
@@ -579,23 +550,7 @@ export const facebookAuth = async (req: Request, res: Response) => {
       avatarUrl: picture?.data?.url ?? null,
     });
 
-    // gen token
-    const accessTokenJWT = genAccessToken(user.id);
-    const refreshToken = genRefreshToken(user.id);
-    await prisma.session.create({
-      data: {
-        userId: user.id,
-        token: refreshToken,
-        expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
-      },
-    });
-
-    return res.status(200).json(
-      createResponse({
-        message: "Facebook auth successfully",
-        data: { accessTokenJWT, refreshToken, user },
-      }),
-    );
+    return await finalizeLogin(user, res, "Facebook auth successfully");
   } catch (err: any) {
     console.log("Error when facebook auth: ", err.message);
     return res

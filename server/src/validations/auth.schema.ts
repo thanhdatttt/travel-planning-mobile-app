@@ -43,6 +43,6 @@ export const resetPasswordSchema = {
 export const sendOTPSchema = {
   body: z.object({
     email: z.string().min(1, "Email is required").email("Email is invalid"),
-    type: z.string().min(1, "Email is required"),
+    type: z.string().min(1, "Type is required"),
   }),
 }
