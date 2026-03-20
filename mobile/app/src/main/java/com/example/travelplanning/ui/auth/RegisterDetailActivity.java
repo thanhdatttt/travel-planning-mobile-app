@@ -7,11 +7,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.ActivityRegisterDetailBinding;
-import com.example.travelplanning.viewmodel.auth.RegisterViewModel;
+import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 
 public class RegisterDetailActivity extends AppCompatActivity {
     private ActivityRegisterDetailBinding binding;
-    private RegisterViewModel viewModel;
+    private AuthViewModel viewModel;
     private String email;
 
     @Override
@@ -22,7 +22,7 @@ public class RegisterDetailActivity extends AppCompatActivity {
 
         email = getIntent().getStringExtra("email");
 
-        viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         setupObservers();
         setupListeners();

@@ -11,7 +11,7 @@
         android:fillViewport="true">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="20dp"
-                android:backgroundTint="#F4C74F"
+                android:backgroundTint="@color/primary"
                 android:text="@string/next"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -87,8 +87,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Resend"
-                    android:textColor="@color/main_yellow"
+                    android:text="@string/resend"
+                    android:textColor="@color/primary"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
@@ -99,7 +99,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:indeterminateTint="#F4C74F"
+        android:indeterminateTint="@color/primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

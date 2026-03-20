@@ -5,30 +5,91 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.travelplanning.data.remote.auth.dto.request.FacebookRequest;
+import com.example.travelplanning.data.remote.auth.dto.request.GoogleRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.OTPRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.OTPVerifyRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.ResetPasswordRequest;
+import com.example.travelplanning.data.remote.auth.dto.request.SignInRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.SignUpRequest;
+import com.example.travelplanning.data.remote.auth.dto.response.SignInResponse;
 import com.example.travelplanning.data.remote.auth.dto.response.SignUpResponse;
+import com.example.travelplanning.data.remote.auth.dto.response.SocialResponse;
 import com.example.travelplanning.data.repository.auth.AuthRepository;
 import lombok.Getter;
 
 @Getter
-public class RegisterViewModel extends AndroidViewModel {
+public class AuthViewModel extends AndroidViewModel {
     private final AuthRepository authRepository;
+
+    // general states
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> otpSent = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> otpVerified = new MutableLiveData<>();
-    private final MutableLiveData<SignUpResponse> registerSuccess = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> resetPassSuccess = new MutableLiveData<>();
 
-    public RegisterViewModel(@NonNull Application application) {
+    // login, register, reset states
+    private final MutableLiveData<SignInResponse> loginSuccess = new MutableLiveData<>();
+    private final MutableLiveData<SignUpResponse> registerSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> logoutSuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> otpSentSuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> otpVerifySuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> resetPasswordSuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<SocialResponse> socialLoginSuccess = new MutableLiveData<>();
+
+    public AuthViewModel(@NonNull Application application) {
         super(application);
         this.authRepository = new AuthRepository(application);
     }
 
-    // step 1: send otp
+    // login
+    public void login(String email, String password) {
+        if (email.isEmpty() || password.isEmpty()) {
+            errorMessage.setValue("Please enter required fields.");
+            return;
+        }
+
+        isLoading.setValue(true);
+        SignInRequest request = SignInRequest.builder()
+                .usernameOrEmail(email)
+                .password(password)
+                .build();
+
+        authRepository.login(request, new AuthRepository.AuthCallback<SignInResponse>() {
+            @Override
+            public void onSuccess(SignInResponse data) {
+                isLoading.setValue(false);
+                loginSuccess.setValue(data);
+                logoutSuccess.setValue(false);
+            }
+
+            @Override
+            public void onError(String message) {
+                isLoading.setValue(false);
+                errorMessage.setValue(message);
+            }
+        });
+    }
+
+    // logout
+    public void logout() {
+        isLoading.setValue(true);
+        authRepository.logout(new AuthRepository.AuthCallback<Void>() {
+            @Override
+            public void onSuccess(Void data) {
+                isLoading.setValue(false);
+                logoutSuccess.setValue(true);
+                loginSuccess.setValue(null);
+            }
+
+            @Override
+            public void onError(String message) {
+                isLoading.setValue(false);
+                errorMessage.setValue(message);
+            }
+        });
+    }
+
+    // send otp
     public void sendOTP(String email, String type) {
         if (email.isEmpty()) {
             errorMessage.setValue("Please enter email.");
@@ -44,7 +105,7 @@ public class RegisterViewModel extends AndroidViewModel {
             @Override
             public void onSuccess(Void data) {
                 isLoading.setValue(false);
-                otpSent.setValue(true); // just indicate success
+                otpSentSuccess.setValue(true);
             }
 
             @Override
@@ -55,7 +116,7 @@ public class RegisterViewModel extends AndroidViewModel {
         });
     }
 
-    // step 2: verify otp
+    // verify otp
     public void verifyOTP(String email, String otp, String type) {
         if (email.isEmpty() || otp.isEmpty()) {
             errorMessage.setValue("Please enter email and OTP.");
@@ -72,7 +133,7 @@ public class RegisterViewModel extends AndroidViewModel {
             @Override
             public void onSuccess(Void data) {
                 isLoading.setValue(false);
-                otpVerified.setValue(true); // just indicate success
+                otpVerifySuccess.setValue(true);
             }
 
             @Override
@@ -83,7 +144,7 @@ public class RegisterViewModel extends AndroidViewModel {
         });
     }
 
-    // step 3: register
+    // register
     public void register(String email, String username, String password, String confirmPassword) {
         if (email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             errorMessage.setValue("Please enter required fields.");
@@ -136,7 +197,7 @@ public class RegisterViewModel extends AndroidViewModel {
             @Override
             public void onSuccess(Void data) {
                 isLoading.setValue(false);
-                resetPassSuccess.setValue(true);
+                resetPasswordSuccess.setValue(true);
             }
 
             @Override
@@ -145,5 +206,66 @@ public class RegisterViewModel extends AndroidViewModel {
                 errorMessage.setValue(message);
             }
         });
+    }
+
+    // social login
+    public void loginWithGoogle(String idToken) {
+        if (idToken == null || idToken.isEmpty()) {
+            errorMessage.setValue("Google Token is invalid.");
+            return;
+        }
+
+        isLoading.setValue(true);
+        GoogleRequest request = GoogleRequest.builder()
+                .idToken(idToken)
+                .build();
+        authRepository.loginWithGoogle(request, new AuthRepository.AuthCallback<SocialResponse>() {
+            @Override
+            public void onSuccess(SocialResponse data) {
+                isLoading.setValue(false);
+                socialLoginSuccess.setValue(data);
+                logoutSuccess.setValue(false);
+            }
+
+            @Override
+            public void onError(String message) {
+                isLoading.setValue(false);
+                errorMessage.setValue(message);
+            }
+        });
+    }
+
+    public void loginWithFacebook(String accessToken) {
+        if (accessToken == null || accessToken.isEmpty()) {
+            errorMessage.setValue("Facebook Token is invalid.");
+            return;
+        }
+
+        isLoading.setValue(true);
+        FacebookRequest request = FacebookRequest.builder()
+                .accessToken(accessToken)
+                .build();
+
+        authRepository.loginWithFacebook(request, new AuthRepository.AuthCallback<SocialResponse>() {
+            @Override
+            public void onSuccess(SocialResponse data) {
+                isLoading.setValue(false);
+                socialLoginSuccess.setValue(data);
+                logoutSuccess.setValue(false);
+            }
+
+            @Override
+            public void onError(String message) {
+                isLoading.setValue(false);
+                errorMessage.setValue(message);
+            }
+        });
+    }
+
+    public void resetAuthStates() {
+        otpSentSuccess.setValue(false);
+        otpVerifySuccess.setValue(false);
+        registerSuccess.setValue(null);
+        resetPasswordSuccess.setValue(false);
     }
 }

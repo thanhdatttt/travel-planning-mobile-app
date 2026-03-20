@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import com.example.travelplanning.core.network.ApiServiceFactory;
 import com.example.travelplanning.core.storage.TokenManager;
 import com.example.travelplanning.data.remote.auth.AuthApi;
+import com.example.travelplanning.data.remote.auth.dto.request.FacebookRequest;
+import com.example.travelplanning.data.remote.auth.dto.request.GoogleRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.OTPRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.OTPVerifyRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.ResetPasswordRequest;
@@ -14,6 +16,7 @@ import com.example.travelplanning.data.remote.auth.dto.request.SignOutRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.SignUpRequest;
 import com.example.travelplanning.data.remote.auth.dto.response.SignInResponse;
 import com.example.travelplanning.data.remote.auth.dto.response.SignUpResponse;
+import com.example.travelplanning.data.remote.auth.dto.response.SocialResponse;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 
 import retrofit2.Call;
@@ -181,6 +184,72 @@ public class AuthRepository {
             }
         });
     }
+
+    // google api
+    public void loginWithGoogle(GoogleRequest request, AuthCallback<SocialResponse> callback) {
+        authApi.loginWithGoogle(request).enqueue(new Callback<ApiResponse<SocialResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<SocialResponse>> call,
+                                   @NonNull Response<ApiResponse<SocialResponse>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<SocialResponse> apiResponse = response.body();
+
+                    if (apiResponse.getData() != null) {
+                        SocialResponse data = apiResponse.getData();
+                        TokenManager.saveTokens(context,
+                                data.getAccessToken(),
+                                data.getRefreshToken());
+
+                        callback.onSuccess(data);
+                    } else {
+                        callback.onError(parseErrorMessage(response));
+                    }
+                } else {
+                    callback.onError("Login with google failed.");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<SocialResponse>> call, @NonNull Throwable t) {
+                callback.onError("Error network" + t.getMessage());
+            }
+        });
+    }
+
+    // facebook api
+    public void loginWithFacebook(FacebookRequest request, AuthCallback<SocialResponse> callback) {
+        authApi.loginWithFacebook(request).enqueue(new Callback<ApiResponse<SocialResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<SocialResponse>> call,
+                                   @NonNull Response<ApiResponse<SocialResponse>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<SocialResponse> apiResponse = response.body();
+
+                    if (apiResponse.getData() != null) {
+                        SocialResponse data = apiResponse.getData();
+                        TokenManager.saveTokens(context,
+                                data.getAccessToken(),
+                                data.getRefreshToken());
+
+                        callback.onSuccess(data);
+                    } else {
+                        callback.onError(parseErrorMessage(response));
+                    }
+                } else {
+                    callback.onError("Login with facebook failed.");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<SocialResponse>> call, @NonNull Throwable t) {
+                callback.onError("Error network" + t.getMessage());
+            }
+        });
+    }
+
+
 
     public boolean isLoggedIn() {
         return TokenManager.getAccessToken(context) != null;

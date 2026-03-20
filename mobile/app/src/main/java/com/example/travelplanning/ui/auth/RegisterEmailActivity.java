@@ -7,11 +7,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.ActivityRegisterEmailBinding;
-import com.example.travelplanning.viewmodel.auth.RegisterViewModel;
+import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 
 public class RegisterEmailActivity extends AppCompatActivity {
     private ActivityRegisterEmailBinding binding;
-    private RegisterViewModel viewModel;
+    private AuthViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
         binding = ActivityRegisterEmailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         setupObservers();
         setupListeners();
@@ -35,7 +35,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
             if (msg != null) Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         });
 
-        viewModel.getOtpSent().observe(this, sent -> {
+        viewModel.getOtpSentSuccess().observe(this, sent -> {
             if (sent != null && sent) {
                 // OTP sent successfully, navigate to OTP verification screen
                 startActivity(new Intent(this, OTPVerificationActivity.class)

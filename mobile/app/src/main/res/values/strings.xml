@@ -31,6 +31,16 @@
     <string name="reset">Reset</string>
     <string name="enter_your_email_to_verify_your_account">Enter your email to verify your account</string>
     <string name="enter_your_new_password_to_reset">Enter your new password to reset</string>
+    <string name="resend">Resend</string>
+    <string name="logout">Logout</string>
+
+    // google and facebook
+    <string name="facebook_app_id">2226816851176451</string>
+    <string name="fb_login_protocol_scheme">fb2226816851176451</string>
+    <string name="facebook_client_token">9dd19dbbd7a02a3075a874729eb20c72</string>
+    <string name="google_web_client_id">492216838333-r90atjeru6ac7mg4vjkt1ub40q8qag4b.apps.googleusercontent.com</string>
+
+
 
     //main screen nav bar
     <string name="discover">Discover</string>

@@ -7,11 +7,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.ActivityEmailOtpVerificationBinding;
-import com.example.travelplanning.viewmodel.auth.RegisterViewModel;
+import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 
 public class OTPVerificationActivity extends AppCompatActivity {
     private ActivityEmailOtpVerificationBinding binding;
-    private RegisterViewModel viewModel;
+    private AuthViewModel viewModel;
     private String email, type;
 
     @Override
@@ -24,7 +24,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         type = getIntent().getStringExtra("type");
 
-        viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         setupObservers();
         setupListeners();
@@ -40,7 +40,8 @@ public class OTPVerificationActivity extends AppCompatActivity {
             if (msg != null) Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         });
 
-        viewModel.getOtpVerified().observe(this, verified -> {
+        viewModel.getOtpVerifySuccess().observe(this, verified -> {
+            Toast.makeText(this, "Type nhận được: " + verified, Toast.LENGTH_SHORT).show();
             if (verified != null && verified) {
                 if ("register".equals(type)) {
                     // OTP for register

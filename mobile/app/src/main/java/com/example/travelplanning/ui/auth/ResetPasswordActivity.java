@@ -5,20 +5,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.travelplanning.R;
 import com.example.travelplanning.databinding.ActivityResetPasswordBinding;
-import com.example.travelplanning.viewmodel.auth.RegisterViewModel;
+import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 
 public class ResetPasswordActivity extends AppCompatActivity {
     private ActivityResetPasswordBinding binding;
-    private RegisterViewModel viewModel;
+    private AuthViewModel viewModel;
     private String email;
 
     @Override
@@ -29,7 +24,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         email = getIntent().getStringExtra("email");
 
-        viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         setupObservers();
         setupListeners();
@@ -45,8 +40,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
             if (msg != null) Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         });
 
-        viewModel.getResetPassSuccess().observe(this, success -> {
-            if (success != null) {
+        viewModel.getResetPasswordSuccess().observe(this, success -> {
+            if (success != null && success) {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish(); // close this activity and go back to login
             }

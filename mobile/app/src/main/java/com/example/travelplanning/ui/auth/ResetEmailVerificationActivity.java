@@ -9,11 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.travelplanning.databinding.ActivityResetEmailVerificationBinding;
-import com.example.travelplanning.viewmodel.auth.RegisterViewModel;
+import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 
 public class ResetEmailVerificationActivity extends AppCompatActivity {
     private ActivityResetEmailVerificationBinding binding;
-    private RegisterViewModel viewModel;
+    private AuthViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class ResetEmailVerificationActivity extends AppCompatActivity {
         binding = ActivityResetEmailVerificationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         setupObservers();
         setupListeners();
@@ -37,7 +37,7 @@ public class ResetEmailVerificationActivity extends AppCompatActivity {
             if (msg != null) Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         });
 
-        viewModel.getOtpSent().observe(this, sent -> {
+        viewModel.getOtpSentSuccess().observe(this, sent -> {
             if (sent != null && sent) {
                 // OTP sent successfully
                 startActivity(new Intent(this, OTPVerificationActivity.class)

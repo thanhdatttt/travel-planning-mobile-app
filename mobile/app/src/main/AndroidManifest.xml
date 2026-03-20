@@ -13,10 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TravelPlanning"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".ui.auth.ResetEmailVerificationActivity"
-            android:exported="false" />
+
         <!-- Auth activities -->
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false" />
@@ -31,7 +31,12 @@
             android:exported="false" />
         <activity
             android:name=".ui.auth.RegisterEmailActivity"
-            android:exported="false" /> <!-- Main activities -->
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ResetEmailVerificationActivity"
+            android:exported="false" />
+
+        <!-- Main activities -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
