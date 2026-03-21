@@ -58,6 +58,7 @@ model User {
   id       String @id @default(uuid())
   email    String @unique
   username String @unique
+  dob      DateTime?
 
   fullName   String?
   phone      String?
@@ -127,29 +128,30 @@ model EmailOTP {
 }
 
 model Location {
-  id        String  @id @default(uuid())
-  isDeleted Boolean @default(false)
+  id          String   @id @default(uuid())
+  osmId       String?  @unique
+  isDeleted   Boolean  @default(false)
 
-  createdBy   String
+  createdBy   String   @default("system") 
   name        String
-  slug        String?
-  description String
-  address     String
-  phone       String
+  slug        String?  @unique
+  description String?  @db.Text
+  address     String?
+  phone       String?
   website     String?
-  avgRating   Float                                 @default(0)
-  ratingCount Int                                   @default(0)
-  priceLevel  Int                                   @db.SmallInt
-  type        locationType                          @default(attraction)
+  avgRating   Float    @default(0)
+  ratingCount Int      @default(0)
+  priceLevel  Int?     @db.SmallInt 
+  type        String   @default("attraction")
   metadata    Json?
+  
   location    Unsupported("geography(Point, 4326)")
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
 
-  user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-
+  user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   locationHours  LocationHour[]
   locationPhotos LocationPhoto[]
   reviews        Review[]
@@ -188,7 +190,6 @@ model LocationPhoto {
   location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
   user     User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
-  @@unique([uploaderId, locationId])
   @@index([locationId])
   @@index([uploaderId])
 }
