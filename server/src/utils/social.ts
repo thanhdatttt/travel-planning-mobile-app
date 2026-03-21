@@ -50,6 +50,9 @@ export const updateSocialUser = async (info: SocialUserData) => {
       });
     }
     return user;
+  }, {
+    maxWait: 5000, // Wait 5s to get a connection
+    timeout: 10000 // Allow 10s for the actual work
   });
 };
 

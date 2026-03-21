@@ -11,9 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.travelplanning.R;
 import com.example.travelplanning.core.storage.TokenManager;
 import com.example.travelplanning.databinding.ActivityMainBinding;
-import com.example.travelplanning.ui.auth.LoginActivity;
+import com.example.travelplanning.ui.auth.AuthActivity;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
-import com.example.travelplanning.ui.splash.SplashActivity;
 
 import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(MainActivity.this, MainScreenActivity.class);
         } else {
             // no token, go to login
-            intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent = new Intent(MainActivity.this, AuthActivity.class);
         }
         startActivity(intent);
         finish();

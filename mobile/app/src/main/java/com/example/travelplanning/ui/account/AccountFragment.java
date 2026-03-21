@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.travelplanning.R;
 import com.example.travelplanning.databinding.FragmentAccountBinding;
-import com.example.travelplanning.ui.auth.LoginActivity;
+import com.example.travelplanning.ui.auth.AuthActivity;
 import com.example.travelplanning.viewmodel.account.AccountViewModel;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 
@@ -91,7 +91,7 @@ public class AccountFragment extends Fragment {
     }
 
     private void navigateToLogin() {
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        Intent intent = new Intent(getActivity(), AuthActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 

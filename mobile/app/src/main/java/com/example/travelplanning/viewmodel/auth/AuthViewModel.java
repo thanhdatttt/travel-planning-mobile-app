@@ -18,9 +18,14 @@ import com.example.travelplanning.data.remote.auth.dto.response.SignUpResponse;
 import com.example.travelplanning.data.remote.auth.dto.response.SocialResponse;
 import com.example.travelplanning.data.repository.auth.AuthRepository;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class AuthViewModel extends AndroidViewModel {
+    private String currentEmail = "";
+    private String currentOtpType = "";
+
     private final AuthRepository authRepository;
 
     // general states
@@ -65,6 +70,7 @@ public class AuthViewModel extends AndroidViewModel {
             @Override
             public void onError(String message) {
                 isLoading.setValue(false);
+                loginSuccess.setValue(null);
                 errorMessage.setValue(message);
             }
         });
@@ -79,11 +85,13 @@ public class AuthViewModel extends AndroidViewModel {
                 isLoading.setValue(false);
                 logoutSuccess.setValue(true);
                 loginSuccess.setValue(null);
+                socialLoginSuccess.setValue(null);
             }
 
             @Override
             public void onError(String message) {
                 isLoading.setValue(false);
+                logoutSuccess.setValue(false);
                 errorMessage.setValue(message);
             }
         });
@@ -106,11 +114,13 @@ public class AuthViewModel extends AndroidViewModel {
             public void onSuccess(Void data) {
                 isLoading.setValue(false);
                 otpSentSuccess.setValue(true);
+                otpVerifySuccess.setValue(false);
             }
 
             @Override
             public void onError(String message) {
                 isLoading.setValue(false);
+                otpSentSuccess.setValue(false);
                 errorMessage.setValue(message);
             }
         });
@@ -134,11 +144,13 @@ public class AuthViewModel extends AndroidViewModel {
             public void onSuccess(Void data) {
                 isLoading.setValue(false);
                 otpVerifySuccess.setValue(true);
+                otpSentSuccess.setValue(false);
             }
 
             @Override
             public void onError(String message) {
                 isLoading.setValue(false);
+                otpVerifySuccess.setValue(false);
                 errorMessage.setValue(message);
             }
         });
@@ -171,6 +183,7 @@ public class AuthViewModel extends AndroidViewModel {
             @Override
             public void onError(String message) {
                 isLoading.setValue(false);
+                registerSuccess.setValue(null);
                 errorMessage.setValue(message);
             }
         });
@@ -203,6 +216,7 @@ public class AuthViewModel extends AndroidViewModel {
             @Override
             public void onError(String message) {
                 isLoading.setValue(false);
+                resetPasswordSuccess.setValue(false);
                 errorMessage.setValue(message);
             }
         });
@@ -230,6 +244,7 @@ public class AuthViewModel extends AndroidViewModel {
             @Override
             public void onError(String message) {
                 isLoading.setValue(false);
+                socialLoginSuccess.setValue(null);
                 errorMessage.setValue(message);
             }
         });
@@ -257,15 +272,9 @@ public class AuthViewModel extends AndroidViewModel {
             @Override
             public void onError(String message) {
                 isLoading.setValue(false);
+                socialLoginSuccess.setValue(null);
                 errorMessage.setValue(message);
             }
         });
-    }
-
-    public void resetAuthStates() {
-        otpSentSuccess.setValue(false);
-        otpVerifySuccess.setValue(false);
-        registerSuccess.setValue(null);
-        resetPasswordSuccess.setValue(false);
     }
 }

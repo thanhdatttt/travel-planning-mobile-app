@@ -2,6 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+Properties properties = new Properties()
+if (project.rootProject.file('local.properties').canRead()) {
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+}
+
 android {
     namespace 'com.example.travelplanning'
     compileSdk 36
@@ -14,6 +19,14 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // read local properties
+        buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", "\"${properties.getProperty('GOOGLE_WEB_CLIENT_ID', '')}\""
+        manifestPlaceholders = [
+                FACEBOOK_APP_ID: properties.getProperty('FACEBOOK_APP_ID', ''),
+                FB_LOGIN_PROTOCOL_SCHEME: properties.getProperty('FB_LOGIN_PROTOCOL_SCHEME', ''),
+                FACEBOOK_CLIENT_TOKEN: properties.getProperty('FACEBOOK_CLIENT_TOKEN', '')
+        ]
     }
 
     buildFeatures {
@@ -24,7 +37,7 @@ android {
     buildTypes {
 
         debug {
-            buildConfigField "String", "BASE_URL", '\"http://192.168.1.10:5000/\"'
+            buildConfigField "String", "BASE_URL", "\"${properties.getProperty('BASE_URL', 'http://10.0.0.2:5000/')}\""
         }
         release {
             minifyEnabled false
