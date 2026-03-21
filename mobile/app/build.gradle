@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 Properties properties = new Properties()
@@ -85,6 +86,7 @@ dependencies {
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
     implementation libs.lifecycle.viewmodel
+    implementation libs.osmdroid.android
     implementation libs.lifecycle.livedata
     implementation libs.navigation.fragment
     implementation libs.navigation.ui

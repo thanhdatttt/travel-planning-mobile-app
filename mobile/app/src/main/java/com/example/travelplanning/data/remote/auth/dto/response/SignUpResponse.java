@@ -14,5 +14,5 @@ import lombok.Value;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignUpResponse {
-    private UserProfile user;
+    private UserProfile userProfile;
 }

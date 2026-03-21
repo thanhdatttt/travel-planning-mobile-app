@@ -41,6 +41,9 @@
     <string name="account">Account</string>
     <string name="title_activity_main_screen">MainScreenActivity</string>
     <string name="profile">Profile</string>
+    <string name="search">Search</string>
+    <string name="map_enter_location">Enter location</string>
+    <string name="map_search">Search</string>
     <string name="nearby">Nearby</string>
 
     //account menu
