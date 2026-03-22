@@ -18,9 +18,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // routes
-app.use("/api/auth", authRoute);
+// public
+app.use("/api", authRoutes);
 
-// app.use(requireAuth);
+// protected
+app.use(requireAuth);
 app.use("/api", userRoutes);
 app.use("/api/admin", adminRoutes);
 

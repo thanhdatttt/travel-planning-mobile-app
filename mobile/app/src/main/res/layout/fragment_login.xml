@@ -24,14 +24,27 @@
                 android:textSize="36sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvRegister"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/don_t_have_an_account_register"
-                android:textColor="@color/text_secondary"
-                android:textSize="18sp" />
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/don_t_have_an_account"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/tvRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/register"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,6 +66,7 @@
                 android:inputType="text"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+                android:textColor="@color/black"
                 android:autofillHints="emailAddress" />
 
             <TextView
@@ -75,6 +89,7 @@
                 android:inputType="textPassword"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+                android:textColor="@color/black"
                 android:autofillHints="password" />
 
             <TextView
@@ -83,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/forgot_password"
+                android:textStyle="bold"
                 android:textColor="@color/text_secondary" />
 
             <Button
@@ -90,7 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="20dp"
-                android:backgroundTint="#F4C74F"
+                android:backgroundTint="@color/primary"
                 android:text="@string/login"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -116,7 +132,11 @@
                 android:text="@string/continue_with_google"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                app:icon="@drawable/google"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:iconSize="20dp" />
 
             <Button
                 android:id="@+id/btnFacebook"
@@ -127,7 +147,11 @@
                 android:text="@string/continue_with_facebook"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                app:icon="@drawable/facebook"
+                app:iconGravity="textStart"
+                app:iconPadding="10dp"
+                app:iconSize="20dp"/>
         </LinearLayout>
     </ScrollView>
 
@@ -136,7 +160,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:indeterminateTint="#F4C74F"
+        android:indeterminateTint="@color/primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

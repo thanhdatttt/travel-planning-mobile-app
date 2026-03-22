@@ -1,5 +1,7 @@
 package com.example.travelplanning.data.remote.auth;
 
+import com.example.travelplanning.data.remote.auth.dto.request.FacebookRequest;
+import com.example.travelplanning.data.remote.auth.dto.request.GoogleRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.OTPRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.OTPVerifyRequest;
 import com.example.travelplanning.data.remote.auth.dto.request.RefreshTokenRequest;
@@ -11,6 +13,7 @@ import com.example.travelplanning.data.remote.auth.dto.request.SignUpRequest;
 
 import com.example.travelplanning.data.remote.auth.dto.response.SignInResponse;
 import com.example.travelplanning.data.remote.auth.dto.response.SignUpResponse;
+import com.example.travelplanning.data.remote.auth.dto.response.SocialResponse;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 
 
@@ -41,4 +44,11 @@ public interface AuthApi {
 
     @POST("/api/auth/otp/verify")
     Call<ApiResponse<Void>> verifyOtp(@Body OTPVerifyRequest request);
+
+    // google and facebook
+    @POST("/api/auth/google")
+    Call<ApiResponse<SocialResponse>> loginWithGoogle(@Body GoogleRequest request);
+
+    @POST("/api/auth/facebook")
+    Call<ApiResponse<SocialResponse>> loginWithFacebook(@Body FacebookRequest request);
 }

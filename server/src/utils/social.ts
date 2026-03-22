@@ -1,4 +1,7 @@
+import { Response } from "express";
 import { prisma } from "../libs/prisma";
+import { genAccessToken, genRefreshToken, REFRESH_TOKEN_TTL } from "./jwt";
+import { createResponse } from "./response";
 
 interface SocialUserData {
   email: string;
@@ -47,5 +50,28 @@ export const updateSocialUser = async (info: SocialUserData) => {
       });
     }
     return user;
+  }, {
+    maxWait: 5000, // Wait 5s to get a connection
+    timeout: 10000 // Allow 10s for the actual work
   });
 };
+
+export const finalizeLogin = async (user: any, res: Response, message: string) => {
+  // gen token
+  const accessToken = genAccessToken(user.id);
+  const refreshToken = genRefreshToken(user.id);
+  await prisma.session.create({
+    data: {
+      userId: user.id,
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
+    },
+  });
+
+  return res.status(200).json(
+    createResponse({
+      message: message,
+      data: { accessToken, refreshToken },
+    }),
+  );
+}
