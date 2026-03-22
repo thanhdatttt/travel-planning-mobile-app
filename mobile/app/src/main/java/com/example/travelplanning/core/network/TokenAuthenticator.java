@@ -33,6 +33,10 @@ public class TokenAuthenticator implements Authenticator {
         if (refreshToken == null || refreshToken.isEmpty()) {
             return null;
         }
+
+        // limit number of refresh timer
+        if (responseCount(response) >= 4) return null;
+
         synchronized (this) {
 
             AuthApi authApi = ApiServiceFactory.create(context, AuthApi.class);
@@ -64,5 +68,12 @@ public class TokenAuthenticator implements Authenticator {
                 return null;
             }
         }
+    }
+
+    // calculate number of refresh request
+    private int responseCount(Response response) {
+        int result = 1;
+        while ((response = response.priorResponse()) != null) result++;
+        return result;
     }
 }
