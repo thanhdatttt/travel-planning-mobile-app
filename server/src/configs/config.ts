@@ -5,7 +5,6 @@ dotenv.config();
 export const config = {
     PORT: process.env.PORT,
     DATABASE_URL: process.env.DATABASE_URL,
-    CLIENT_URL: process.env.CLIENT_URL,
 
     // JWT
     JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
