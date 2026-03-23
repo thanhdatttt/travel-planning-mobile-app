@@ -24,7 +24,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"
-        android:background="@color/main_yellow"
+        android:background="@color/primary"
         app:itemIconTint="@null"/> <!--icon color-->
 
+    <Button
+        android:id="@+id/btnAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#a2a2a2"
+        android:elevation="10dp"
+        android:text="Admin temporary button"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="103dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

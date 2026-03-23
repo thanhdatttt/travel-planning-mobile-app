@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
@@ -27,5 +28,12 @@ public class MainScreenActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
 
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
+
+
+//        TEMPORARY!!!
+        binding.btnAdmin.setOnClickListener(v -> {
+            // R.id.adminFragment là ID bạn đã đặt trong nav_graph.xml
+            navController.navigate(R.id.nav_admin);
+        });
     }
 }

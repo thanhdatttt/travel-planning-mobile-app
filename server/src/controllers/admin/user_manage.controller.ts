@@ -8,29 +8,30 @@ import { toLowerCase } from "zod";
 
 //MISSING IS INACTIVE LOGIC
 export const getList = async (req: Request, res: Response) => {
-    const {username = "", email = "", isBanned = false, isInactive = false, sortBy = "username", sortOrder = "asc", isDeleted = false} = req.query;
+    const {usernameOrEmail = "", sortBy = "username", sortOrder = "asc"} = req.query;
     const role = req.query.role as string;
+    const isBanned = req.query.isBanned === 'true'; 
+    const isDeleted = req.query.isDeleted === 'true';
+    const isInactive = req.query.isInactive === 'true';
 
-    console.log("Query params: ", req.query);
     const users = await prisma.user.findMany({
         where: {
             AND: [
                 {
                     OR: [
-                        { username: { contains: String(username), mode: 'insensitive' } },
-                        { email: { contains: String(email), mode: 'insensitive' } },
+                        { username: { contains: String(usernameOrEmail), mode: 'insensitive' } },
+                        { email: { contains: String(usernameOrEmail), mode: 'insensitive' } },
                     ]
                 },
-                {isDeleted: isDeleted === 'true' || Boolean(isDeleted) === true},
-                {isBanned: isBanned === 'true' || Boolean(isBanned) === true},
-                {role: role?.toLowerCase() === "user" ? userRole.user : role?.toLowerCase() === "moderator" ? userRole.moderator : userRole.admin}
+                {isDeleted: isDeleted},
+                {isBanned: isBanned},
+                // {role: role?.toLowerCase() === "user" ? userRole.user : role?.toLowerCase() === "moderator" ? userRole.moderator : userRole.admin}
             ]
         },
         orderBy: {
             [String(sortBy)]: sortOrder as 'asc' | 'desc'
         }
     });
-
     return res.status(200).json(
         createResponse({
             message: "Users retrieved successfully",

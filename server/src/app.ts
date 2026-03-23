@@ -19,9 +19,9 @@ app.use(cors());
 // routes
 app.use("/api/auth", authRoute);
 
-// app.use(requireAuth);
+app.use(requireAuth);
 app.use("/api", userRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/api/admin", requireRole("admin"), adminRoutes);
 
 app.use(notFoundHandler);
 app.use(globalErrorHandler);

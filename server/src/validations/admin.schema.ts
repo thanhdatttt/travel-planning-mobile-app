@@ -2,8 +2,7 @@ import z from "zod"
 
 export const userListQuerySchema = {
     query: z.object({
-        username: z.string().default(""),
-        email: z.string().default(""),
+        usernameOrEmail: z.string().default(""),
         role: z.string().default(""), 
         isBanned: z.preprocess((val) => val === 'true', z.boolean()).default(false),
         isInactive: z.preprocess((val) => val === 'true', z.boolean()).default(false),
