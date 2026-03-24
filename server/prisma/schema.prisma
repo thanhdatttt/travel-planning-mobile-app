@@ -259,8 +259,6 @@ model ItineraryItem {
   locationId  String
 
   dayNumber Int?
-  startTime DateTime?
-  endTime   DateTime?
   note      String?
   orderIdx  Int     @default(0)
 

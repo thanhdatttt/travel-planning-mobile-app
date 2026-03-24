@@ -126,7 +126,3 @@ export const scheduleItineraryItem = async (req: Request, res: Response) => {
       .json(createResponse({ message: "System error", error: err.message }));
   }
 };
-
-export const updateItineraryItemTime = async (req: Request, res: Response) => {
-  
-};
