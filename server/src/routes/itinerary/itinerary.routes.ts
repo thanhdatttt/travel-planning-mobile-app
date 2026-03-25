@@ -10,20 +10,21 @@ const router = express.Router();
 router.post("/", 
     validate(itiSchema.createItinerarySchema), itiController.createItinerary);
 router.get("/:id",
-    validate(itiSchema.itineraryIdParamSchema), itiController.getItinerary);
+    validate(itiSchema.idParamSchema), itiController.getItinerary);
 router.get("/", itiController.getUserItineraries);
 router.delete("/:id", 
-    validate(itiSchema.itineraryIdParamSchema), itiController.deleteItinerary);
-router.patch("/:id/dates",
-    validate(itiSchema.updateDatesSchema), itiController.updateDates);
-router.patch("/:id/privacy",
-    validate(itiSchema.changePrivacySchema), itiController.changePrivacy);
+    validate(itiSchema.idParamSchema), itiController.deleteItinerary);
+router.patch("/:id", 
+    validate(itiSchema.updateItinerarySchema), itiController.updateItinerary);
 
 // itinerary item
 router.post("/:id/item",
     validate(itiSchema.addItemSchema), itiItemController.addItineraryItem);
+router.delete("/:id/item/:itemId",
+    validate(itiSchema.idItemParamSchema), itiItemController.deleteItineraryItem);
 router.patch("/:id/item/:itemId/schedule",
     validate(itiSchema.scheduleItemSchema), itiItemController.scheduleItineraryItem);
-router.delete("/:id/item/:itemId",
-    validate(itiSchema.deleteItemSchema), itiItemController.deleteItineraryItem);
+router.patch("/:id/item/:itemId/unschedule",
+    validate(itiSchema.idItemParamSchema), itiItemController.unscheduleItineraryItem);
+    
 export default router;

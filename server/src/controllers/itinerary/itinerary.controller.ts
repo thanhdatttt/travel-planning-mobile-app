@@ -45,7 +45,7 @@ export const getItinerary = async (req: Request, res: Response) => {
       include: {
         itineraryItems: {
           orderBy: [
-            { dayNumber: 'asc' },
+            { date: 'asc' },
             { orderIdx: 'asc' }
           ],
           include: { location: true }
@@ -88,7 +88,7 @@ export const getUserItineraries = async (req: Request, res: Response) => {
       include: {
         itineraryItems: {
           orderBy: [
-            { dayNumber: 'asc' },
+            { date: 'asc' },
             { orderIdx: 'asc' }
           ],
         }
@@ -138,72 +138,72 @@ export const deleteItinerary = async (req: Request, res: Response) => {
   }
 }
 
-export const updateDates = async (req: Request, res: Response) => {
+export const updateItinerary = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const data: {
-      startDate: Date;
-      endDate: Date;
-    } = req.body;
-    const userId = req.user.id;
-
-    // only owner can update
-    const itinerary = await prisma.itinerary.update({
-      where: { id: String(id), ownerId: userId },
-      data: {
-        startDate: new Date(data.startDate),
-        endDate: new Date(data.endDate),
-      },
-    });
-    if (!itinerary) {
-      return res
-        .status(404)
-        .json(createResponse({ message: "Not found", error: "Itinerary not found" }));
-    }
-
-    return res.status(200).json(
-      createResponse({
-        message: "Update itinerary time successfully",
-        data: itinerary,
-      }),
-    );
-  } catch (err: any) {
-    console.log("Error when updating itinerary time: ", err.message);
-    return res
-      .status(500)
-      .json(createResponse({ message: "System error", error: err.message }));
-  }
-}
-
-export const changePrivacy = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const data: {
-      privacy: "public" | "private";
+      title?: string;
+      description?: string;
+      privacy?: "public" | "private";
+      startDate?: Date;
+      endDate?: Date;
     } = req.body;
     const userId: string = req.user.id;
 
-    // only owner can change privacy
-    const itinerary = await prisma.itinerary.update({
-      where: { id: String(id), ownerId: userId },
-      data: {
-        privacy: data.privacy,
-      },
+    // check exsisting itinerary and only owner can update
+    const existingItinerary = await prisma.itinerary.findUnique({
+      where: { id: String(id) },
     });
-    if (!itinerary) {
+    if (!existingItinerary) {
+      return res.status(404).json(
+        createResponse({ message: "Not found", error: "Itinerary not found" })
+      );
+    }
+    if (existingItinerary.ownerId !== userId) {
       return res
-        .status(404)
-        .json(createResponse({ message: "Not found", error: "Itinerary not found" }));
+        .status(403)
+        .json(createResponse({ message: "Forbiden", error: "Itinerary not yours" }));
+    }
+
+    // update data
+    const updateData: any = {};
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.privacy !== undefined) updateData.privacy = data.privacy;
+    if (data.startDate !== undefined) updateData.startDate = new Date(data.startDate);
+    if (data.endDate !== undefined) updateData.endDate = new Date(data.endDate);
+    const updatedItinerary = await prisma.itinerary.update({
+      where: { id: String(id) },
+      data: updateData,
+    });
+
+    // unschedule items if start date or end date changed
+    if (data.startDate || data.endDate) {
+      await prisma.itineraryItem.updateMany({
+        where: {
+          itineraryId: String(id),
+          OR: [
+            { date: { lt: updatedItinerary.startDate } },
+            { date: { gt: updatedItinerary.endDate } }
+          ]
+        },
+        data: {
+          date: null,
+          orderIdx: 0
+        }
+      });
     }
 
     return res.status(200).json(
       createResponse({
-        message: "Change privacy successfully",
-        data: itinerary,
+        message: "Update itinerary successfully",
+        data: updatedItinerary,
       }),
     );
+
+
   } catch (err: any) {
-    console.log("Error when changing privacy: ", err.message);
+    console.log("Error when updating itinerary: ", err.message);
     return res
       .status(500)
       .json(createResponse({ message: "System error", error: err.message }));

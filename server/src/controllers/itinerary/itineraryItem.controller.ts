@@ -12,15 +12,20 @@ export const addItineraryItem = async (req: Request, res: Response) => {
     const userId = req.user.id;
 
     // only owner can add
-    const itinerary = await prisma.itinerary.findUnique({ where: { id: String(id) } });
-    if (!itinerary || itinerary.ownerId !== userId) {
+    const itinerary = await prisma.itinerary.findFirst({ where: { id: String(id) } });
+    if (!itinerary) {
+      return res
+        .status(404)
+        .json(createResponse({ message: "Not found", error: "Itinerary not found" }));
+    }
+    if (itinerary.ownerId !== userId) {
       return res
         .status(403)
-        .json(createResponse({ message: "Forbiden", error: "Itinerary not yours or not found" }));
+        .json(createResponse({ message: "Forbiden", error: "Itinerary not yours" }));
     }
 
     const lastItem = await prisma.itineraryItem.findFirst({
-      where: { itineraryId: String(id), dayNumber: null },
+      where: { itineraryId: String(id), date: null },
       orderBy: { orderIdx: 'desc' }
     });
     const newOrderIdx = lastItem ? lastItem.orderIdx + 1 : 0;
@@ -53,14 +58,19 @@ export const deleteItineraryItem = async (req: Request, res: Response) => {
     const userId = req.user.id;
 
     // only owner can delete
-    const itineraryItem = await prisma.itineraryItem.findUnique({
+    const itineraryItem = await prisma.itineraryItem.findFirst({
         where: { id: String(itemId) },
         include: { itinerary: true }
       });
-    if (!itineraryItem || itineraryItem.itinerary.ownerId !== userId) {
+    if (!itineraryItem) {
+      return res
+        .status(404)
+        .json(createResponse({ message: "Not found", error: "Itinerary item not found" }));
+    }
+    if (itineraryItem.itinerary.ownerId !== userId) {
       return res
         .status(403)
-        .json(createResponse({ message: "Forbiden", error: "Itinerary item not yours or not found" }));
+        .json(createResponse({ message: "Forbiden", error: "Itinerary item not yours" }));
     }
 
     await prisma.itineraryItem.delete({ where: { id: String(itemId) } });
@@ -83,44 +93,122 @@ export const scheduleItineraryItem = async (req: Request, res: Response) => {
   try {
     const { itemId } = req.params;
     const data: {
-      targetDayNumber: number;
+      targetDate: Date;
     } = req.body;
     const userId = req.user.id;
 
     // only owner can order
-    const itineraryItem = await prisma.itineraryItem.findUnique({
+    const itineraryItem = await prisma.itineraryItem.findFirst({
         where: { id: String(itemId) },
         include: { itinerary: true }
       });
-    if (!itineraryItem || itineraryItem.itinerary.ownerId !== userId) {
+    if (!itineraryItem) {
+      return res
+        .status(404)
+        .json(createResponse({ message: "Not found", error: "Itinerary item not found" }));
+    }
+    if (itineraryItem.itinerary.ownerId !== userId) {
       return res
         .status(403)
         .json(createResponse({ message: "Forbiden", error: "Itinerary item not yours or not found" }));
     }
 
-    const maxOrderIdxItem = await prisma.itineraryItem.findFirst({
-      where: { 
-        itineraryId: itineraryItem.itineraryId, 
-        dayNumber: data.targetDayNumber 
+    // check schedule date valid
+    const { startDate, endDate } = itineraryItem.itinerary;
+    const isValid = data.targetDate >= startDate && data.targetDate <= endDate;
+    if (!isValid) {
+      return res
+        .status(400)
+        .json(createResponse({ message: "Bad request", error: "Invalid schedule date" }));
+    }
+
+    const lastItemInDay = await prisma.itineraryItem.findFirst({
+      where: {
+        itineraryId: itineraryItem.itineraryId,
+        date: data.targetDate,
       },
-      orderBy: { orderIdx: 'desc' }
+      orderBy: { orderIdx: 'desc' },
     });
-    const newOrderIdx = maxOrderIdxItem ? maxOrderIdxItem.orderIdx + 1 : 0;
-    await prisma.itineraryItem.update({
+    const newOrderIdx = lastItemInDay ? lastItemInDay.orderIdx + 1 : 0;
+    const updatedItem = await prisma.itineraryItem.update({
       where: { id: String(itemId) },
       data: {
-        dayNumber: data.targetDayNumber,
+        date: data.targetDate,
         orderIdx: newOrderIdx,
-      }
+      },
     });
 
     return res.status(200).json(
       createResponse({
         message: "Order itinerary item successfully",
+        data: updatedItem,
       }),
     );
   } catch (err: any) {
     console.log("Error when ordering itinerary item: ", err.message);
+    return res
+      .status(500)
+      .json(createResponse({ message: "System error", error: err.message }));
+  }
+};
+
+export const unscheduleItineraryItem = async (req: Request, res: Response) => {
+  try {
+    const { itemId } = req.params;
+    const userId = req.user.id;
+
+    // only owner can order
+    const itineraryItem = await prisma.itineraryItem.findFirst({
+        where: { id: String(itemId) },
+        include: { itinerary: true }
+      });
+    if (!itineraryItem) {
+      return res
+        .status(404)
+        .json(createResponse({ message: "Not found", error: "Itinerary item not found" }));
+    }
+    if (itineraryItem.itinerary.ownerId !== userId) {
+      return res
+        .status(403)
+        .json(createResponse({ message: "Forbiden", error: "Itinerary item not yours or not found" }));
+    }
+
+    // check if date already null
+    if (itineraryItem.date === null) {
+      return res.status(200).json(
+        createResponse({ message: "Item is already unscheduled", data: itineraryItem }),
+      );
+    }
+
+    // unschedule and reorder
+    const oldDate = itineraryItem.date;
+    const oldOrderIdx = itineraryItem.orderIdx;
+    const updatedItem = await prisma.itineraryItem.update({
+      where: { id: String(itemId) },
+      data: {
+        date: null,
+        orderIdx: 0,
+      },
+    });
+    await prisma.itineraryItem.updateMany({
+      where: {
+        itineraryId: itineraryItem.itineraryId,
+        date: oldDate,
+        orderIdx: { gt: oldOrderIdx }
+      },
+      data: {
+        orderIdx: { decrement: 1 }
+      }
+    });
+
+    return res.status(200).json(
+      createResponse({
+        message: "Unschedule itinerary item successfully",
+        data: updatedItem,
+      }),
+    );
+  } catch (err: any) {
+    console.log("Error when unscheduling itinerary item: ", err.message);
     return res
       .status(500)
       .json(createResponse({ message: "System error", error: err.message }));
