@@ -22,7 +22,7 @@ app.use(cors());
 app.use("/api", authRoute);
 
 // protected
-// app.use(requireAuth);
+app.use(requireAuth);
 app.use("/api", userRoutes);
 app.use("/api/admin", adminRoutes);
 

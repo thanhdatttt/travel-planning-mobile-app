@@ -1,18 +1,18 @@
 import { z } from "zod";
 
-export const BookmarkParamsSchema = {
+export const FavoriteParamsSchema = {
   params: z.object({
-    id: z.uuid("Invalid bookmark ID"),
+    id: z.uuid("Invalid favorite ID"),
   }),
 };
 
-export const BookmarkCreateSchema = {
+export const FavoriteCreateSchema = {
   body: z.object({
-    locationId: z.uuid("Invalid location ID"),
+    itineraryId: z.uuid("Invalid itinerary ID"),
   }),
 };
 
-export const BookmarkQuerySchema = {
+export const FavoriteQuerySchema = {
   query: z.object({
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(10),

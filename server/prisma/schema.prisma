@@ -247,6 +247,7 @@ model Itinerary {
   user User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   itineraryItems ItineraryItem[]
+  favorite Favorite[]
 
   @@index([ownerId])
 }
@@ -276,6 +277,7 @@ model Favorite {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, itineraryId])
   @@index([userId])
@@ -291,9 +293,9 @@ model Report {
 
   createdAt DateTime  @default(now())
   handledAt DateTime?
-  handledBy String
+  handledBy String?
 
-  user User @relation(fields: [handledBy], references: [id])
+  user User? @relation(fields: [handledBy], references: [id])
 
   @@unique([reporterId, targetId]) //1 ng chỉ đc report 1 thứ 1 lần
 }
