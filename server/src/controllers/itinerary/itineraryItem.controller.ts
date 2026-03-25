@@ -21,7 +21,7 @@ export const addItineraryItem = async (req: Request, res: Response) => {
     if (itinerary.ownerId !== userId) {
       return res
         .status(403)
-        .json(createResponse({ message: "Forbiden", error: "Itinerary not yours" }));
+        .json(createResponse({ message: "Forbbiden", error: "Itinerary not yours" }));
     }
 
     const lastItem = await prisma.itineraryItem.findFirst({
@@ -38,7 +38,7 @@ export const addItineraryItem = async (req: Request, res: Response) => {
       }
     });
 
-    return res.status(200).json(
+    return res.status(201).json(
       createResponse({
         message: "Add itinerary item successfully",
         data: itineraryItem,
@@ -70,7 +70,7 @@ export const deleteItineraryItem = async (req: Request, res: Response) => {
     if (itineraryItem.itinerary.ownerId !== userId) {
       return res
         .status(403)
-        .json(createResponse({ message: "Forbiden", error: "Itinerary item not yours" }));
+        .json(createResponse({ message: "Forbbiden", error: "Itinerary item not yours" }));
     }
 
     await prisma.itineraryItem.delete({ where: { id: String(itemId) } });
@@ -110,7 +110,7 @@ export const scheduleItineraryItem = async (req: Request, res: Response) => {
     if (itineraryItem.itinerary.ownerId !== userId) {
       return res
         .status(403)
-        .json(createResponse({ message: "Forbiden", error: "Itinerary item not yours or not found" }));
+        .json(createResponse({ message: "Forbbiden", error: "Itinerary item not yours or not found" }));
     }
 
     // check schedule date valid
@@ -170,7 +170,7 @@ export const unscheduleItineraryItem = async (req: Request, res: Response) => {
     if (itineraryItem.itinerary.ownerId !== userId) {
       return res
         .status(403)
-        .json(createResponse({ message: "Forbiden", error: "Itinerary item not yours or not found" }));
+        .json(createResponse({ message: "Forbbiden", error: "Itinerary item not yours or not found" }));
     }
 
     // check if date already null
@@ -209,6 +209,51 @@ export const unscheduleItineraryItem = async (req: Request, res: Response) => {
     );
   } catch (err: any) {
     console.log("Error when unscheduling itinerary item: ", err.message);
+    return res
+      .status(500)
+      .json(createResponse({ message: "System error", error: err.message }));
+  }
+};
+
+export const updateItineraryItemNote = async (req: Request, res: Response) => {
+  try {
+    const { itemId } = req.params;
+    const data: {
+      note: string;
+    } = req.body;
+    const userId: string = req.user.id;
+
+    // only owner can update
+    const itineraryItem = await prisma.itineraryItem.findFirst({
+        where: { id: String(itemId) },
+        include: { itinerary: true }
+      });
+    if (!itineraryItem) {
+      return res
+        .status(404)
+        .json(createResponse({ message: "Not found", error: "Itinerary item not found" }));
+    }
+    if (itineraryItem.itinerary.ownerId !== userId) {
+      return res
+        .status(403)
+        .json(createResponse({ message: "Forbbiden", error: "Itinerary item not yours" }));
+    }
+
+    const updatedItem = await prisma.itineraryItem.update({
+      where: { id: String(itemId) },
+      data: {
+        note: data.note,
+      },
+    });
+
+    return res.status(200).json(
+      createResponse({
+        message: "Update itinerary item note successfully",
+        data: updatedItem,
+      }),
+    );
+  } catch (err: any) {
+    console.log("Error when updating itinerary item note: ", err.message);
     return res
       .status(500)
       .json(createResponse({ message: "System error", error: err.message }));

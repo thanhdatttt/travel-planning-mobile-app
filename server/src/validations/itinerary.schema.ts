@@ -23,6 +23,13 @@ export const createItinerarySchema = {
     }),
 };
 
+export const paginationSchema = {
+  query: z.object({
+    page: z.coerce.number().min(1).default(1),
+    limit: z.coerce.number().min(1).max(100).default(10),
+  }),
+};
+
 export const idParamSchema = {
   params: z.object({
     id: z.uuid("Invalid itinerary ID format"),
@@ -99,3 +106,15 @@ export const scheduleItemSchema = {
       .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   }),
 };
+
+export const updateItemNoteSchema = {
+  params: z.object({
+    itemId: z.uuid("Invalid itinerary item ID format"),
+  }),
+  body: z.object({
+    note: z
+      .string()
+      .min(1, "Note is required")
+      .max(500, "Note is too long (maximum 500 characters)"),
+  }),
+}

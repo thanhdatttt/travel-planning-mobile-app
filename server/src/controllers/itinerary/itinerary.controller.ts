@@ -20,7 +20,7 @@ export const createItinerary = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json(
+    return res.status(201).json(
       createResponse({
         message: "Create itinerary successfully",
         data: itinerary,
@@ -83,27 +83,92 @@ export const getUserItineraries = async (req: Request, res: Response) => {
   try {
     const userId: string = req.user.id;
 
-    const itineraries = await prisma.itinerary.findMany({
-      where: { ownerId: userId },
-      include: {
-        itineraryItems: {
-          orderBy: [
-            { date: 'asc' },
-            { orderIdx: 'asc' }
-          ],
+    // pagination
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const [itineraries, total] = await Promise.all([
+      prisma.itinerary.findMany({
+        where: { ownerId: userId },
+        skip: skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          itineraryItems: {
+            orderBy: [
+              { date: 'asc' },
+              { orderIdx: 'asc' }
+            ],
+          }
         }
-      }
-    });
+      }),
+      prisma.itinerary.count({ where: { ownerId: userId } })
+    ]);
 
     return res.status(200).json(
       createResponse({
         message: "Get user itineraries successfully",
-        data: itineraries,
+        data: {
+          items: itineraries,
+          pagination: {
+            currentPage: page,
+            limit: limit,
+            totalItems: total,
+            totalPages: Math.ceil(total / limit),
+          }},
       }),
     );
 
   } catch (err: any) {
     console.log("Error when getting user itineraries: ", err.message);
+    return res
+      .status(500)
+      .json(createResponse({ message: "System error", error: err.message }));
+  }
+}
+
+export const getPublicItineraries = async (req: Request, res: Response) => {
+  try {
+    // pagination
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const [itineraries, total] = await Promise.all([
+      prisma.itinerary.findMany({
+        where: { privacy: "public" },
+        skip: skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          itineraryItems: {
+            orderBy: [
+              { date: 'asc' },
+              { orderIdx: 'asc' }
+            ],
+          }
+        }
+      }),
+      prisma.itinerary.count({ where: { privacy: "public" } })
+    ]);
+
+    return res.status(200).json(
+      createResponse({
+        message: "Get public itineraries successfully",
+        data: {
+          items: itineraries,
+          pagination: {
+            currentPage: page,
+            limit: limit,
+            totalItems: total,
+            totalPages: Math.ceil(total / limit),
+          }
+        },
+      }),
+    );
+  } catch (err: any) {
+    console.log("Error when getting public itineraries: ", err.message);
     return res
       .status(500)
       .json(createResponse({ message: "System error", error: err.message }));
@@ -162,7 +227,7 @@ export const updateItinerary = async (req: Request, res: Response) => {
     if (existingItinerary.ownerId !== userId) {
       return res
         .status(403)
-        .json(createResponse({ message: "Forbiden", error: "Itinerary not yours" }));
+        .json(createResponse({ message: "Forbbiden", error: "Itinerary not yours" }));
     }
 
     // update data
@@ -204,6 +269,62 @@ export const updateItinerary = async (req: Request, res: Response) => {
 
   } catch (err: any) {
     console.log("Error when updating itinerary: ", err.message);
+    return res
+      .status(500)
+      .json(createResponse({ message: "System error", error: err.message }));
+  }
+}
+
+export const cloneItinerary = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId: string = req.user.id;
+
+    const originalItinerary = await prisma.itinerary.findUnique({
+      where: { id: String(id) },
+      include: { itineraryItems: true }
+    });
+    if (!originalItinerary) {
+      return res
+        .status(404)
+        .json(createResponse({ message: "Not found", error: "Itinerary not found" }));
+    }
+
+    // check privacy
+    if (originalItinerary.privacy === "private") {
+      return res
+        .status(403)
+        .json(createResponse({ message: "Forbidden", error: "Cannot clone a private itinerary" }));
+    }
+
+    // clone
+    const cloneItinerary = await prisma.itinerary.create({
+      data: {
+        ownerId: userId,
+        title: originalItinerary.title,
+        startDate: originalItinerary.startDate,
+        endDate: originalItinerary.endDate,
+        description: originalItinerary.description,
+        privacy: originalItinerary.privacy,
+        itineraryItems: {
+          create: originalItinerary.itineraryItems.map((item) => ({
+            date: item.date,
+            locationId: item.locationId,
+            orderIdx: item.orderIdx,
+          })),
+        },
+      },
+      include: { itineraryItems: true }
+    });
+
+    return res.status(200).json(
+      createResponse({
+        message: "Clone itinerary successfully",
+        data: cloneItinerary,
+      }),
+    );
+  } catch (err: any) {
+    console.log("Error when cloning itinerary: ", err.message);
     return res
       .status(500)
       .json(createResponse({ message: "System error", error: err.message }));

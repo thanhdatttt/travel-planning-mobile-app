@@ -11,11 +11,16 @@ router.post("/",
     validate(itiSchema.createItinerarySchema), itiController.createItinerary);
 router.get("/:id",
     validate(itiSchema.idParamSchema), itiController.getItinerary);
-router.get("/", itiController.getUserItineraries);
+router.get("/me",
+    validate(itiSchema.paginationSchema), itiController.getUserItineraries);
+router.get("/public",
+    validate(itiSchema.paginationSchema), itiController.getPublicItineraries);
 router.delete("/:id", 
     validate(itiSchema.idParamSchema), itiController.deleteItinerary);
 router.patch("/:id", 
     validate(itiSchema.updateItinerarySchema), itiController.updateItinerary);
+router.post("/:id/clone", 
+    validate(itiSchema.idParamSchema), itiController.cloneItinerary);
 
 // itinerary item
 router.post("/:id/item",
@@ -26,5 +31,7 @@ router.patch("/:id/item/:itemId/schedule",
     validate(itiSchema.scheduleItemSchema), itiItemController.scheduleItineraryItem);
 router.patch("/:id/item/:itemId/unschedule",
     validate(itiSchema.idItemParamSchema), itiItemController.unscheduleItineraryItem);
-    
+router.patch("/:id/item/:itemId/note",
+    validate(itiSchema.updateItemNoteSchema), itiItemController.updateItineraryItemNote); 
+
 export default router;
