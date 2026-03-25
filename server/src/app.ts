@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import authRoute from "./routes/auth.route";
+import authRoute from "./routes/auth/index.routes";
 import userRoute from "./routes/user/index.routes";
 import { requireAuth, requireRole } from "./middlewares/auth.middleware";
 import {
@@ -19,10 +19,10 @@ app.use(cors());
 
 // routes
 // public
-app.use("/api", authRoutes);
+app.use("/api", authRoute);
 
 // protected
-app.use(requireAuth);
+// app.use(requireAuth);
 app.use("/api", userRoutes);
 app.use("/api/admin", adminRoutes);
 
