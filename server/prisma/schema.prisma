@@ -254,21 +254,18 @@ model Itinerary {
 }
 
 model ItineraryItem {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   itineraryId String
   locationId  String
 
-  dayNumber Int?
-  startTime DateTime?
-  endTime   DateTime?
-  note      String?
-  orderIdx  Int
+  date        DateTime?
+  note        String?
+  orderIdx    Int     @default(0)
 
   itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
   location  Location  @relation(fields: [locationId], references: [id])
   
-  @@index([dayNumber])
-  @@index([itineraryId])
+  @@index([itineraryId, date, orderIdx])
 }
 
 model Favorite {
