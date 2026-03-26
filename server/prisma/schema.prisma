@@ -31,11 +31,6 @@ enum otpType {
   reset
 }
 
-enum locationType {
-  attraction
-  restaurant
-}
-
 enum privacy {
   public
   private
@@ -127,6 +122,22 @@ model EmailOTP {
   @@index([expiresAt])
 }
 
+// 1. Model Danh mục lớn (Thay thế cho Enum)
+model LocationCategory {
+  id           Int        @id @default(autoincrement())
+  slug         String     @unique // Ví dụ: "food-and-drink"
+  nameEn       String     // Food & Drink
+  nameVi       String     // Ăn uống
+  icon         String?    // Tên resource icon trên Android (ví dụ: "ic_category_food")
+  displayOrder Int        @default(0)
+
+  // Quan hệ: Một danh mục có nhiều địa điểm
+  locations    Location[]
+
+  @@map("LocationCategory")
+}
+
+// 2. Model Location được cập nhật dựa trên bản pull mới
 model Location {
   id          String   @id @default(uuid())
   osmId       String?  @unique
@@ -141,10 +152,15 @@ model Location {
   website     String?
   avgRating   Float    @default(0)
   ratingCount Int      @default(0)
-  priceLevel  Int?     @db.SmallInt 
-  type        String   @default("attraction")
+  priceLevel  Int?     @db.SmallInt  
+  
   metadata    Json?
   
+  // Quan hệ nối với bảng danh mục lớn
+  categoryId  Int
+  category    LocationCategory @relation(fields: [categoryId], references: [id])
+
+  // PostGIS Geography field
   location    Unsupported("geography(Point, 4326)")
 
   createdAt   DateTime @default(now())
@@ -152,7 +168,6 @@ model Location {
   deletedAt   DateTime?
 
   user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-
   locationHours  LocationHour[]
   locationPhotos LocationPhoto[]
   reviews        Review[]
@@ -160,6 +175,8 @@ model Location {
   itineraryItems ItineraryItem[]
 
   @@index([name])
+  @@index([categoryId]) // Quan trọng để lọc theo danh mục nhanh
+  @@map("Location")
 }
 
 model LocationHour {
@@ -249,24 +266,26 @@ model Itinerary {
   user User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   itineraryItems ItineraryItem[]
-  favorite Favorite[]
 
   @@index([ownerId])
 }
 
 model ItineraryItem {
-  id          String  @id @default(uuid())
+  id          String @id @default(uuid())
   itineraryId String
   locationId  String
 
-  date        DateTime?
-  note        String?
-  orderIdx    Int     @default(0)
+  dayNumber Int?
+  startTime DateTime?
+  endTime   DateTime?
+  note      String?
+  orderIdx  Int
 
   itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
   location  Location  @relation(fields: [locationId], references: [id])
   
-  @@index([itineraryId, date, orderIdx])
+  @@index([dayNumber])
+  @@index([itineraryId])
 }
 
 model Favorite {
@@ -277,7 +296,6 @@ model Favorite {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, itineraryId])
   @@index([userId])
@@ -293,9 +311,9 @@ model Report {
 
   createdAt DateTime  @default(now())
   handledAt DateTime?
-  handledBy String?
+  handledBy String
 
-  user User? @relation(fields: [handledBy], references: [id])
+  user User @relation(fields: [handledBy], references: [id])
 
   @@unique([reporterId, targetId]) //1 ng chỉ đc report 1 thứ 1 lần
 }
