@@ -3,6 +3,7 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
+// read local properties
 Properties properties = new Properties()
 if (project.rootProject.file('local.properties').canRead()) {
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -21,7 +22,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        // read local properties
+        // get values in local
         buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", "\"${properties.getProperty('GOOGLE_WEB_CLIENT_ID', '')}\""
         manifestPlaceholders = [
                 FACEBOOK_APP_ID: properties.getProperty('FACEBOOK_APP_ID', ''),

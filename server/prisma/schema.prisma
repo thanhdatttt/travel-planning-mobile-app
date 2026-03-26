@@ -152,10 +152,12 @@ model Location {
   deletedAt   DateTime?
 
   user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
   locationHours  LocationHour[]
   locationPhotos LocationPhoto[]
   reviews        Review[]
   bookmarks      Bookmark[]
+  itineraryItems ItineraryItem[]
 
   @@index([name])
 }
@@ -236,7 +238,7 @@ model Itinerary {
   ownerId String
 
   title       String
-  description String
+  description String?
   privacy     privacy  @default(private)
   startDate   DateTime @default(now())
   endDate     DateTime @default(now())
@@ -253,20 +255,18 @@ model Itinerary {
 }
 
 model ItineraryItem {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   itineraryId String
   locationId  String
 
-  days      Int      @default(1)
-  startTime DateTime @default(now())
-  endTime   DateTime @default(now())
-  note      String?
-  orderIdx  Int
+  date        DateTime?
+  note        String?
+  orderIdx    Int     @default(0)
 
   itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
-
-  @@unique([id, orderIdx])
-  @@index([itineraryId])
+  location  Location  @relation(fields: [locationId], references: [id])
+  
+  @@index([itineraryId, date, orderIdx])
 }
 
 model Favorite {
