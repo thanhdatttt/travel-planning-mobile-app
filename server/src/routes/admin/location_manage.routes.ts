@@ -11,4 +11,5 @@ router.get(
   validate(adminSchema.locationListQuerySchema),
   locationManageController.getList,
 );
+
 export default router;

@@ -5,17 +5,41 @@ import ApiError from "../utils/apiError";
 
 export const locationController = {
   async getById(req: Request, res: Response) {
-    const { id } = req.params as { id: string };
+    const { id } = req.params;
 
-    const location = prisma.location.findUnique({
-      where: { id: id },
-    });
+    // Sử dụng QueryRaw để lấy được cả tọa độ (ST_X, ST_Y)
+    // Lưu ý: Tên bảng trong câu SQL phải để trong ngoặc kép "Location"
+    const locations: any[] = await prisma.$queryRawUnsafe(
+      `
+      SELECT 
+        id, "osmId", name, slug, description, address, phone, website, 
+        "avgRating", "ratingCount", "priceLevel", metadata, "categoryId",
+        "createdAt", "updatedAt",
+        ST_X(location::geometry) as longitude, 
+        ST_Y(location::geometry) as latitude
+      FROM "Location"
+      WHERE id = $1
+      LIMIT 1
+    `,
+      id,
+    );
+
+    const location = locations[0];
 
     if (!location) {
-      throw new ApiError(404, "Location not found");
+      return res
+        .status(404)
+        .json(createResponse({ message: "Location not found." }));
     }
 
-    return res.status(200).json(createResponse({ data: location }));
+    // Nếu muốn lấy thêm ảnh của địa điểm đó
+    const photos = await prisma.locationPhoto.findMany({
+      where: { locationId: id as string },
+    });
+
+    return res
+      .status(200)
+      .json(createResponse({ data: { ...location, photos } }));
   },
   async getMapLocations(req: Request, res: Response) {
     const { lat, lng, radius, categoryId } = req.query as any;
@@ -34,7 +58,7 @@ export const locationController = {
           location, 
           ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
         ) as distance
-      FROM "Locations"
+      FROM "Location"
       WHERE ST_DWithin(
         location, 
         ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography, 
