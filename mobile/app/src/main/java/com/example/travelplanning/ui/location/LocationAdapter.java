@@ -14,13 +14,12 @@ import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.location.Location;
 import java.util.ArrayList;
 import java.util.List;
-
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
 
     private List<Location> locationList = new ArrayList<>();
 
-    public void setList(List<Location> list) {
-        this.locationList = list;
+    public void setList(List<Location> newList) {
+        this.locationList = new ArrayList<>(newList); 
         notifyDataSetChanged();
     }
 

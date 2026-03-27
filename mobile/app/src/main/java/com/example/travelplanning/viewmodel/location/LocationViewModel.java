@@ -53,7 +53,19 @@ public class LocationViewModel extends AndroidViewModel {
             @Override
             public void onSuccess(List<Location> data, MetaResponse meta) {
                 isLoading.setValue(false);
-                searchResults.setValue(data);
+                
+                // Lấy danh sách hiện tại ra
+                List<Location> currentList = searchResults.getValue();
+                
+                if (page == 1 || currentList == null) {
+                    // Nếu là trang 1, set list mới hoàn toàn
+                    searchResults.setValue(data);
+                } else {
+                    // Nếu là trang tiếp theo, cộng dồn vào list cũ
+                    currentList.addAll(data);
+                    searchResults.setValue(currentList); // Notify observer
+                }
+
                 if (meta != null) {
                     hasMoreData.setValue(meta.getPage() < meta.getTotalPages());
                 }
