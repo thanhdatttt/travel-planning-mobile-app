@@ -1,10 +1,16 @@
 package com.example.travelplanning.viewmodel.admin;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import com.example.travelplanning.data.model.profile.UserProfile;
+import com.example.travelplanning.data.model.profile.UserRole;
 import com.example.travelplanning.data.repository.admin.AdminRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
@@ -15,14 +21,41 @@ public class AdminViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> error = new MutableLiveData<>();
 
+    private String searchQuery = "";
+    private List<UserRole> selectedRoles = new ArrayList<>();
+    private boolean isBanned = false;
+    private String sortBy = "username";
+    private String sortOrder = "asc";
+
+    private final Handler searchHandler = new Handler(Looper.getMainLooper());
+    private Runnable searchRunnable;
+
     public AdminViewModel(Application app) {
         super(app);
         this.adminRepository = new AdminRepository(app);
     }
 
-    public void fetchUsers(String usernameOrEmail, Boolean isBanned, Boolean isInActive, String sortBy, String sortOrder, String role, Boolean isDeleted) {
+    private void debounceFetch() {
+        if (searchRunnable != null) searchHandler.removeCallbacks(searchRunnable);
+        searchRunnable = () -> fetchUsers();
+        searchHandler.postDelayed(searchRunnable, 300); // Wait 300ms
+    }
+
+    public void onSearchQueryChanged(String query) {
+        this.searchQuery = query;
+        debounceFetch();
+    }
+
+    public void onFilterChanged(List<UserRole> roles, boolean banned) {
+        this.selectedRoles = roles;
+        this.isBanned = banned;
+        fetchUsers(); // Filters usually trigger immediately
+    }
+
+    public void fetchUsers() {
         isLoading.setValue(true);
-        adminRepository.getAllUsers(usernameOrEmail, isBanned, isInActive, sortBy, sortOrder, role, isDeleted, new AdminRepository.AdminCallback<List<UserProfile>>() {
+
+        adminRepository.getAllUsers(searchQuery, isBanned, false, sortBy, sortOrder, selectedRoles, false, new AdminRepository.AdminCallback<List<UserProfile>>() {
             @Override
             public void onSuccess(List<UserProfile> data) {
                 isLoading.setValue(false);
@@ -41,8 +74,6 @@ public class AdminViewModel extends AndroidViewModel {
         adminRepository.banUser(user.getId(), !user.getIsBanned(), new AdminRepository.AdminCallback<UserProfile>() {
             @Override
             public void onSuccess(UserProfile updatedUser) {
-                // Cập nhật lại danh sách local để UI thay đổi ngay lập tức
-                fetchUsers(user.getUsername(), user.getIsBanned(), true, "username", "asc", "user", false);
             }
 
             @Override
@@ -58,7 +89,6 @@ public class AdminViewModel extends AndroidViewModel {
             @Override
             public void onSuccess(UserProfile data) {
                 isLoading.setValue(false);
-                fetchUsers(user.getUsername(), user.getIsBanned(), true, "username", "asc", "user", false);
             }
 
             @Override

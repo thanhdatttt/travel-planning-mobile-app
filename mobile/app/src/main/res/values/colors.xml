@@ -2,5 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary">#228E22</color>
+    <color name="primary">#62EA9F</color>
+    <color name="rating_balls">#F4C23A</color>
+    <color name="text">#000000</color>
+    <color name="text_secondary">#555555</color>
+    <color name="background">#F9F7F2</color>
+    <color name="admin_header_color">#15000000</color>
+    <color name="admin_red">#913939</color>
 </resources>

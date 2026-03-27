@@ -12,6 +12,7 @@ import {
 } from "../utils/jwt";
 import { EMAIL_TOKEN_TTL, generateOTP } from "../utils/otp";
 import { sendOTPResetPass, sendOTPVerification } from "../utils/email";
+import { finalizeLogin, updateSocialUser } from "../utils/social";
 
 export const signUp = async (req: Request, res: Response) => {
   try {
@@ -24,7 +25,7 @@ export const signUp = async (req: Request, res: Response) => {
     if (existingEmail) {
       return res
         .status(400)
-        .json(createResponse({ message: "Email already registered" }));
+        .json(createResponse({ message: "Bad request", error: "Email already registered" }));
     }
 
     // check existing username
@@ -54,7 +55,7 @@ export const signUp = async (req: Request, res: Response) => {
     if (!otpRecord) {
       return res
         .status(403)
-        .json(createResponse({ message: "Email not verified" }));
+        .json(createResponse({ message: "Forbidden", error: "Email not verified" }));
     }
 
     // create new user
@@ -89,8 +90,6 @@ export const signUp = async (req: Request, res: Response) => {
 
 export const signIn = async (req: Request, res: Response) => {
   try {
-    console.log("DEBUG SIGN IN");
-
     const { usernameOrEmail, password } = req.body;
 
     // check existing user
@@ -133,22 +132,7 @@ export const signIn = async (req: Request, res: Response) => {
       );
     }
 
-    // generate tokens
-    const accessToken = genAccessToken(user.id);
-    const refreshToken = genRefreshToken(user.id);
-    await prisma.session.create({
-      data: {
-        userId: user.id,
-        token: refreshToken,
-        expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
-      },
-    });
-    return res.status(200).json(
-      createResponse({
-        message: "Sign in successfully",
-        data: { accessToken, refreshToken },
-      }),
-    );
+   return await finalizeLogin(user, res, "Sign in successfully");
   } catch (err: any) {
     console.log("Error when signing in: ", err.message);
     return res
@@ -335,7 +319,7 @@ export const verifyOTP = async (req: Request, res: Response) => {
     if (!email || !otp || (type !== "register" && type !== "reset")) {
       return res
         .status(400)
-        .json(createResponse({ message: "Missing or invalid fields" }));
+        .json(createResponse({ message: "Bad request", error: "Missing or invalid fields" }));
     }
 
     // check otp exist or expired
@@ -362,7 +346,7 @@ export const verifyOTP = async (req: Request, res: Response) => {
     // verify
     const isMatch = await bcrypt.compare(otp, record.otp);
     if (!isMatch) {
-      return res.status(400).json(createResponse({ message: "Invalid OTP" }));
+      return res.status(400).json(createResponse({ message: "Bad request", error: "Invalid OTP" }));
     }
     await prisma.emailOTP.update({
       where: { id: record.id, type: type },
@@ -491,6 +475,7 @@ export const sendOTP = async (req: Request, res: Response) => {
 // oauth
 const ggClient = new OAuth2Client({
   clientId: config.GG_CLIENT_ID as string,
+  clientSecret: config.GG_CLIENT_SECRET as string,
 });
 
 export const googleAuth = async (req: Request, res: Response) => {
@@ -511,70 +496,16 @@ export const googleAuth = async (req: Request, res: Response) => {
           createResponse({ message: "Unauthorized", error: "Invalid token" }),
         );
     }
-
-    // check exist provider
-    const existingProvider = await prisma.authProvider.findUnique({
-      where: {
-        provider_providerId: {
-          provider: "google",
-          providerId: payload.sub, // google id
-        },
-      },
-      include: { user: true },
-    });
-    let user;
-    // get user when exist provider
-    if (existingProvider) {
-      user = existingProvider.user;
-    } else {
-      user = await prisma.user.findUnique({
-        where: { email: payload.email },
-      });
-      // create new user if user not exist
-      if (!user) {
-        user = await prisma.user.create({
-          data: {
-            email: payload.email,
-            avatarUrl: payload.picture ?? null,
-            username: `gg_user_${payload.given_name}_${Date.now()}`,
-            fullName: `${payload.given_name} ${payload.family_name}`,
-            authProviders: {
-              create: {
-                provider: "google",
-                providerId: payload.sub,
-              },
-            },
-          },
-        });
-      } else {
-        // add new provider if user exist
-        await prisma.authProvider.create({
-          data: {
-            provider: "google",
-            providerId: payload.sub,
-            userId: user.id,
-          },
-        });
-      }
-    }
-
-    // gen token
-    const accessToken = genAccessToken(user.id);
-    const refreshToken = genRefreshToken(user.id);
-    await prisma.session.create({
-      data: {
-        userId: user.id,
-        token: refreshToken,
-        expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
-      },
+    
+    const user = await updateSocialUser({
+      email: payload.email,
+      provider: "google",
+      providerId: payload.sub,
+      fullName: `${payload.given_name || ''} ${payload.family_name || ''}`.trim(),
+      avatarUrl: payload.picture ?? null,
     });
 
-    return res.status(200).json(
-      createResponse({
-        message: "Google auth successfully",
-        data: { accessToken, refreshToken, user },
-      }),
-    );
+    return await finalizeLogin(user, res, "Google auth successfully");
   } catch (err: any) {
     console.log("Error when google auth: ", err.message);
     return res
@@ -610,68 +541,16 @@ export const facebookAuth = async (req: Request, res: Response) => {
         }),
       );
     }
-    const existingProvider = await prisma.authProvider.findUnique({
-      where: {
-        provider_providerId: {
-          provider: "facebook",
-          providerId: facebookId,
-        },
-      },
-      include: { user: true },
-    });
-    let user;
-    if (existingProvider) {
-      // get user when exist provider
-      user = existingProvider.user;
-    } else {
-      user = await prisma.user.findUnique({
-        where: { email },
-      });
-      if (!user) {
-        // create new user if user not exist
-        user = await prisma.user.create({
-          data: {
-            email,
-            username: `fb_user_${Date.now()}`,
-            fullName: name,
-            avatarUrl: picture?.data?.url,
-            authProviders: {
-              create: {
-                provider: "facebook",
-                providerId: facebookId,
-              },
-            },
-          },
-        });
-      } else {
-        // add new provider if user exist
-        await prisma.authProvider.create({
-          data: {
-            provider: "facebook",
-            providerId: facebookId,
-            userId: user.id,
-          },
-        });
-      }
-    }
 
-    // gen token
-    const accessTokenJWT = genAccessToken(user.id);
-    const refreshToken = genRefreshToken(user.id);
-    await prisma.session.create({
-      data: {
-        userId: user.id,
-        token: refreshToken,
-        expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
-      },
+    const user = await updateSocialUser({
+      email,
+      provider: "facebook",
+      providerId: facebookId,
+      fullName: name,
+      avatarUrl: picture?.data?.url ?? null,
     });
 
-    return res.status(200).json(
-      createResponse({
-        message: "Facebook auth successfully",
-        data: { accessTokenJWT, refreshToken, user },
-      }),
-    );
+    return await finalizeLogin(user, res, "Facebook auth successfully");
   } catch (err: any) {
     console.log("Error when facebook auth: ", err.message);
     return res

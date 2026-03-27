@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp">
+
+        <!-- Title Row -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <ImageButton
+                android:id="@+id/btnClose"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                android:contentDescription="Đóng" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Filter users"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#1A1A1A" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#a2a2a2"
+                    android:layout_margin="-10dp"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- Role Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <!-- Role Label -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_role"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="Vai trò icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Role:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A1A" />
+            </LinearLayout>
+
+            <!-- Role Chips Row -->
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:singleSelection="false"
+                app:chipSpacingHorizontal="8dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipNormalUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User"
+                    style="@style/ChipStyle" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAdmin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Admin"
+                    style="@style/ChipStyle" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipModerator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Moderator"
+                    style="@style/ChipStyle" />
+
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
+        <!-- Sort Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <!-- Sort Label -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_sort"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="Xắp xếp icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Xắp xếp:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A1A" />
+            </LinearLayout>
+
+            <!-- Sort Dropdowns Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Sort By Spinner -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilSortBy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    app:boxStrokeColor="#CCCCCC"
+                    app:boxStrokeWidth="1dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvSortBy"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:hint="Sort by"
+                        style="@style/GrayComboBox" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="2dp"
+                    android:background="#1A1A1A"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Sort Order Spinner -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilSortOrder"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    app:boxStrokeColor="#CCCCCC"
+                    app:boxStrokeWidth="1dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvSortOrder"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:hint="Ascending"
+                        style="@style/GrayComboBox" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Status Chips Row -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:singleSelection="false"
+            android:layout_gravity="center"
+            app:chipSpacingHorizontal="8dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipBanned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Is Banned"
+                app:chipIcon="@drawable/ic_banned"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipInactive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Is Inactive"
+                app:chipIcon="@drawable/ic_inactive"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <!-- Action Buttons Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <!-- Reset Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReset"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="2"
+                android:layout_marginEnd="10dp"
+                android:text="Reset"
+                android:textSize="15sp"
+                android:textColor="#2E7D32"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="#2E7D32"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="8dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <!-- Search Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSearch"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="3"
+                android:text="Filter"
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                style="@style/Widget.MaterialComponents.Button"
+                android:backgroundTint="#2E7D32"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

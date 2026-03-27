@@ -4,15 +4,18 @@ import { prisma } from "../../libs/prisma";
 import bcrypt from "bcrypt";
 import { createResponse } from "../../utils/response";
 import { userRole } from "../../generated/prisma/browser";
-import { toLowerCase } from "zod";
 
 //MISSING IS INACTIVE LOGIC
 export const getList = async (req: Request, res: Response) => {
     const {usernameOrEmail = "", sortBy = "username", sortOrder = "asc"} = req.query;
-    const role = req.query.role as string;
+    const roleParam = req.query.role as string;
     const isBanned = req.query.isBanned === 'true'; 
     const isDeleted = req.query.isDeleted === 'true';
     const isInactive = req.query.isInactive === 'true';
+
+    const roles = roleParam && roleParam !== "all"
+        ? roleParam.split(",").map(r => r.trim())
+        : null;
 
     const users = await prisma.user.findMany({
         where: {
@@ -25,13 +28,13 @@ export const getList = async (req: Request, res: Response) => {
                 },
                 {isDeleted: isDeleted},
                 {isBanned: isBanned},
-                // {role: role?.toLowerCase() === "user" ? userRole.user : role?.toLowerCase() === "moderator" ? userRole.moderator : userRole.admin}
             ]
         },
         orderBy: {
             [String(sortBy)]: sortOrder as 'asc' | 'desc'
         }
     });
+    console.log(users.length);
     return res.status(200).json(
         createResponse({
             message: "Users retrieved successfully",

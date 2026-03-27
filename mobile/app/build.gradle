@@ -1,5 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
+
+// read local properties
+Properties properties = new Properties()
+if (project.rootProject.file('local.properties').canRead()) {
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
 }
 
 android {
@@ -14,6 +21,14 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // get values in local
+        buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", "\"${properties.getProperty('GOOGLE_WEB_CLIENT_ID', '')}\""
+        manifestPlaceholders = [
+                FACEBOOK_APP_ID: properties.getProperty('FACEBOOK_APP_ID', ''),
+                FB_LOGIN_PROTOCOL_SCHEME: properties.getProperty('FB_LOGIN_PROTOCOL_SCHEME', ''),
+                FACEBOOK_CLIENT_TOKEN: properties.getProperty('FACEBOOK_CLIENT_TOKEN', '')
+        ]
     }
 
     buildFeatures {
@@ -25,7 +40,7 @@ android {
 
         debug {
             //http://10.0.2.2:5000
-            buildConfigField "String", "BASE_URL", "\"http://192.168.22.107:5000/\""
+            buildConfigField "String", "BASE_URL", "\"http://192.168.2.101:5000/\""
         }
         release {
             minifyEnabled false
@@ -64,11 +79,20 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 
+    // google and facebook
+    implementation libs.play.services.auth.v1501
+    implementation libs.facebook.android.sdk
+
     //ui
     implementation(libs.core.splashscreen)
-    implementation "androidx.navigation:navigation-fragment:2.9.7"
-    implementation "androidx.navigation:navigation-ui:2.9.7"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.10.0"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.21.1"
-    implementation "com.google.android.material:material:1.13.0"
+    implementation libs.navigation.fragment
+    implementation libs.navigation.ui
+    implementation libs.lifecycle.viewmodel
+    implementation libs.osmdroid.android
+    implementation libs.lifecycle.livedata
+    implementation libs.navigation.fragment
+    implementation libs.navigation.ui
+    implementation libs.lifecycle.viewmodel
+    implementation libs.jackson.databind
+    implementation libs.material
 }

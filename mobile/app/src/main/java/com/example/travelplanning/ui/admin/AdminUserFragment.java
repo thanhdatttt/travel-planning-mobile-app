@@ -1,5 +1,6 @@
 package com.example.travelplanning.ui.admin;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,20 +11,26 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.profile.UserProfile;
-import com.example.travelplanning.data.model.profile.UserRole;
-import com.example.travelplanning.databinding.FragmentAdminBinding;
+import com.example.travelplanning.databinding.FragmentAdminUserBinding;
+import com.example.travelplanning.databinding.SearchAndFilterBinding;
+import com.example.travelplanning.databinding.AdminHeaderBinding;
 import com.example.travelplanning.viewmodel.admin.AdminViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminFragment extends Fragment {
-    private FragmentAdminBinding binding;
+public class AdminUserFragment extends Fragment {
+    private FragmentAdminUserBinding binding;
+    private SearchAndFilterBinding searchAndFilterBinding;
+    private AdminHeaderBinding adminHeaderBinding;
     private AdminViewModel viewModel;
     private AdminUserAdapter adapter;
     private List<UserProfile> userList = new ArrayList<>();
@@ -31,7 +38,9 @@ public class AdminFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentAdminBinding.inflate(inflater, container, false);
+        binding = FragmentAdminUserBinding.inflate(inflater, container, false);
+        searchAndFilterBinding = SearchAndFilterBinding.bind(binding.searchAndFilter.getRoot());
+        adminHeaderBinding = AdminHeaderBinding.bind(binding.adminHeader.getRoot());
         return binding.getRoot();
     }
 
@@ -40,17 +49,17 @@ public class AdminFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(AdminViewModel.class);
 
+        adminHeaderBinding.btnUser.setSelected(true);
         setupRecyclerView();
         setupObservers();
         setupListeners();
 
-        loadUsers("", false, false, "username", "asc", "all", false);
+        viewModel.fetchUsers();
     }
 
     private void setupRecyclerView() {
         // Khởi tạo adapter với listener cho nút Option (Ban/Delete...)
         adapter = new AdminUserAdapter(userList, user -> {
-            // Xử lý khi nhấn nút Option (Hiện PopupMenu hoặc Toggle Ban trực tiếp)
             viewModel.toggleBanStatus(user);
             Toast.makeText(getContext(), "Toggling ban for: " + user.getUsername(), Toast.LENGTH_SHORT).show();
         });
@@ -61,8 +70,7 @@ public class AdminFragment extends Fragment {
 
     private void setupObservers() {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
-            // Bạn có thể thêm một ProgressBar vào XML nếu muốn
-            // binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+
         });
 
         viewModel.getUsers().observe(getViewLifecycleOwner(), users -> {
@@ -80,32 +88,30 @@ public class AdminFragment extends Fragment {
 
     private void setupListeners() {
         // Lắng nghe ô Search (EditText)
-        binding.etSearch.addTextChangedListener(new TextWatcher() {
+        searchAndFilterBinding.etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Gọi API search mỗi khi người dùng gõ
-                System.out.print(s.toString());
-                loadUsers(s.toString(), false, false, "username", "asc", "all", false);
+                viewModel.onSearchQueryChanged(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        binding.ivBack.setOnClickListener(v -> {
+        adminHeaderBinding.ivBack.setOnClickListener(v -> {
             if (getActivity() != null) getActivity().onBackPressed();
         });
 
-        binding.btnFilter.setOnClickListener(v -> {
+        searchAndFilterBinding.btnFilter.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Filter popup coming soon", Toast.LENGTH_SHORT).show();
         });
-    }
 
-    private void loadUsers(String nameOrEmail, boolean isBanned, boolean isInActive, String sortBy, String sortOrder, String role, boolean isDeleted) {
-        viewModel.fetchUsers(nameOrEmail, isBanned, isInActive, sortBy, sortOrder, role, isDeleted);
+        adminHeaderBinding.btnLocation.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.nav_admin_location);
+        });
     }
 
     @Override

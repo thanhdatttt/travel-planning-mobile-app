@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.travelplanning.R;
 import com.example.travelplanning.core.storage.TokenManager;
 import com.example.travelplanning.databinding.ActivityMainBinding;
+import com.example.travelplanning.ui.auth.AuthActivity;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
 import com.example.travelplanning.ui.splash.SplashActivity;
 
@@ -25,25 +26,27 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // init splash screen
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
         super.onCreate(savedInstanceState);
 
         //hard code token for testing
-        String manualAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzAxYTk2Ny0zMTYyLTQ4ZjctOWIyYS1kODc5MmRmYzY2OTciLCJpYXQiOjE3NzQxMzg0NzUsImV4cCI6MTc3NDIyNDg3NX0.NT0FjG9yu9Tg37_ty2Tj9Na0lQovIiy8zw3QoeDZV60";
+        String manualAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzAxYTk2Ny0zMTYyLTQ4ZjctOWIyYS1kODc5MmRmYzY2OTciLCJpYXQiOjE3NzQ0MzkxMDcsImV4cCI6MTc3NDUyNTUwN30.npdQntviA9fDh15e5SHrdVzMv3hZ_ot558YaPCYfHgQ";
         String manualRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzAxYTk2Ny0zMTYyLTQ4ZjctOWIyYS1kODc5MmRmYzY2OTciLCJpYXQiOjE3NzQxMzg0NzUsImV4cCI6MjM3ODkzODQ3NX0.PDEAHbhlHWr8v6ZsLR_p1BMV6JOxjc-nXpPdJjisxuc";
         TokenManager.saveTokens(this, manualAccessToken, manualRefreshToken);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Keep the splash screen displayed until ready
         splashScreen.setKeepOnScreenCondition(() -> !isReady);
 
         EdgeToEdge.enable(this);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             isReady = true; //let splash screen dismiss
-            navigateToMainScreen();
+            startNavigation();
         }, 2000);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -52,8 +55,19 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
-    private void navigateToMainScreen() {
-        Intent intent = new Intent(MainActivity.this, MainScreenActivity.class);
+
+    // navigate after splash screen
+    private void startNavigation() {
+        String token = TokenManager.getAccessToken(this);
+
+        Intent intent;
+        if (token != null && !token.isEmpty()) {
+            // has token , go to main screen
+            intent = new Intent(MainActivity.this, MainScreenActivity.class);
+        } else {
+            // no token, go to login
+            intent = new Intent(MainActivity.this, AuthActivity.class);
+        }
         startActivity(intent);
         finish();
     }

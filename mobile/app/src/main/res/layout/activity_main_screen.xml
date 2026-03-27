@@ -25,7 +25,7 @@
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"
         android:background="@color/primary"
-        app:itemIconTint="@null"/> <!--icon color-->
+        app:itemIconTint="@null"/>
 
     <Button
         android:id="@+id/btnAdmin"

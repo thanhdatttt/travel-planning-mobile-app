@@ -2,6 +2,7 @@ package com.example.travelplanning.data.repository.admin;
 
 import android.content.Context;
 import com.example.travelplanning.core.network.ApiServiceFactory;
+import com.example.travelplanning.data.model.profile.UserRole;
 import com.example.travelplanning.data.remote.admin.AdminApi;
 import com.example.travelplanning.data.remote.admin.dto.request.BanUserRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRequest;
@@ -30,8 +31,12 @@ public class AdminRepository {
         void onError(String error);
     }
 
-    public void getAllUsers(String usernameOrEmail, Boolean isBanned, Boolean isActive, String sortBy, String sortOrder, String role, Boolean isDeleted, AdminCallback<List<UserProfile>> callback) {
-        adminApi.GetAllUsers(usernameOrEmail, isBanned, isActive, sortBy, sortOrder, role, isDeleted).enqueue(new Callback<ApiResponse<List<UserProfileResponse>>>() {
+    public void getAllUsers(String usernameOrEmail, Boolean isBanned, Boolean isActive, String sortBy, String sortOrder, List<UserRole> roles, Boolean isDeleted, AdminCallback<List<UserProfile>> callback) {
+        List<String> roleStrings = roles.stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        String roleParam = (roleStrings.isEmpty()) ? null : String.join(",", roleStrings);
+        adminApi.GetAllUsers(usernameOrEmail, isBanned, isActive, sortBy, sortOrder, roleParam, isDeleted).enqueue(new Callback<ApiResponse<List<UserProfileResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<UserProfileResponse>>> call, Response<ApiResponse<List<UserProfileResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
