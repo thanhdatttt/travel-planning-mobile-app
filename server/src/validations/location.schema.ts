@@ -40,3 +40,12 @@ export const LocationCreateSchema = {
     ...coreFields,
   }),
 };
+
+export const MapLocationQuerySchema = {
+  query: z.object({
+    lat: z.string().transform(Number),
+    lng: z.string().transform(Number),
+    radius: z.string().optional().transform(Number).default(5000), // Bán kính 5km
+    categoryId: z.string().optional().transform(Number),
+  }),
+};

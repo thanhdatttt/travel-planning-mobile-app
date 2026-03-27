@@ -17,38 +17,38 @@ export const locationController = {
 
     return res.status(200).json(createResponse({ data: location }));
   },
+  async getMapLocations(req: Request, res: Response) {
+    const { lat, lng, radius, categoryId } = req.query as any;
 
-  async update(req: Request, res: Response) {
-    const { id } = req.params as { id: string };
-    const { latitude, longitude, ...rest } = req.body;
-    const updatedLocation = await prisma.$transaction(async (tx) => {
-      const location = await tx.location.update({
-        where: { id: id },
-        data: {
-          ...rest,
-          updatedAt: new Date(),
-        },
-      });
-
-      if (latitude !== undefined && longitude !== undefined) {
-        await tx.$executeRawUnsafe(
-          `UPDATE "Location" 
-         SET location = ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography 
-         WHERE id = $3`,
-          longitude,
-          latitude,
-          id,
-        );
-      }
-
-      return location;
-    });
-
-    return res.status(200).json(
-      createResponse({
-        message: "",
-        data: updatedLocation,
-      }),
+    const categoryFilter = categoryId ? `AND "categoryId" = ${categoryId}` : "";
+    const locations = await prisma.$queryRawUnsafe(
+      `
+      SELECT 
+        id, 
+        name, 
+        "categoryId",
+        "priceLevel",
+        ST_X(location::geometry) as longitude,
+        ST_Y(location::geometry) as latitude,
+        ST_Distance(
+          location, 
+          ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
+        ) as distance
+      FROM "Locations"
+      WHERE ST_DWithin(
+        location, 
+        ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography, 
+        $3
+      )
+      ${categoryFilter}
+      AND "isDeleted" = false
+      ORDER BY distance ASC
+      LIMIT 100
+    `,
+      lng,
+      lat,
+      radius,
     );
+    return res.status(200).json(createResponse({ data: locations }));
   },
 };
