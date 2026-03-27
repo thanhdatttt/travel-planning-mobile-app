@@ -49,3 +49,19 @@ export const MapLocationQuerySchema = {
     categoryId: z.string().optional().transform(Number),
   }),
 };
+
+export const LocationSearchSchema = {
+  query: z.object({
+    q: z.string().optional(),
+    categoryId: z.string().optional().transform(Number),
+    priceLevel: z.string().optional().transform(Number),
+    page: z
+      .string()
+      .optional()
+      .transform((v) => parseInt(v || "1")),
+    limit: z
+      .string()
+      .optional()
+      .transform((v) => parseInt(v || "10")),
+  }),
+};
