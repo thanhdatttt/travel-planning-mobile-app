@@ -12,9 +12,10 @@ const coreFields = {
   address: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),
   website: z.url("Invalid URL").nullable().optional(),
-  priceLevel: z.number().int().min(1).max(5).nullable().optional(),
-  type: z.string().default("attraction"),
+  priceLevel: z.number().int().min(1).max(4).nullable().optional(),
   metadata: z.record(z.string(), z.any()).nullable().optional(),
+  latitude: z.number().min(-90).max(90, "Invalid latitude"),
+  longitude: z.number().min(-180).max(180, "Invalid longitude"),
 };
 
 export const LocationUpdateSchema = {
@@ -22,6 +23,9 @@ export const LocationUpdateSchema = {
 };
 
 export const LocationAdminUpdateSchema = {
+  params: z.object({
+    id: z.uuid("Invalid id"),
+  }),
   body: z.object({
     ...coreFields,
     osmId: z.string().nullable().optional(),

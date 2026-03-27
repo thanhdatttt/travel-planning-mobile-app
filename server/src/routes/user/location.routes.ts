@@ -11,5 +11,9 @@ import { locationController } from "../../controllers/location.controller";
 const router = express.Router();
 
 router.get("/:id", validate(LocationParamsSchema), locationController.getById);
-
+router.put(
+  "/:id",
+  validate(LocationAdminUpdateSchema),
+  locationController.update,
+);
 export default router;

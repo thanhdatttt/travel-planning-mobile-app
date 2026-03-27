@@ -15,21 +15,40 @@ export const locationController = {
       throw new ApiError(404, "Location not found");
     }
 
-    return res.json(createResponse({ data: location }));
+    return res.status(200).json(createResponse({ data: location }));
   },
 
   async update(req: Request, res: Response) {
-    const {id} = req.params as {id:string};
-    const updateData = req.body;
+    const { id } = req.params as { id: string };
+    const { latitude, longitude, ...rest } = req.body;
+    const updatedLocation = await prisma.$transaction(async (tx) => {
+      const location = await tx.location.update({
+        where: { id: id },
+        data: {
+          ...rest,
+          updatedAt: new Date(),
+        },
+      });
 
-    const updatedLocation = await prisma.location.update({
-        where: { id },
-        data: updateData,
+      if (latitude !== undefined && longitude !== undefined) {
+        await tx.$executeRawUnsafe(
+          `UPDATE "Location" 
+         SET location = ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography 
+         WHERE id = $3`,
+          longitude,
+          latitude,
+          id,
+        );
+      }
+
+      return location;
     });
 
-    return res.json(createResponse({
-        message: "Location updated successfully",
-        data: updatedLocation
-    }));
-  }
+    return res.status(200).json(
+      createResponse({
+        message: "",
+        data: updatedLocation,
+      }),
+    );
+  },
 };
