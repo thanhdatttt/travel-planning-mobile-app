@@ -249,26 +249,24 @@ model Itinerary {
   user User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   itineraryItems ItineraryItem[]
+  favorite Favorite[]
 
   @@index([ownerId])
 }
 
 model ItineraryItem {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   itineraryId String
   locationId  String
 
-  dayNumber Int?
-  startTime DateTime?
-  endTime   DateTime?
-  note      String?
-  orderIdx  Int
+  date        DateTime?
+  note        String?
+  orderIdx    Int     @default(0)
 
   itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
   location  Location  @relation(fields: [locationId], references: [id])
   
-  @@index([dayNumber])
-  @@index([itineraryId])
+  @@index([itineraryId, date, orderIdx])
 }
 
 model Favorite {
@@ -279,6 +277,7 @@ model Favorite {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, itineraryId])
   @@index([userId])
@@ -294,9 +293,9 @@ model Report {
 
   createdAt DateTime  @default(now())
   handledAt DateTime?
-  handledBy String
+  handledBy String?
 
-  user User @relation(fields: [handledBy], references: [id])
+  user User? @relation(fields: [handledBy], references: [id])
 
   @@unique([reporterId, targetId]) //1 ng chỉ đc report 1 thứ 1 lần
 }
