@@ -48,6 +48,11 @@
         <activity
             android:name=".ui.admin.AdminActivity"
             android:exported="false" />
+
+        <activity 
+            android:name=".ui.location.LocationSearchActivity"
+            android:windowSoftInputMode="adjustResize" 
+            android:exported="false" />
     </application>
 
 </manifest>

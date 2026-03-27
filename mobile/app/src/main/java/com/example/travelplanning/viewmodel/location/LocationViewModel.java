@@ -47,16 +47,16 @@ public class LocationViewModel extends AndroidViewModel {
             }
         });
     }
-    public void searchLocations(String query, int page) {
+    public void searchLocations(String query, Integer categoryId, Integer priceLevel, int page, int limit) {
         isLoading.setValue(true);
-        locationRepository.searchLocations(query, null, null, page, 10, new LocationRepository.LocationSearchCallback() {
+        locationRepository.searchLocations(query, categoryId, priceLevel, page, limit, new LocationRepository.LocationSearchCallback() {
             @Override
             public void onSuccess(List<Location> data, MetaResponse meta) {
                 isLoading.setValue(false);
-
                 searchResults.setValue(data);
-
-                 hasMoreData.setValue(meta.getPage() < meta.getTotalPages());
+                if (meta != null) {
+                    hasMoreData.setValue(meta.getPage() < meta.getTotalPages());
+                }
             }
 
             @Override

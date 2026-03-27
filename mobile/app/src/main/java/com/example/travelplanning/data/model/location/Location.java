@@ -26,4 +26,5 @@ public class Location {
     String categoryName;
     String categoryIcon;
     String imageUrl;
+    Integer ratingCount;
 }

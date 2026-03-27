@@ -115,15 +115,31 @@ export const locationController = {
           locationPhotos: {
             take: 1,
           },
+          // 1. THÊM ĐOẠN NÀY ĐỂ ĐẾM SỐ LƯỢNG (Aggregate Count)
+          _count: {
+            select: {
+              reviews: true, // Lưu ý: Đổi 'reviews' thành tên relation chính xác trong schema.prisma của bạn
+            },
+          },
         },
       }),
       prisma.location.count({ where }),
     ]);
 
+    // 2. MAP LẠI DATA ĐỂ TRẢ VỀ CHO MOBILE
+    // Bóc cái _count.reviews ra và gán vào ratingCount cho đúng format DTO bên Java
+    const formattedLocations = locations.map((loc) => {
+      const { _count, ...rest } = loc;
+      return {
+        ...rest,
+        ratingCount: _count?.reviews || 0, // Gán số lượng đếm được, nếu null thì mặc định là 0
+      };
+    });
+
     return res.status(200).json(
       createResponse({
         data: {
-          items: locations,
+          items: formattedLocations, // Trả về mảng đã được format
           meta: {
             total,
             page,

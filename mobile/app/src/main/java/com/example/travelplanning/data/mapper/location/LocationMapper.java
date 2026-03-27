@@ -27,6 +27,8 @@ public class LocationMapper implements BaseMapper<LocationResponse, Location> {
                 .categoryName(dto.getCategory() != null ? dto.getCategory().getNameVi() : "Chưa phân loại")
                 .categoryIcon(dto.getCategory() != null ? dto.getCategory().getIcon() : null)
                 .imageUrl(firstImageUrl)
+                .avgRating(dto.getAvgRating())
+                .ratingCount(dto.getRatingCount() != null ? dto.getRatingCount() : 0)
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.travelplanning.data.remote.location.dto.response;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,6 @@ public class LocationResponse {
     private String id;
     private String name;
     private String address;
-    private Double avgRating;
     private Integer priceLevel;
 
     private Double latitude;
@@ -21,7 +21,13 @@ public class LocationResponse {
 
     private CategoryResponse category;
 
-    private List<PhotoResponse> locationPhotos;
+    // Đổi tên Class con cho khớp với khai báo List
+    @SerializedName("locationPhotos")
+    private List<LocationPhotoResponse> locationPhotos;
+
+    private Double avgRating;
+
+    private Integer ratingCount;
 
     @Data
     public static class CategoryResponse {
@@ -30,7 +36,8 @@ public class LocationResponse {
     }
 
     @Data
-    public static class PhotoResponse {
+    public static class LocationPhotoResponse {
+        @SerializedName("url")
         private String url;
     }
 }
