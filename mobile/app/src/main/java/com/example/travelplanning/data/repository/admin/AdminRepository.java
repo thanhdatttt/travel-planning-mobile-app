@@ -8,22 +8,23 @@ import com.example.travelplanning.data.remote.admin.dto.request.BanUserRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRequest;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.model.profile.UserProfile;
-import com.example.travelplanning.data.mapper.profile.UserProfileMapper;
-import com.example.travelplanning.data.remote.profile.dto.response.UserProfileResponse;
+import com.example.travelplanning.data.mapper.admin.AdminUserProfileMapper;
+import com.example.travelplanning.data.remote.admin.dto.response.UserProfileResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Body;
 
 public class AdminRepository {
     private final AdminApi adminApi;
-    private final UserProfileMapper mapper;
+    private final AdminUserProfileMapper mapper;
 
     public AdminRepository(Context context) {
         this.adminApi = ApiServiceFactory.create(context, AdminApi.class);
-        this.mapper = new UserProfileMapper();
+        this.mapper = new AdminUserProfileMapper();
     }
 
     public interface AdminCallback<T> {
@@ -31,18 +32,19 @@ public class AdminRepository {
         void onError(String error);
     }
 
-    public void getAllUsers(String usernameOrEmail, Boolean isBanned, Boolean isActive, String sortBy, String sortOrder, List<UserRole> roles, Boolean isDeleted, AdminCallback<List<UserProfile>> callback) {
+    public void getAllUsers(String usernameOrEmail, Boolean isBanned, Boolean isInActive, String sortBy, String sortOrder, List<UserRole> roles, Boolean isDeleted, AdminCallback<List<UserProfile>> callback) {
         List<String> roleStrings = roles.stream()
                 .map(Enum::name)
                 .collect(Collectors.toList());
         String roleParam = (roleStrings.isEmpty()) ? null : String.join(",", roleStrings);
-        adminApi.GetAllUsers(usernameOrEmail, isBanned, isActive, sortBy, sortOrder, roleParam, isDeleted).enqueue(new Callback<ApiResponse<List<UserProfileResponse>>>() {
+        adminApi.GetAllUsers(usernameOrEmail, isBanned, isInActive, sortBy, sortOrder, roleParam, isDeleted).enqueue(new Callback<ApiResponse<List<UserProfileResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<UserProfileResponse>>> call, Response<ApiResponse<List<UserProfileResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<UserProfile> domainUsers = response.body().getData().stream()
                             .map(mapper::mapToDomain)
                             .collect(Collectors.toList());
+                    System.out.println(domainUsers);
                     callback.onSuccess(domainUsers);
                 } else {
                     callback.onError("Không thể lấy danh sách người dùng");
@@ -57,7 +59,9 @@ public class AdminRepository {
     }
 
     public void banUser(String id, Boolean ban, AdminCallback<UserProfile> callback) {
-        adminApi.toggleBan(id, new BanUserRequest(ban)).enqueue(new Callback<ApiResponse<UserProfileResponse>>() {
+        boolean safeBan = (ban != null) ? ban : false;
+
+        adminApi.toggleBan(id, new BanUserRequest(safeBan)).enqueue(new Callback<ApiResponse<UserProfileResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<UserProfileResponse>> call, Response<ApiResponse<UserProfileResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -74,7 +78,9 @@ public class AdminRepository {
         });
     }
     public void softDeleteUser(String id, Boolean delete, AdminCallback<UserProfile> callback) {
-        adminApi.softDeleteUser(id, new SoftDeleteUserRequest(delete)).enqueue(new Callback<ApiResponse<UserProfileResponse>>() {
+        boolean safeDelete = (delete != null) ? delete : false;
+
+        adminApi.softDeleteUser(id, new SoftDeleteUserRequest(safeDelete)).enqueue(new Callback<ApiResponse<UserProfileResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<UserProfileResponse>> call, Response<ApiResponse<UserProfileResponse>> response) {
                 if(response.isSuccessful() && response.body() != null){

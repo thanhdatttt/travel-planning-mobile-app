@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -57,11 +58,13 @@ public class AdminUserFragment extends Fragment {
         viewModel.fetchUsers();
     }
 
+    // Khởi tạo adapter với listener cho nút Option (Ban/Delete...)
     private void setupRecyclerView() {
-        // Khởi tạo adapter với listener cho nút Option (Ban/Delete...)
-        adapter = new AdminUserAdapter(userList, user -> {
-            viewModel.toggleBanStatus(user);
-            Toast.makeText(getContext(), "Toggling ban for: " + user.getUsername(), Toast.LENGTH_SHORT).show();
+        adapter = new AdminUserAdapter(userList, new AdminUserAdapter.OnUserOptionClickListener() {
+            @Override
+            public void onOptionClick(View anchor, UserProfile user) {
+                showPopupMenu(anchor, user);
+            }
         });
 
         binding.rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -87,7 +90,6 @@ public class AdminUserFragment extends Fragment {
     }
 
     private void setupListeners() {
-        // Lắng nghe ô Search (EditText)
         searchAndFilterBinding.etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -106,12 +108,33 @@ public class AdminUserFragment extends Fragment {
         });
 
         searchAndFilterBinding.btnFilter.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Filter popup coming soon", Toast.LENGTH_SHORT).show();
+            new AdminFilterDialog().show(getChildFragmentManager(), "AdminFilterDialog");
         });
 
         adminHeaderBinding.btnLocation.setOnClickListener(v -> {
+            adminHeaderBinding.btnUser.setSelected(false);
             Navigation.findNavController(v).navigate(R.id.nav_admin_location);
         });
+    }
+
+    private void showPopupMenu(View anchor, UserProfile user) {
+        PopupMenu popup = new PopupMenu(requireContext(), anchor);
+
+        popup.getMenu().add(0, 1, 0, Boolean.TRUE.equals(user.getIsBanned()) ? "Unban user" : "Ban user");
+        popup.getMenu().add(0, 2, 1, Boolean.TRUE.equals(user.getIsDeleted()) ? "Restore user" : "Delete user");
+
+        popup.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == 1) {
+                viewModel.toggleBanStatus(user);
+                return true;
+            } else if (id == 2) {
+                viewModel.toggleSoftDelete(user);
+                return true;
+            }
+            return false;
+        });
+        popup.show();
     }
 
     @Override

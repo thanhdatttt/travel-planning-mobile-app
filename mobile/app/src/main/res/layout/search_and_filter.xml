@@ -31,7 +31,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/primary" />
+                app:tint="@color/dark_green" />
 
             <EditText
                 android:id="@+id/etSearch"
@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Filter"
-                android:textColor="@color/primary"
+                android:textColor="@color/dark_green"
                 android:textSize="14sp"/>
         </LinearLayout>
 

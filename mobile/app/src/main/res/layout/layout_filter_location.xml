@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Filter users"
+                    android:text="Filter locations"
                     android:textSize="17sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="10dp"
@@ -83,42 +83,63 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Role:"
+                    android:text="Price:"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="#1A1A1A" />
             </LinearLayout>
 
-            <!-- Role Chips Row -->
-            <com.google.android.material.chip.ChipGroup
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:singleSelection="false"
-                app:chipSpacingHorizontal="8dp">
+                android:orientation="horizontal"
+                android:paddingHorizontal="15dp"
+                android:gravity="center_vertical">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipNormalUser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User"
-                    style="@style/ChipStyle" />
+                <!-- MinPrice -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlMinPrice"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="125dp"
+                    android:layout_height="35dp"
+                    android:hint="Min Price"
+                    app:endIconMode="clear_text">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipAdmin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Admin"
-                    style="@style/ChipStyle" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMinPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:gravity="center"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipModerator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Moderator"
-                    style="@style/ChipStyle" />
+                <!-- Divider -->
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="2dp"
+                    android:background="#1A1A1A"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
 
-            </com.google.android.material.chip.ChipGroup>
+                <!-- MaxPrice -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlMaxPrice"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="125dp"
+                    android:layout_height="35dp"
+                    android:hint="Max Price"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMaxPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:gravity="center"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Sort Section -->

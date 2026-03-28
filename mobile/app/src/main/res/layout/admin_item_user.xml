@@ -17,13 +17,13 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivAvatar"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:padding="3dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="2dp"
             android:layout_marginEnd="12dp"
             android:tint="#99A2aAa2"
-            app:strokeWidth="3dp"
-            app:strokeColor="@color/primary"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/dark_green"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircleComponent"
             android:src="@drawable/no_avatar" />
 
@@ -62,7 +62,7 @@
             android:text="role"/>
 
         <ImageView
-            android:id="@+id/btnOptions"
+            android:id="@+id/ivOptions"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:padding="4dp"

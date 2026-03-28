@@ -7,8 +7,11 @@ import android.widget.AutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.travelplanning.R;
+import com.example.travelplanning.data.model.profile.UserRole;
+import com.example.travelplanning.viewmodel.admin.AdminViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 
@@ -19,54 +22,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminFilterDialog extends BottomSheetDialogFragment {
+    private AdminViewModel viewModel;
+    private String currentSortBy = "username";
+    private String currentSortOrder = "asc";
 
-    public interface OnFilterApplyListener {
-        void onApply(boolean isBanned, boolean isInActive, String sortBy, String sortOrder, List<String> roles);
-
-    }
-
-    private OnFilterApplyListener listener;
-    // Khai báo các biến lưu giá trị mặc định/hiện tại
-    private String selectedRole = "all";
-    private String selectedSortBy = "username";
-    private String selectedSortOrder = "asc";
-
-    public AdminFilterDialog(OnFilterApplyListener listener) {
-        this.listener = listener;
-    }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
-        // Sử dụng ViewBinding hoặc findViewById cho layout của bạn
-        View view = inflater.inflate(R.layout.layout_filter_user, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.layout_filter_user, container, false);
+    }
 
-        // 1. Setup Dropdowns (ComboBox)
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel = new ViewModelProvider(requireParentFragment()).get(AdminViewModel.class);
+
+        syncUIWithViewModel(view);
+
         setupDropdowns(view);
 
-        // 2. Xử lý nút Reset
-        view.findViewById(R.id.btnReset).setOnClickListener(v -> resetFilters(view));
+        view.findViewById(R.id.btnReset).setOnClickListener(v -> {
+            viewModel.resetFilters();
+            dismiss();
+        });
 
-        // 3. Xử lý nút Filter (Tìm kiếm)
-        view.findViewById(R.id.btnSearch).setOnClickListener(v -> {
+        // Nút Filter: Gom dữ liệu và đẩy về ViewModel
+        view.findViewById(R.id.btnFilter).setOnClickListener(v -> {
+            List<UserRole> roles = new ArrayList<>();
+            if (((Chip) view.findViewById(R.id.chipAdmin)).isChecked()) roles.add(UserRole.ADMIN);
+            if (((Chip) view.findViewById(R.id.chipModerator)).isChecked()) roles.add(UserRole.MODERATOR);
+            if (((Chip) view.findViewById(R.id.chipNormalUser)).isChecked()) roles.add(UserRole.USER);
+
             boolean isBanned = ((Chip) view.findViewById(R.id.chipBanned)).isChecked();
-            boolean isInActive = ((Chip) view.findViewById(R.id.chipInactive)).isChecked();
+            boolean isInactive = ((Chip) view.findViewById(R.id.chipInactive)).isChecked();
+            boolean isDeleted = ((Chip) view.findViewById(R.id.chipDeleted)).isChecked();
 
-            // Nếu chưa bọc, bạn check từng cái manually:
-            List<String> roles = new ArrayList<>();
-            if (((Chip) view.findViewById(R.id.chipAdmin)).isChecked()) roles.add("admin");
-            if (((Chip) view.findViewById(R.id.chipModerator)).isChecked()) roles.add("moderator");
-            if (((Chip) view.findViewById(R.id.chipNormalUser)).isChecked()) roles.add("user");
-            String selectedRole = roles.isEmpty() ? "all" : String.join(",", roles);
-
-            listener.onApply(isBanned, isInActive, selectedSortBy, selectedSortOrder, roles);
+            viewModel.applyFilters(isBanned, isDeleted, isInactive, currentSortBy, currentSortOrder, roles);
             dismiss();
         });
 
         view.findViewById(R.id.btnClose).setOnClickListener(v -> dismiss());
+    }
 
-        return view;
+    private void syncUIWithViewModel(View v) {
+        ((Chip) v.findViewById(R.id.chipBanned)).setChecked(viewModel.isBanned());
+        ((Chip) v.findViewById(R.id.chipInactive)).setChecked(viewModel.isInactive());
+        ((Chip) v.findViewById(R.id.chipDeleted)).setChecked(viewModel.isDeleted());
+
+        List<UserRole> roles = viewModel.getSelectedRoles();
+        ((Chip) v.findViewById(R.id.chipAdmin)).setChecked(roles.contains(UserRole.ADMIN));
+        ((Chip) v.findViewById(R.id.chipModerator)).setChecked(roles.contains(UserRole.MODERATOR));
+        ((Chip) v.findViewById(R.id.chipNormalUser)).setChecked(roles.contains(UserRole.USER));
+
+        currentSortBy = viewModel.getSortBy();
+        currentSortOrder = viewModel.getSortOrder();
     }
 
     private void setupDropdowns(View v) {
@@ -79,21 +90,11 @@ public class AdminFilterDialog extends BottomSheetDialogFragment {
         actvBy.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, byOptions));
         actvOrder.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, orderOptions));
 
-        actvBy.setOnItemClickListener((parent, view, position, id) -> selectedSortBy = byOptions[position]);
-        actvOrder.setOnItemClickListener((parent, view, position, id) -> selectedSortOrder = orderOptions[position]);
-    }
+        actvBy.setText(currentSortBy, false);
+        actvOrder.setText(currentSortOrder, false);
 
-    private void resetFilters(View v) {
-        ((Chip) v.findViewById(R.id.chipBanned)).setChecked(false);
-        ((Chip) v.findViewById(R.id.chipInactive)).setChecked(false);
-        ((Chip) v.findViewById(R.id.chipAdmin)).setChecked(false);
-        ((Chip) v.findViewById(R.id.chipModerator)).setChecked(false);
-        ((Chip) v.findViewById(R.id.chipNormalUser)).setChecked(false);
-        ((AutoCompleteTextView) v.findViewById(R.id.actvSortBy)).setText("", false);
-        ((AutoCompleteTextView) v.findViewById(R.id.actvSortOrder)).setText("", false);
-        selectedRole = "all";
-        selectedSortBy = "username";
-        selectedSortOrder = "asc";
+        actvBy.setOnItemClickListener((parent, view, position, id) -> currentSortBy = byOptions[position]);
+        actvOrder.setOnItemClickListener((parent, view, position, id) -> currentSortOrder = orderOptions[position]);
     }
 
     @Override

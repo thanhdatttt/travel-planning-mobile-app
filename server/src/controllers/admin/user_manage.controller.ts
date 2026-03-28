@@ -4,6 +4,7 @@ import { prisma } from "../../libs/prisma";
 import bcrypt from "bcrypt";
 import { createResponse } from "../../utils/response";
 import { userRole } from "../../generated/prisma/browser";
+import { is } from "zod/v4/locales";
 
 //MISSING IS INACTIVE LOGIC
 export const getList = async (req: Request, res: Response) => {
@@ -13,10 +14,9 @@ export const getList = async (req: Request, res: Response) => {
     const isDeleted = req.query.isDeleted === 'true';
     const isInactive = req.query.isInactive === 'true';
 
-    const roles = roleParam && roleParam !== "all"
-        ? roleParam.split(",").map(r => r.trim())
-        : null;
-
+    const roles = roleParam 
+        ? roleParam.split(",").map(r => r.trim().toLowerCase())
+        : ['user', 'moderator', 'admin'];
     const users = await prisma.user.findMany({
         where: {
             AND: [
@@ -28,13 +28,13 @@ export const getList = async (req: Request, res: Response) => {
                 },
                 {isDeleted: isDeleted},
                 {isBanned: isBanned},
-            ]
+                {role: { in: roles as userRole[] }}
+                ]
         },
         orderBy: {
             [String(sortBy)]: sortOrder as 'asc' | 'desc'
         }
     });
-    console.log(users.length);
     return res.status(200).json(
         createResponse({
             message: "Users retrieved successfully",
@@ -63,6 +63,7 @@ export const toggleBan = async (req: Request, res: Response) => {
 export const toggleSoftDeleteUser = async (req: Request, res: Response) => {
     const {id} = req.params;
     const {delete: isDeleted} = req.body;
+    console.log(isDeleted);
 
     const updatedUser = await prisma.user.update({
         where: { id: String(id)},

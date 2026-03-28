@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.admin.AdminUserFragment">
+    tools:context=".ui.admin.AdminLocationFragment">
 
     <!--HEADER-->
     <include android:id="@+id/adminHeader"
@@ -22,7 +22,7 @@
 
     <!--LIST-->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvUsers"
+        android:id="@+id/rvLocations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="12dp"

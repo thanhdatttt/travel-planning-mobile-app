@@ -3,10 +3,13 @@ package com.example.travelplanning.ui.admin;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.data.model.profile.UserRole;
 import com.example.travelplanning.databinding.AdminItemUserBinding;
@@ -18,7 +21,7 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
     private final OnUserOptionClickListener listener;
 
     public interface OnUserOptionClickListener {
-        void onOptionClick(UserProfile user);
+        void onOptionClick(View anchor, UserProfile user);
     }
 
     public AdminUserAdapter(List<UserProfile> users, OnUserOptionClickListener listener) {
@@ -60,7 +63,7 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
             String roleName = user.getRole() != null ? user.getRole().name() : "USER";
             binding.tvRole.setText(roleName.toLowerCase());
 
-            // --- Logic màu sắc theo Role cho ShapeableImageView ---
+            // Logic màu sắc theo Role
             int color;
             if (user.getRole() == UserRole.ADMIN) {
                 color = Color.RED;
@@ -70,11 +73,16 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
                 color = Color.parseColor("#4CAF50");
             }
 
-            // Cập nhật màu chữ Role
+            int strokeColor;
+            if(user.getIsDeleted()) strokeColor = Color.GRAY;
+            else if(user.getIsBanned()) strokeColor = Color.RED;
+            else strokeColor = ContextCompat.getColor(binding.getRoot().getContext(), R.color.dark_green);
+
+            binding.ivAvatar.setStrokeColor(ColorStateList.valueOf(strokeColor));
+
             binding.tvRole.setTextColor(color);
 
-            // Nút Options (khớp ID btnOptions trong XML)
-            binding.btnOptions.setOnClickListener(v -> listener.onOptionClick(user));
+            binding.ivOptions.setOnClickListener(v -> listener.onOptionClick(v, user));
         }
     }
 }

@@ -5,7 +5,7 @@ import com.example.travelplanning.data.remote.admin.dto.request.BanUserRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRequest;
 
 import com.example.travelplanning.data.remote.core.ApiResponse;
-import com.example.travelplanning.data.remote.profile.dto.response.UserProfileResponse;
+import com.example.travelplanning.data.remote.admin.dto.response.UserProfileResponse;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public interface AdminApi{
             @Body BanUserRequest request
     );
 
-    @DELETE("api/admin/user/soft-delete/{id}")
+    @POST("api/admin/user/soft-delete/{id}")
     Call<ApiResponse<UserProfileResponse>> softDeleteUser(
             @Path("id") String id,
             @Body SoftDeleteUserRequest request

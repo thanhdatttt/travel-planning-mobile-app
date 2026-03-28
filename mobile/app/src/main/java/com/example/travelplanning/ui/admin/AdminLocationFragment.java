@@ -59,14 +59,13 @@ public class AdminLocationFragment extends Fragment {
 
     private void setupRecyclerView() {
         // Khởi tạo adapter với listener cho nút Option (Ban/Delete...)
-        adapter = new AdminUserAdapter(userList, user -> {
+        adapter = new AdminUserAdapter(userList, (anchor, user) -> {
             // Xử lý khi nhấn nút Option (Hiện PopupMenu hoặc Toggle Ban trực tiếp)
             viewModel.toggleBanStatus(user);
-            Toast.makeText(getContext(), "Toggling ban for: " + user.getUsername(), Toast.LENGTH_SHORT).show();
         });
 
-        binding.rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.rvUsers.setAdapter(adapter);
+        binding.rvLocations.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvLocations.setAdapter(adapter);
     }
 
     private void setupObservers() {
