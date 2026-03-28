@@ -6,6 +6,7 @@ interface Schema {
   body?: ZodObject;
   query?: ZodObject;
   params?: ZodObject;
+  file?: ZodObject;
 }
 
 export const validate =
@@ -17,11 +18,18 @@ export const validate =
       }
 
       if (schema.query) {
-        Object.assign (req.query, (await schema.query.parseAsync(req.query)) as any);
+        Object.assign(
+          req.query,
+          (await schema.query.parseAsync(req.query)) as any,
+        );
       }
 
       if (schema.params) {
         req.params = (await schema.params.parseAsync(req.params)) as any;
+      }
+
+      if (schema.file) {
+        req.file = (await schema.file.parseAsync(req.file)) as any;
       }
 
       next();
