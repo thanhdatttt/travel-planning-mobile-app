@@ -22,4 +22,9 @@ export const config = {
     // FACEBOOK
     FB_CLIENT_ID: process.env.FB_CLIENT_ID,
     FB_CLIENT_SECRET: process.env.FB_CLIENT_SECRET,
+
+    //Cloudinary
+    CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
+    CLOUDINARY_KEY: process.env.CLOUDINARY_KEY,
+    CLOUDINARY_SECRET: process.env.CLOUDINARY_SECRET,
 }
