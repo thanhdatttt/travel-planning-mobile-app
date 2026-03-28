@@ -152,10 +152,9 @@ export const locationController = {
           locationPhotos: {
             take: 1,
           },
-          // 1. THÊM ĐOẠN NÀY ĐỂ ĐẾM SỐ LƯỢNG (Aggregate Count)
           _count: {
             select: {
-              reviews: true, // Lưu ý: Đổi 'reviews' thành tên relation chính xác trong schema.prisma của bạn
+              reviews: true,
             },
           },
         },
@@ -163,20 +162,43 @@ export const locationController = {
       prisma.location.count({ where }),
     ]);
 
-    // 2. MAP LẠI DATA ĐỂ TRẢ VỀ CHO MOBILE
-    // Bóc cái _count.reviews ra và gán vào ratingCount cho đúng format DTO bên Java
+    // ==========================================
+    // BƯỚC MỚI: DÙNG RAW SQL ĐỂ LẤY TỌA ĐỘ BÙ VÀO
+    // ==========================================
+    let coordinates: any[] = [];
+    if (locations.length > 0) {
+      // Biến mảng id thành chuỗi để đưa vào WHERE IN (ví dụ: 'id1','id2')
+      const idsString = locations.map((loc) => `'${loc.id}'`).join(",");
+
+      coordinates = await prisma.$queryRawUnsafe(`
+        SELECT 
+          id, 
+          ST_X(location::geometry) as longitude, 
+          ST_Y(location::geometry) as latitude
+        FROM "Location"
+        WHERE id IN (${idsString})
+      `);
+    }
+
+    // 2. MAP LẠI DATA ĐỂ TRẢ VỀ CHO MOBILE (Nhồi thêm latitude và longitude)
     const formattedLocations = locations.map((loc) => {
       const { _count, ...rest } = loc;
+
+      // Tìm tọa độ tương ứng với id của địa điểm này
+      const coord = coordinates.find((c: any) => c.id === loc.id);
+
       return {
         ...rest,
-        ratingCount: _count?.reviews || 0, // Gán số lượng đếm được, nếu null thì mặc định là 0
+        ratingCount: _count?.reviews || 0,
+        latitude: coord ? coord.latitude : null,
+        longitude: coord ? coord.longitude : null,
       };
     });
 
     return res.status(200).json(
       createResponse({
         data: {
-          items: formattedLocations, // Trả về mảng đã được format
+          items: formattedLocations,
           meta: {
             total,
             page,
