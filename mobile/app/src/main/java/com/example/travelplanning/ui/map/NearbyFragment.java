@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NearbyFragment extends Fragment {
-
+    private List<Location> currentDbSuggestions = new ArrayList<>();
     private final Handler mapHandler = new Handler(Looper.getMainLooper());
     private Runnable mapRunnable;
     private double lastLat = 0, lastLng = 0; // Để check xem map có dịch chuyển đáng kể không
@@ -63,7 +63,7 @@ public class NearbyFragment extends Fragment {
     private IMapController mapController;
     private MyLocationNewOverlay myLocationOverlay; // Dùng để hiển thị chấm xanh GPS
     private FusedLocationProviderClient fusedLocationClient; // Lấy tọa độ GPS
-
+    private SuggestAdapter customAdapter;
     // Biến cho Autocomplete cũ
     private ArrayAdapter<String> autocompleteAdapter;
     private List<PhotonResponse.Feature> currentSuggestions = new ArrayList<>();
@@ -118,13 +118,20 @@ public class NearbyFragment extends Fragment {
         });
 
         // Xử lý sự kiện bàn phím cho thanh Search cũ
-        binding.editTextSearch.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE ||
-                    (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                executeSearch();
-                return true;
+        binding.editTextSearch.setOnItemClickListener((parent, v, position, id) -> {
+            if (position < currentDbSuggestions.size()) {
+                // 1. Lấy đúng object Location người dùng vừa chọn
+                Location selectedLoc = currentDbSuggestions.get(position);
+
+                // 2. Điền tên vào ô nhập liệu
+                binding.editTextSearch.setText(selectedLoc.getName());
+                binding.editTextSearch.setSelection(selectedLoc.getName().length());
+                binding.editTextSearch.dismissDropDown();
+                hideKeyboard();
+
+                // 3. Gọi hàm bay đến vị trí và hiện BottomSheet
+                onLocationSelected(selectedLoc);
             }
-            return false;
         });
     }
 
@@ -172,17 +179,30 @@ public class NearbyFragment extends Fragment {
     }
 
     private void observeData() {
-        // Lắng nghe dữ liệu Nearby từ Database của bạn
+        // 1. Lắng nghe dữ liệu Nearby để VẼ MARKER (Đoạn này lúc nãy bị mất)
         locationViewModel.getNearbyLocations().observe(getViewLifecycleOwner(), locations -> {
             if (locations != null && !locations.isEmpty()) {
                 drawCustomMarkers(locations);
             }
         });
 
-        // Giữ lại observer của Photon Search cũ
-        mapViewModel.getSearchResults().observe(getViewLifecycleOwner(), response -> {
-            if (response != null && response.features != null && !response.features.isEmpty()) {
-                pinLocationOnMap(response.features.get(0));
+        // 2. Lắng nghe dữ liệu Search để ĐỔ VÀO DROPDOWN
+        locationViewModel.getSearchResults().observe(getViewLifecycleOwner(), locations -> {
+            if (locations != null) {
+                currentDbSuggestions.clear();
+                currentDbSuggestions.addAll(locations); // Lưu lại object để dùng khi click
+
+                displayList.clear();
+                for (Location loc : locations) {
+                    // Hiện tên và địa chỉ cho dễ nhìn
+                    String address = loc.getAddress() != null ? " - " + loc.getAddress() : "";
+                    displayList.add(loc.getName() + address); 
+                }
+                customAdapter.notifyDataSetChanged();
+                
+                if (!displayList.isEmpty()) {
+                    binding.editTextSearch.showDropDown();
+                }
             }
         });
     }
@@ -244,7 +264,7 @@ public class NearbyFragment extends Fragment {
     }
 
     private void setupAutocomplete() {
-        SuggestAdapter customAdapter = new SuggestAdapter(requireContext(), displayList);
+        customAdapter = new SuggestAdapter(requireContext(), displayList);
         binding.editTextSearch.setAdapter(customAdapter);
 
         binding.editTextSearch.addTextChangedListener(new android.text.TextWatcher() {
@@ -260,21 +280,17 @@ public class NearbyFragment extends Fragment {
             public void afterTextChanged(android.text.Editable s) {
                 String keyword = s.toString().trim();
                 if (keyword.length() >= 2) {
-
-                    org.osmdroid.util.BoundingBox box = mapView.getBoundingBox();
-                    String bboxString = box.getLonWest() + "," + box.getLatSouth() + "," + box.getLonEast() + "," + box.getLatNorth();
-                    double centerLat = mapView.getMapCenter().getLatitude();
-                    double centerLon = mapView.getMapCenter().getLongitude();
-
-                    searchRunnable = () -> mapViewModel.fetchAutocomplete(keyword, centerLat, centerLon, bboxString);
+                    if (searchRunnable != null) searchHandler.removeCallbacks(searchRunnable);
+                    
+                    searchRunnable = () -> {
+                        // Thay vì gọi Photon, ta gọi API search của chính mình
+                        // Page = 1, Limit = 5 (chỉ lấy vài gợi ý hiện lên dropdown)
+                        locationViewModel.searchLocations(keyword, null, null, 1, 5);
+                    };
                     searchHandler.postDelayed(searchRunnable, 500);
                 } else {
                     displayList.clear();
-                    currentSuggestions.clear();
-                    if (binding.editTextSearch.getAdapter() != null) {
-                        ((SuggestAdapter) binding.editTextSearch.getAdapter()).notifyDataSetChanged();
-                    }
-                    binding.editTextSearch.dismissDropDown();
+                    // Clear danh sách cũ
                 }
             }
         });
@@ -444,9 +460,8 @@ public class NearbyFragment extends Fragment {
         mapHandler.postDelayed(mapRunnable, 800); 
     }
 
-    private void showLocationPreview(com.example.travelplanning.data.model.location.Location loc) {
+    private void showLocationPreview(Location loc) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        
         View view = getLayoutInflater().inflate(R.layout.layout_location_preview, null);
         
         // Ánh xạ View
@@ -456,24 +471,44 @@ public class NearbyFragment extends Fragment {
         android.widget.TextView tvDistance = view.findViewById(R.id.tvDistance);
         android.widget.ImageView imgLocation = view.findViewById(R.id.imgLocation);
 
-        // Set dữ liệu
-        tvName.setText(loc.getName());
-        tvAddress.setText(loc.getAddress());
-        tvRating.setText("⭐ " + loc.getAvgRating() + " (" + loc.getRatingCount() + ")");
+        // 1. Set dữ liệu cơ bản (Check null cho an toàn)
+        tvName.setText(loc.getName() != null ? loc.getName() : "Chưa có tên");
+        tvAddress.setText(loc.getAddress() != null ? loc.getAddress() : "Chưa có địa chỉ");
         
-        // Định dạng khoảng cách (Ví dụ: 86.33m hoặc 1.2km)
-        String distanceStr = loc.getDistance() > 1000 
-            ? String.format("%.1f km", loc.getDistance() / 1000) 
-            : Math.round(loc.getDistance()) + " m";
-        tvDistance.setText("Cách đây " + distanceStr);
+        // 2. An toàn với Rating
+        double rating = loc.getAvgRating() != null ? loc.getAvgRating() : 0.0;
+        int count = loc.getRatingCount() != null ? loc.getRatingCount() : 0;
+        tvRating.setText("⭐ " + rating + " (" + count + ")");
+        
+        // 3. FIX LỖI VĂNG APP CHỖ NÀY: Check null cho Distance
+        if (loc.getDistance() != null) {
+            String distanceStr = loc.getDistance() > 1000 
+                ? String.format("%.1f km", loc.getDistance() / 1000) 
+                : Math.round(loc.getDistance()) + " m";
+            tvDistance.setText("Cách đây " + distanceStr);
+            tvDistance.setVisibility(View.VISIBLE);
+        } else {
+            tvDistance.setVisibility(View.GONE); // Nếu search không có khoảng cách thì ẩn dòng này đi
+        }
 
-        // Dùng Glide hoặc Picasso để load ảnh từ URL đầu tiên
-        if (loc.getImageUrl() != null) {
+        // 4. Dùng Glide để load ảnh 
+        if (loc.getImageUrl() != null && !loc.getImageUrl().isEmpty()) {
             com.bumptech.glide.Glide.with(this).load(loc.getImageUrl()).into(imgLocation);
+        } else {
+            imgLocation.setImageResource(R.drawable.ic_placeholder); // Ảnh mặc định nếu không có url
         }
 
         bottomSheetDialog.setContentView(view);
         bottomSheetDialog.show();
+    }
+
+    private void onLocationSelected(Location selectedLoc) {
+        GeoPoint targetPoint = new GeoPoint(selectedLoc.getLatitude(), selectedLoc.getLongitude());
+        mapController.setZoom(18.0);
+        mapController.animateTo(targetPoint);
+        
+        // Hiện ngay BottomSheet thông tin địa điểm đó luôn cho xịn
+        showLocationPreview(selectedLoc);
     }
 
 }
