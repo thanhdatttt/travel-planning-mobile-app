@@ -12,9 +12,10 @@ const coreFields = {
   address: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),
   website: z.url("Invalid URL").nullable().optional(),
-  priceLevel: z.number().int().min(1).max(5).nullable().optional(),
-  type: z.string().default("attraction"),
+  priceLevel: z.number().int().min(1).max(4).nullable().optional(),
   metadata: z.record(z.string(), z.any()).nullable().optional(),
+  latitude: z.number().min(-90).max(90, "Invalid latitude"),
+  longitude: z.number().min(-180).max(180, "Invalid longitude"),
 };
 
 export const LocationUpdateSchema = {
@@ -22,6 +23,9 @@ export const LocationUpdateSchema = {
 };
 
 export const LocationAdminUpdateSchema = {
+  params: z.object({
+    id: z.uuid("Invalid id"),
+  }),
   body: z.object({
     ...coreFields,
     osmId: z.string().nullable().optional(),
@@ -34,5 +38,30 @@ export const LocationAdminUpdateSchema = {
 export const LocationCreateSchema = {
   body: z.object({
     ...coreFields,
+  }),
+};
+
+export const MapLocationQuerySchema = {
+  query: z.object({
+    lat: z.string().transform(Number),
+    lng: z.string().transform(Number),
+    radius: z.string().optional().transform(Number).default(5000),
+    categoryId: z.string().optional().transform(Number),
+  }),
+};
+
+export const LocationSearchSchema = {
+  query: z.object({
+    q: z.string().optional(),
+    categoryId: z.string().optional().transform(Number),
+    priceLevel: z.string().optional().transform(Number),
+    page: z
+      .string()
+      .optional()
+      .transform((v) => parseInt(v || "1")),
+    limit: z
+      .string()
+      .optional()
+      .transform((v) => parseInt(v || "10")),
   }),
 };
