@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelplanning.R;
 import com.example.travelplanning.ui.adapter.LocationAdapter;
 import com.example.travelplanning.viewmodel.location.LocationViewModel;
+import com.example.travelplanning.viewmodel.category.CategoryViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
@@ -40,6 +41,7 @@ public class LocationSearchActivity extends AppCompatActivity {
     private Integer currentPriceLevel = null;
     private String currentQuery = "";
     private int currentPage = 1;
+    private CategoryViewModel categoryViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,8 @@ public class LocationSearchActivity extends AppCompatActivity {
 
     private void setupViewModel() {
         locationViewModel = new ViewModelProvider(this).get(LocationViewModel.class);
-
+        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        categoryViewModel.fetchAllCategories();
         locationViewModel.getSearchResults().observe(this, locations -> {
             if (locations != null) {
                 // Giả sử Adapter của bạn đã có hàm setList(locations)
@@ -165,53 +168,82 @@ public class LocationSearchActivity extends AppCompatActivity {
         View view = getLayoutInflater().inflate(R.layout.dialog_location_filter, null);
         bottomSheetDialog.setContentView(view);
 
-        // Ánh xạ View bên trong Dialog
+        // 1. Ánh xạ các View
         ChipGroup chipGroupPrice = view.findViewById(R.id.chipGroupPrice);
+        ChipGroup chipGroupCategory = view.findViewById(R.id.chipGroupCategory); // THÊM DÒNG NÀY
         MaterialButton btnResetFilter = view.findViewById(R.id.btnResetFilter);
         MaterialButton btnApplyFilter = view.findViewById(R.id.btnApplyFilter);
 
-        // 1. SET TRẠNG THÁI HIỆN TẠI LÊN DIALOG (Đồng bộ)
+        // 2. ĐỔ DỮ LIỆU CATEGORY VÀO CHIPGROUP (Phần mới quan trọng)
+        categoryViewModel.getCategories().observe(this, categories -> {
+            if (categories == null) return;
+            
+            chipGroupCategory.removeAllViews();
+            for (com.example.travelplanning.data.model.category.Category cat : categories) {
+                Chip chip = new Chip(this);
+                chip.setText(cat.getNameVi()); // Hiển thị tên tiếng Việt
+                chip.setCheckable(true);
+                chip.setTag(cat.getId()); // Lưu ID vào Tag
+                
+                // Đồng bộ trạng thái đã chọn trước đó
+                if (currentCategoryId != null && currentCategoryId.equals(cat.getId())) {
+                    chip.setChecked(true);
+                }
+                
+                chipGroupCategory.addView(chip);
+            }
+        });
+
+        // 3. ĐỒNG BỘ MỨC GIÁ (Giữ nguyên code cũ của bạn)
         if (currentPriceLevel != null) {
             int childCount = chipGroupPrice.getChildCount();
             for (int i = 0; i < childCount; i++) {
                 Chip chip = (Chip) chipGroupPrice.getChildAt(i);
                 if (chip.getTag() != null && Integer.parseInt(chip.getTag().toString()) == currentPriceLevel) {
-                    chip.setChecked(true); // Tự động tích chọn mức giá đang áp dụng
+                    chip.setChecked(true);
                     break;
                 }
             }
         }
 
-        // 2. NÚT ĐẶT LẠI (RESET)
+        // 4. NÚT ĐẶT LẠI (RESET) - Bổ sung reset Category
         btnResetFilter.setOnClickListener(v -> {
-            chipGroupPrice.clearCheck(); // Xóa tích chọn trên UI
-            currentPriceLevel = null; // Reset biến logic
-            // currentCategoryId = null; // Reset thêm Category nếu bạn có implement
+            chipGroupPrice.clearCheck();
+            chipGroupCategory.clearCheck(); // THÊM DÒNG NÀY
+            currentPriceLevel = null;
+            currentCategoryId = null;       // THÊM DÒNG NÀY
             
             currentPage = 1;
             performSearch();
             bottomSheetDialog.dismiss();
         });
 
-        // 3. NÚT ÁP DỤNG (APPLY)
+        // 5. NÚT ÁP DỤNG (APPLY) - Bổ sung lấy ID Category
         btnApplyFilter.setOnClickListener(v -> {
-            // Lấy ID của Chip được chọn
-            int selectedChipId = chipGroupPrice.getCheckedChipId();
-            if (selectedChipId != View.NO_ID) {
-                Chip selectedChip = view.findViewById(selectedChipId);
-                if (selectedChip.getTag() != null) {
-                    // Lấy giá trị từ Tag (ví dụ: "1", "2") chuyển thành Integer
-                    currentPriceLevel = Integer.parseInt(selectedChip.getTag().toString());
+            int selectedPriceId = chipGroupPrice.getCheckedChipId();
+            if (selectedPriceId != View.NO_ID) {
+                Chip selectedChip = view.findViewById(selectedPriceId);
+                Object tagValue = selectedChip.getTag();
+                if (tagValue != null) {
+                    // Ép kiểu an toàn
+                    currentPriceLevel = Integer.valueOf(tagValue.toString());
                 }
             } else {
-                currentPriceLevel = null; // Người dùng không chọn cái nào
+                currentPriceLevel = null; // Bỏ chọn lọc theo giá
             }
 
-            // (Xử lý tương tự cho currentCategoryId nếu bạn có layout)
+            // Lấy CategoryId (PHẦN MỚI)
+            int selectedCatId = chipGroupCategory.getCheckedChipId();
+            if (selectedCatId != View.NO_ID) {
+                Chip selectedChip = chipGroupCategory.findViewById(selectedCatId);
+                currentCategoryId = (Integer) selectedChip.getTag();
+            } else {
+                currentCategoryId = null;
+            }
 
-            currentPage = 1; // Reset về trang 1
-            performSearch(); // Gọi API
-            bottomSheetDialog.dismiss(); // Đóng bảng
+            currentPage = 1;
+            performSearch();
+            bottomSheetDialog.dismiss();
         });
 
         bottomSheetDialog.show();

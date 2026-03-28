@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp"
-    android:background="@drawable/bg_bottom_sheet_curve"> <TextView
+    android:background="@drawable/bg_bottom_sheet_curve">
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Bộ lọc tìm kiếm"
@@ -17,6 +19,24 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Danh mục"
+        android:textColor="#555555"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:singleSelection="true"
+        app:selectionRequired="false">
+        </com.google.android.material.chip.ChipGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Mức giá"
         android:textColor="#555555"
         android:textSize="16sp"
@@ -24,32 +44,43 @@
         android:layout_marginBottom="12dp"/>
 
     <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroupPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        app:singleSelection="true"> <com.google.android.material.chip.Chip
-            android:id="@+id/chipPriceLow"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$ (Rẻ)"
-            android:tag="1"/> <com.google.android.material.chip.Chip
-            android:id="@+id/chipPriceMedium"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$$ (Trung bình)"
-            android:tag="2"/>
+    android:id="@+id/chipGroupPrice"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="24dp"
+    app:singleSelection="true">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipPriceHigh"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$$$ (Sang trọng)"
-            android:tag="3"/>
-    </com.google.android.material.chip.ChipGroup>
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipPrice1"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$ (Rẻ)"
+        android:tag="1"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipPrice2"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$$ (Vừa túi tiền)"
+        android:tag="2"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipPrice3"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$$$ (Cao cấp)"
+        android:tag="3"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipPrice4"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$$$$ (Xa hoa)"
+        android:tag="4"/> </com.google.android.material.chip.ChipGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
