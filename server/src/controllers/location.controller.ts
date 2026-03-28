@@ -39,38 +39,75 @@ export const locationController = {
       .json(createResponse({ data: { ...location, photos } }));
   },
   async getMapLocations(req: Request, res: Response) {
-    const { lat, lng, radius, categoryId } = req.query as any;
+    try {
+      const { lat, lng, radius, categoryId } = req.query as any;
 
-    const categoryFilter = categoryId ? `AND "categoryId" = ${categoryId}` : "";
-    const locations = await prisma.$queryRawUnsafe(
-      `
-      SELECT 
-        id, 
-        name, 
-        "categoryId",
-        "priceLevel",
-        ST_X(location::geometry) as longitude,
-        ST_Y(location::geometry) as latitude,
-        ST_Distance(
-          location, 
-          ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
-        ) as distance
-      FROM "Location"
-      WHERE ST_DWithin(
-        location, 
-        ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography, 
-        $3
-      )
-      ${categoryFilter}
-      AND "isDeleted" = false
-      ORDER BY distance ASC
-      LIMIT 100
-    `,
-      lng,
-      lat,
-      radius,
-    );
-    return res.status(200).json(createResponse({ data: locations }));
+      const latitude = parseFloat(lat);
+      const longitude = parseFloat(lng);
+      const rad = parseInt(radius) || 5000;
+
+      // Chú ý: l."categoryId" phải khớp với tên cột trong DB
+      const categoryFilter = categoryId
+        ? `AND l."categoryId" = ${parseInt(categoryId)}`
+        : "";
+
+      const locations: any[] = await prisma.$queryRawUnsafe(
+        `
+        SELECT 
+          l.id, 
+          l.name, 
+          l.address,
+          l."categoryId",
+          l."priceLevel",
+          l."avgRating",
+          l."ratingCount",
+          ST_X(l.location::geometry) as longitude,
+          ST_Y(l.location::geometry) as latitude,
+          ST_Distance(
+            l.location, 
+            ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
+          ) as distance,
+          -- JOIN với bảng LocationCategory (viết hoa đúng theo @@map)
+          json_build_object(
+            'nameVi', c."nameVi", 
+            'icon', c.icon
+          ) as category,
+          -- Subquery lấy ảnh từ bảng LocationPhoto (bố kiểm tra lại @@map của bảng này nhé)
+          COALESCE(
+            (
+              SELECT json_agg(json_build_object('url', lp.url))
+              FROM "LocationPhoto" lp
+              WHERE lp."locationId" = l.id
+            ), 
+            '[]'::json
+          ) as "locationPhotos"
+        FROM "Location" l
+        LEFT JOIN "LocationCategory" c ON l."categoryId" = c.id
+        WHERE ST_DWithin(
+          l.location, 
+          ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography, 
+          $3
+        )
+        ${categoryFilter}
+        AND l."isDeleted" = false
+        ORDER BY distance ASC
+        `,
+        longitude,
+        latitude,
+        rad,
+      );
+
+      return res.status(200).json({
+        message: "Lấy danh sách địa điểm thành công",
+        data: locations,
+      });
+    } catch (error: any) {
+      console.error("Error fetching map locations:", error);
+      return res.status(400).json({
+        message: error.message || "Đã có lỗi xảy ra",
+        error: "Bad Request",
+      });
+    }
   },
   async search(req: Request, res: Response) {
     const q = req.query.q as string;
