@@ -201,15 +201,12 @@ model ItineraryItem {
   itineraryId String
   locationId  String
   note        String?
-  orderIdx    Int
-  dayNumber   Int?
-  endTime     DateTime?
-  startTime   DateTime?
+  orderIdx    Int       @default(0)
+  date        DateTime?
   itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
   location    Location  @relation(fields: [locationId], references: [id])
 
-  @@index([dayNumber])
-  @@index([itineraryId])
+  @@index([itineraryId, date, orderIdx])
 }
 
 model Favorite {
