@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -13,7 +7,246 @@ datasource db {
   provider = "postgresql"
 }
 
-// enum types
+model User {
+  id                 String          @id @default(uuid())
+  email              String          @unique
+  username           String          @unique
+  fullName           String?
+  phone              String?
+  address            String?
+  avatarUrl          String?
+  bio                String?
+  preference         Json?
+  role               userRole        @default(user)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  isBanned           Boolean         @default(false)
+  isDeleted          Boolean         @default(false)
+  dob                DateTime?
+  authProviders      AuthProvider[]
+  bookmarkedLocation Bookmark[]
+  favorites          Favorite[]
+  iteneraries        Itinerary[]
+  createdLocations   Location[]
+  uploaddedPhotos    LocationPhoto[]
+  reports            Report[]
+  locationReviews    Review[]
+  sessions           Session[]
+}
+
+model AuthProvider {
+  id           String       @id @default(uuid())
+  userId       String
+  provider     authProvider @default(local)
+  providerId   String
+  hashPassword String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerId])
+  @@unique([userId, provider])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model EmailOTP {
+  id        String   @id @default(uuid())
+  email     String
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  verified  Boolean  @default(false)
+  type      otpType  @default(register)
+
+  @@index([email])
+  @@index([expiresAt])
+}
+
+model LocationCategory {
+  id           Int        @id @default(autoincrement())
+  slug         String     @unique
+  nameEn       String
+  nameVi       String
+  icon         String?
+  displayOrder Int        @default(0)
+  locations    Location[]
+
+  @@map("LocationCategory")
+}
+
+model Location {
+  id             String                   @id @default(uuid())
+  osmId          String?                  @unique
+  isDeleted      Boolean                  @default(false)
+  createdBy      String                   @default("system")
+  name           String
+  slug           String?                  @unique
+  description    String?
+  address        String?
+  phone          String?
+  website        String?
+  avgRating      Float                    @default(0)
+  ratingCount    Int                      @default(0)
+  priceLevel     Int?                     @db.SmallInt
+  metadata       Json?
+  categoryId     Int
+  location       Unsupported("geography")
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  deletedAt      DateTime?
+  bookmarks      Bookmark[]
+  itineraryItems ItineraryItem[]
+  category       LocationCategory         @relation(fields: [categoryId], references: [id])
+  user           User                     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  locationHours  LocationHour[]
+  locationPhotos LocationPhoto[]
+  reviews        Review[]
+
+  @@index([name])
+  @@index([categoryId])
+  @@index([location], map: "location_idx", type: Gist)
+  @@map("Location")
+}
+
+model LocationHour {
+  id         String   @id @default(uuid())
+  locationId String
+  dayOfWeek  Int      @db.SmallInt
+  openTime   DateTime
+  closeTime  DateTime
+  note       String?
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
+}
+
+model LocationPhoto {
+  id         String   @id @default(uuid())
+  locationId String
+  uploaderId String
+  url        String
+  width      Int?
+  height     Int?
+  alt        String?
+  isFeature  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
+  @@index([uploaderId])
+}
+
+model Review {
+  id         String    @id @default(uuid())
+  locationId String
+  userId     String
+  isDeleted  Boolean   @default(false)
+  title      String
+  body       String
+  rating     Int       @default(1) @db.SmallInt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+  location   Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, locationId])
+  @@index([locationId])
+  @@index([userId])
+}
+
+model Bookmark {
+  id         String   @id @default(uuid())
+  userId     String
+  locationId String
+  createdAt  DateTime @default(now())
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, locationId])
+  @@index([userId])
+  @@index([locationId])
+}
+
+model Itinerary {
+  id             String          @id @default(uuid())
+  ownerId        String
+  title          String
+  description    String?
+  privacy        privacy         @default(private)
+  startDate      DateTime        @default(now())
+  endDate        DateTime        @default(now())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  user           User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  itineraryItems ItineraryItem[]
+
+  @@index([ownerId])
+}
+
+model ItineraryItem {
+  id          String    @id @default(uuid())
+  itineraryId String
+  locationId  String
+  note        String?
+  orderIdx    Int
+  dayNumber   Int?
+  endTime     DateTime?
+  startTime   DateTime?
+  itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  location    Location  @relation(fields: [locationId], references: [id])
+
+  @@index([dayNumber])
+  @@index([itineraryId])
+}
+
+model Favorite {
+  id          String   @id @default(uuid())
+  userId      String
+  itineraryId String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itineraryId])
+  @@index([userId])
+}
+
+model Report {
+  id         String       @id @default(uuid())
+  reporterId String
+  targetType objType
+  targetId   String
+  reason     String
+  status     reportStatus @default(pending)
+  createdAt  DateTime     @default(now())
+  handledAt  DateTime?
+  handledBy  String
+  user       User         @relation(fields: [handledBy], references: [id])
+
+  @@unique([reporterId, targetId])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
+}
+
 enum authProvider {
   local
   facebook
@@ -46,274 +279,4 @@ enum objType {
 enum reportStatus {
   pending
   processed
-}
-
-// models
-model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  username String @unique
-  dob      DateTime?
-
-  fullName   String?
-  phone      String?
-  address    String?
-  avatarUrl  String?
-  bio        String?
-  preference Json?
-  isBanned  Boolean  @default(false)
-  isDeleted  Boolean  @default(false)
-
-  role userRole @default(user)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  authProviders      AuthProvider[]
-  sessions           Session[]
-  createdLocations   Location[]
-  uploaddedPhotos    LocationPhoto[]
-  locationReviews    Review[]
-  bookmarkedLocation Bookmark[]
-  iteneraries        Itinerary[]
-  favorites          Favorite[]
-  reports            Report[]
-}
-
-model AuthProvider {
-  id     String @id @default(uuid())
-  userId String
-
-  provider     authProvider @default(local)
-  providerId   String
-  hashPassword String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerId])
-  @@unique([userId, provider])
-}
-
-model Session {
-  id        String   @id @default(uuid())
-  expiresAt DateTime
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model EmailOTP {
-  id        String   @id @default(uuid())
-  email     String
-  otp       String
-  type      otpType  @default(register)
-  verified  Boolean  @default(false)
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-
-  @@index([email])
-  @@index([expiresAt])
-}
-
-// 1. Model Danh mục lớn (Thay thế cho Enum)
-model LocationCategory {
-  id           Int        @id @default(autoincrement())
-  slug         String     @unique // Ví dụ: "food-and-drink"
-  nameEn       String     // Food & Drink
-  nameVi       String     // Ăn uống
-  icon         String?    // Tên resource icon trên Android (ví dụ: "ic_category_food")
-  displayOrder Int        @default(0)
-
-  // Quan hệ: Một danh mục có nhiều địa điểm
-  locations    Location[]
-
-  @@map("LocationCategory")
-}
-
-// 2. Model Location được cập nhật dựa trên bản pull mới
-model Location {
-  id          String   @id @default(uuid())
-  osmId       String?  @unique
-  isDeleted   Boolean  @default(false)
-
-  createdBy   String   @default("system") 
-  name        String
-  slug        String?  @unique
-  description String?  @db.Text
-  address     String?
-  phone       String?
-  website     String?
-  avgRating   Float    @default(0)
-  ratingCount Int      @default(0)
-  priceLevel  Int?     @db.SmallInt  
-  
-  metadata    Json?
-  
-  // Quan hệ nối với bảng danh mục lớn
-  categoryId  Int
-  category    LocationCategory @relation(fields: [categoryId], references: [id])
-
-  // PostGIS Geography field
-  location    Unsupported("geography(Point, 4326)")
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
-
-  user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  locationHours  LocationHour[]
-  locationPhotos LocationPhoto[]
-  reviews        Review[]
-  bookmarks      Bookmark[]
-  itineraryItems ItineraryItem[]
-
-  @@index([name])
-  @@index([categoryId]) // Quan trọng để lọc theo danh mục nhanh
-  @@map("Location")
-}
-
-model LocationHour {
-  id String @id @default(uuid())
-
-  locationId String
-  dayOfWeek  Int      @db.SmallInt
-  openTime   DateTime
-  closeTime  DateTime
-  note       String?
-
-  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
-
-  @@index([locationId])
-}
-
-model LocationPhoto {
-  id         String @id @default(uuid())
-  locationId String
-  uploaderId String
-
-  url       String
-  width     Int?
-  height    Int?
-  alt       String?
-  isFeature Boolean @default(false)
-
-  createdAt DateTime @default(now())
-
-  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
-
-  @@index([locationId])
-  @@index([uploaderId])
-}
-
-model Review {
-  id         String  @id @default(uuid())
-  locationId String
-  userId     String
-  isDeleted  Boolean @default(false)
-
-  title  String
-  body   String
-  rating Int    @default(1) @db.SmallInt
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, locationId])
-  @@index([locationId])
-  @@index([userId])
-}
-
-model Bookmark {
-  id         String @id @default(uuid())
-  userId     String
-  locationId String
-
-  createdAt DateTime @default(now())
-
-  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, locationId])
-  @@index([userId])
-  @@index([locationId])
-}
-
-model Itinerary {
-  id      String @id @default(uuid())
-  ownerId String
-
-  title       String
-  description String?
-  privacy     privacy  @default(private)
-  startDate   DateTime @default(now())
-  endDate     DateTime @default(now())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
-  itineraryItems ItineraryItem[]
-
-  @@index([ownerId])
-}
-
-model ItineraryItem {
-  id          String @id @default(uuid())
-  itineraryId String
-  locationId  String
-
-  dayNumber Int?
-  startTime DateTime?
-  endTime   DateTime?
-  note      String?
-  orderIdx  Int
-
-  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
-  location  Location  @relation(fields: [locationId], references: [id])
-  
-  @@index([dayNumber])
-  @@index([itineraryId])
-}
-
-model Favorite {
-  id          String @id @default(uuid())
-  userId      String
-  itineraryId String
-
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, itineraryId])
-  @@index([userId])
-}
-
-model Report {
-  id         String       @id @default(uuid())
-  reporterId String
-  targetType objType
-  targetId   String
-  reason     String
-  status     reportStatus @default(pending)
-
-  createdAt DateTime  @default(now())
-  handledAt DateTime?
-  handledBy String
-
-  user User @relation(fields: [handledBy], references: [id])
-
-  @@unique([reporterId, targetId]) //1 ng chỉ đc report 1 thứ 1 lần
 }
