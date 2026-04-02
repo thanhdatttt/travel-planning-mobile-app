@@ -1,5 +1,7 @@
 package com.example.travelplanning.data.remote.core;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -11,5 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaginatedData<T> {
     private List<T> items;
+    @SerializedName(value = "meta", alternate = {"metadata"})
     private MetaResponse meta;
 }

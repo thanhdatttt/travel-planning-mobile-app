@@ -4,9 +4,9 @@
     android:id="@+id/cardActiveTrip"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/card_background"
+    app:cardBackgroundColor="@color/background"
     app:cardCornerRadius="16dp"
-    app:cardElevation="0dp">
+    app:cardElevation="2dp">
 
     <!-- Cover image with badge overlay -->
     <LinearLayout android:orientation="vertical"
@@ -14,12 +14,13 @@
         android:layout_height="wrap_content">
 
         <!-- Cover image with badge overlay -->
-        <FrameLayout android:layout_width="match_parent" android:layout_height="200dp">
-            <ImageView android:id="@+id/iv_cover"
+        <FrameLayout android:layout_width="match_parent" android:layout_height="150dp">
+            <ImageView android:id="@+id/ivCover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_default_image"/>
+                android:contentDescription="@string/trip_image"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_placeholder"/>
         </FrameLayout>
 
         <!-- Info row -->
@@ -31,7 +32,7 @@
             <TextView android:id="@+id/tvTripName"
                 android:textColor="@color/text"
                 android:textSize="24sp"
-                android:text="Trip to Ha Noi"
+                android:text="@string/trip_to_ha_noi"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -39,7 +40,7 @@
             <TextView android:id="@+id/tvTripDates"
                 android:textColor="@color/text_secondary"
                 android:textSize="16sp"
-                android:text="10/5/2026 - 15/5/2026"
+                android:text="@string/_10_5_2026_15_5_2026"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

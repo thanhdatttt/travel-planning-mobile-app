@@ -48,6 +48,7 @@
             android:drawablePadding="10dp"
             android:background="@drawable/edit_textbox"
             android:hint="@string/example_gmail_com"
+            android:textColorHint="@color/text_secondary"
             android:inputType="textEmailAddress" />
         <Button
             android:id="@+id/btnEmailContinue"
@@ -85,6 +86,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:icon="@drawable/google"
+            app:iconTint="@color/white"
             app:iconGravity="textStart"
             app:iconPadding="12dp"
             app:iconSize="20dp"/>
@@ -101,6 +103,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:icon="@drawable/facebook"
+            app:iconTint="@color/white"
             app:iconGravity="textStart"
             app:iconPadding="10dp"
             app:iconSize="20dp"/>

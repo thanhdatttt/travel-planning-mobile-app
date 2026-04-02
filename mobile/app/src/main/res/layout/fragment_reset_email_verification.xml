@@ -47,6 +47,7 @@
             android:drawablePadding="10dp"
             android:background="@drawable/edit_textbox"
             android:hint="@string/example_gmail_com"
+            android:textColorHint="@color/text_secondary"
             android:inputType="textEmailAddress" />
         <Button
             android:id="@+id/btnEmailResetContinue"

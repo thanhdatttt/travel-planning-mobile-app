@@ -111,7 +111,7 @@ export const getUserItineraries = async (req: Request, res: Response) => {
         message: "Get user itineraries successfully",
         data: {
           items: itineraries,
-          pagination: {
+          metadata: {
             currentPage: page,
             limit: limit,
             totalItems: total,
@@ -158,7 +158,7 @@ export const getPublicItineraries = async (req: Request, res: Response) => {
         message: "Get public itineraries successfully",
         data: {
           items: itineraries,
-          pagination: {
+          metadata: {
             currentPage: page,
             limit: limit,
             totalItems: total,

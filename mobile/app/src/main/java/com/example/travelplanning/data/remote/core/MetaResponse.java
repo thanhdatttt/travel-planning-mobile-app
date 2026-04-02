@@ -1,5 +1,7 @@
 package com.example.travelplanning.data.remote.core;
 
+import com.google.gson.annotations.SerializedName;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MetaResponse {
+    @SerializedName(value = "total", alternate = {"totalItems"})
     private int total;
+    @SerializedName(value = "page", alternate = {"currentPage"})
     private int page;
     private int limit;
     private int totalPages;
