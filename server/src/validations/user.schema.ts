@@ -39,3 +39,16 @@ export const updateUserSchema = {
       .optional(),
   }),
 };
+
+export const uploadAvatarSchema = {
+  file: z.object({
+    fieldname: z.literal("avatar"),
+    mimetype: z
+      .string()
+      .refine((cap) => ["image/jpeg", "image/png", "image/jpg"].includes(cap), {
+        message: "Only .jpg, .jpeg, .png files are allowed",
+      }),
+    size: z.number().max(2 * 1024 * 1024, "File cannot exceed 2MB"),
+    path: z.url("Invalid Cloudinary URL"),
+  }),
+};

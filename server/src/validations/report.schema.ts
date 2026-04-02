@@ -5,7 +5,7 @@ const ReportStatusEnum = z.enum(["pending", "processed"]);
 
 export const ReportParamsSchema = {
   params: z.object({
-    id: z.string().uuid("Invalid report ID"),
+    id: z.uuid("Invalid report ID"),
   }),
 };
 

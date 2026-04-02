@@ -11,9 +11,9 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface UserApi {
-    @GET("api/user/me")
+    @GET("api/users/me")
     Call<ApiResponse<UserProfileResponse>> getProfile();
 
-    @POST("api/user")
+    @POST("api/users")
     Call<ApiResponse<UserProfileResponse>> updateProfile(@Body UpdateMeRequest request);
 }

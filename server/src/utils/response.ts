@@ -7,17 +7,17 @@ interface Metadata {
 }
 
 interface Response<T = unknown> {
-    message?: string;
-    data?: T;
-    metadata?: Metadata;
-    error?: string | string[];
+  message?: string;
+  data?: T;
+  metadata?: Metadata;
+  error?: string | string[];
 }
 
 export const createResponse = <T>(params: Response<T>) => {
-    return {
-        message: params.message ?? null,
-        data: params.data,
-        metadata: params.metadata,
-        error: params.error,
-    };
-}
+  return {
+    message: params.message ?? null,
+    data: params.data,
+    metadata: params.metadata,
+    error: params.error,
+  };
+};
