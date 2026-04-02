@@ -1,6 +1,7 @@
 package com.example.travelplanning.viewmodel.profile;
 
 import android.app.Application;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -53,6 +54,23 @@ public class ProfileViewModel extends AndroidViewModel {
                 isLoading.setValue(false);
                 userProfile.setValue(data);
                 successMessage.setValue(R.string.update_profile_success);
+            }
+
+            @Override
+            public void onError(String error) {
+                isLoading.setValue(false);
+                errorMessage.setValue(error);
+            }
+        });
+    }
+
+    public void uploadAvatar(Uri imageUri) {
+        isLoading.setValue(true);
+        userProfileRepository.uploadAvatar(imageUri, new UserProfileRepository.UserProfileCallback<UserProfile>() {
+            @Override
+            public void onSuccess(UserProfile data) {
+                isLoading.setValue(false);
+                userProfile.setValue(data);
             }
 
             @Override
