@@ -30,7 +30,7 @@ public class UserProfileRepository {
 
     private final UserApi userApi;
     private final Context context;
-    private final UserProfileMapper userProfileMapper; // Khai báo thợ chuyển đổi
+    private final UserProfileMapper userProfileMapper;
 
     public UserProfileRepository(Context context) {
         this.context = context.getApplicationContext();
