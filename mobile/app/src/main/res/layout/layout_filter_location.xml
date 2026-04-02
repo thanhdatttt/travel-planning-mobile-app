@@ -58,14 +58,14 @@
 
         </RelativeLayout>
 
-        <!-- Role Section -->
+        <!-- Price Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginBottom="20dp">
 
-            <!-- Role Label -->
+            <!-- Price Label -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:src="@drawable/ic_role"
+                    android:src="@drawable/ic_price"
                     android:layout_marginEnd="6dp"
                     android:contentDescription="Vai trò icon" />
 
@@ -93,14 +93,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingHorizontal="15dp"
-                android:gravity="center_vertical">
+                android:gravity="center">
 
                 <!-- MinPrice -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlMinPrice"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="125dp"
+                    android:layout_width="135dp"
                     android:layout_height="35dp"
                     android:hint="Min Price"
                     app:endIconMode="clear_text">
@@ -126,13 +125,179 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlMaxPrice"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="125dp"
+                    android:layout_width="135dp"
                     android:layout_height="35dp"
                     android:hint="Max Price"
                     app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etMaxPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:gravity="center"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Distance Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <!-- Distance Label -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_distance"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="Vai trò icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Distance:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A1A" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <!-- MinPrice -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlMinDist"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="135dp"
+                    android:layout_height="35dp"
+                    android:hint="Min Distance"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMinDist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:gravity="center"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="2dp"
+                    android:background="#1A1A1A"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- MaxPrice -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlMaxDist"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="135dp"
+                    android:layout_height="35dp"
+                    android:hint="Max Distance"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMaxDist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:gravity="center"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Rating Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <!-- Rating Label -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_star_black"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="Vai trò icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ratings:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A1A" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <!-- MinRating -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlMinRating"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="135dp"
+                    android:layout_height="35dp"
+                    android:hint="Min Rating"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMinRating"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:gravity="center"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="2dp"
+                    android:background="#1A1A1A"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- MaxRating -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlMaxRating"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="135dp"
+                    android:layout_height="35dp"
+                    android:hint="Max Rating"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMaxRating"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
@@ -234,33 +399,43 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             app:singleSelection="false"
+            android:gravity="center"
             android:layout_gravity="center"
             app:chipSpacingHorizontal="15dp">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipBanned"
+                android:id="@+id/chipRestaurent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Banned"
-                app:chipIcon="@drawable/ic_banned"
+                android:text="Restaurant"
+                app:chipIcon="@drawable/ic_restaurant"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipDeleted"
+                android:id="@+id/chipCoffee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Deleted"
-                app:chipIcon="@drawable/ic_deleted"
+                android:text="Coffee"
+                app:chipIcon="@drawable/ic_coffee"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipInactive"
+                android:id="@+id/chipHotel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Inactive"
-                app:chipIcon="@drawable/ic_inactive"
+                android:text="Hotel"
+                app:chipIcon="@drawable/ic_hotel"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipEntertain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Entertainment"
+                app:chipIcon="@drawable/ic_entertainment"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
 

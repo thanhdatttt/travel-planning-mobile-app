@@ -36,4 +36,8 @@
         <item name="android:focusable">false</item>
         <item name="android:cursorVisible">false</item>
     </style>
+
+    <style name="AdminStatText" parent="TextView">
+
+    </style>
 </resources>
