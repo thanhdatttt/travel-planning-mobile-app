@@ -90,4 +90,17 @@
     <string name="back_button">back button</string>
     <string name="config_button">config button</string>
     <string name="description_to_trip">Description to trip</string>
+    <string name="add_button">add button</string>
+    <string name="trip_detail">Trip detail</string>
+    <string name="ha_noi_viet_nam">Ha Noi, Viet Nam</string>
+    <string name="number_of_locations">5 Locations</string>
+    <string name="add">Add</string>
+    <string name="trip_setting">Trip setting</string>
+    <string name="add_some_description_to_your_trip">Add some description to your trip</string>
+    <string name="description">Description</string>
+    <string name="privacy">Privacy</string>
+    <string name="actions">Actions</string>
+    <string name="clone_trip">Clone trip</string>
+    <string name="delete_trip">Delete trip</string>
+    <string name="public_your_trip">Public your trip</string>
 </resources>

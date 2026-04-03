@@ -21,6 +21,16 @@
                 android:contentDescription="@string/trip_image"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_placeholder"/>
+            <ImageView
+                android:id="@+id/btnConfig"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end"
+                android:contentDescription="@string/config_button"
+                android:src="@drawable/ic_dots"
+                app:tint="@color/text" />
         </FrameLayout>
 
         <!-- Info row -->

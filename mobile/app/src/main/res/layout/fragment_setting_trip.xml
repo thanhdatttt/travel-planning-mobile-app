@@ -28,7 +28,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/create_a_new_trip"
+            android:text="@string/trip_setting"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="@color/text"
@@ -39,10 +39,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+    <!-- setting  -->
     <ScrollView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toTopOf="@id/layoutButtons"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -126,10 +127,99 @@
                 android:hint="@string/yyyy_mm_dd"
                 android:textColorHint="@color/text_secondary"
                 android:inputType="date" />
+
+            <!--      description      -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/description"
+                android:textColor="@color/text"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/edtTripDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:gravity="top"
+                android:minLines="4"
+                android:inputType="textMultiLine"
+                android:background="@drawable/edit_textbox"
+                android:hint="@string/add_some_description_to_your_trip"
+                android:textColor="@color/black"
+                android:textColorHint="@color/text_secondary"
+                android:autofillHints="" />
+
+            <!--      privacy      -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/privacy"
+                android:textColor="@color/text"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edit_textbox"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <TextView
+                    android:id="@+id/tvPrivacyStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/public_your_trip"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/swPrivacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false" />
+            </LinearLayout>
+
+            <!--     action buttons     -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/actions"
+                android:textColor="@color/text"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCopyTrip"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/clone_trip"
+                android:textAllCaps="false"
+                 />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteTrip"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/delete_trip"
+                android:textAllCaps="false"
+                android:textColor="@android:color/holo_red_light"
+                app:iconTint="@android:color/holo_red_dark" />
         </LinearLayout>
     </ScrollView>
 
-    <!--      buttons      -->
+    <!--      save button      -->
     <LinearLayout
         android:id="@+id/layoutButtons"
         android:layout_width="match_parent"
@@ -140,28 +230,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <!--       cancel         -->
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:text="@string/cancel"
-            android:textStyle="bold"
-            android:textSize="16sp"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <!--       create         -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCreateTrip"
-            android:text="@string/create_trip"
-            android:layout_width="wrap_content"
+            android:id="@+id/btnChangeSetting"
+            android:text="Save change"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
             android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:textSize="20sp"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
