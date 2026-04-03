@@ -362,6 +362,20 @@ public class NearbyFragment extends Fragment {
             imgLocation.setImageResource(R.drawable.ic_placeholder);
         }
 
+        view.setOnClickListener(v -> {
+            // 1. Đóng BottomSheet trước khi chuyển màn
+            bottomSheetDialog.dismiss();
+
+            // 2. Tạo Bundle để gửi ID sang màn hình Detail
+            Bundle bundle = new Bundle();
+            bundle.putString("location_id", loc.getId());
+
+            // 3. Sử dụng NavController để điều hướng
+            // Lưu ý: requireView() ở đây là view của NearbyFragment
+            androidx.navigation.Navigation.findNavController(requireView())
+                    .navigate(R.id.nav_location_detail, bundle);
+        });
+
         bottomSheetDialog.setContentView(view);
         bottomSheetDialog.show();
     }

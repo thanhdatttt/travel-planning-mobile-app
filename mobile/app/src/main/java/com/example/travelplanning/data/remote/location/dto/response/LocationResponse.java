@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 public class LocationResponse {
     private String id;
     private String name;
+    private String description;
     private String address;
+    private String phone;
+    private String website;
     private Integer priceLevel;
 
     private Double latitude;
@@ -26,7 +29,6 @@ public class LocationResponse {
     private List<LocationPhotoResponse> locationPhotos;
 
     private Double avgRating;
-
     private Integer ratingCount;
 
     @Data
@@ -39,5 +41,6 @@ public class LocationResponse {
     public static class LocationPhotoResponse {
         @SerializedName("url")
         private String url;
+        private Boolean isFeature;
     }
 }
