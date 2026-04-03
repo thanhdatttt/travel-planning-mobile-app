@@ -19,6 +19,7 @@ public class LocationMapper implements BaseMapper<LocationResponse, Location> {
                 .id(dto.getId())
                 .name(dto.getName())
                 .address(dto.getAddress())
+                .description(dto.getDescription())
                 .avgRating(dto.getAvgRating())
                 .priceLevel(dto.getPriceLevel())
                 .latitude(dto.getLatitude())

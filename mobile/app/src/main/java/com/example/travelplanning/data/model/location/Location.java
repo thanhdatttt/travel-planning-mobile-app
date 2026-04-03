@@ -18,7 +18,7 @@ public class Location {
     String address;
     Double avgRating;
     Integer priceLevel;
-
+    String description;
     Double latitude;
     Double longitude;
     Double distance;

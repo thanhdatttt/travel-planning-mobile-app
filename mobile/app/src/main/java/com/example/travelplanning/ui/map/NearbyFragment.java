@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
@@ -38,10 +39,13 @@ import com.example.travelplanning.viewmodel.map.MapViewModel;
 import com.example.travelplanning.viewmodel.map.NearbyViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -54,18 +58,24 @@ import java.util.List;
 
 public class NearbyFragment extends Fragment {
 
+    private GeoPoint lastFetchPoint = null;
+    private long lastFetchTime = 0;
+
     private FragmentNearbyBinding binding;
     private MapViewModel mapViewModel;
     private LocationViewModel locationViewModel;
-    private NearbyViewModel nearbyViewModel; // View Model Mới
+    private NearbyViewModel nearbyViewModel;
 
     private MapView mapView;
     private IMapController mapController;
     private MyLocationNewOverlay myLocationOverlay;
     private FusedLocationProviderClient fusedLocationClient;
-    
+
+    private BottomSheetBehavior<View> bottomSheetBehavior;
+    private LocationAdapter locationAdapter;
+
     private SuggestAdapter customAdapter;
-    private final List<String> currentDisplayNames = new ArrayList<>(); // Danh sách local cho Adapter
+    private final List<String> currentDisplayNames = new ArrayList<>();
     private List<PhotonResponse.Feature> currentSuggestions = new ArrayList<>();
 
     private final Handler mapHandler = new Handler(Looper.getMainLooper());
@@ -79,8 +89,8 @@ public class NearbyFragment extends Fragment {
                 if (fineLocationGranted != null && fineLocationGranted) {
                     getUserLocationAndFetchNearby();
                 } else {
-                    Toast.makeText(requireContext(), "Cần quyền vị trí để hiển thị quanh đây!", Toast.LENGTH_LONG).show();
                     mapController.setCenter(new GeoPoint(10.7769, 106.7009));
+                    fetchNearbyFromMap();
                 }
             });
 
@@ -99,7 +109,6 @@ public class NearbyFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Khởi tạo cả 3 ViewModel
         mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
         locationViewModel = new ViewModelProvider(this).get(LocationViewModel.class);
         nearbyViewModel = new ViewModelProvider(this).get(NearbyViewModel.class);
@@ -108,8 +117,8 @@ public class NearbyFragment extends Fragment {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         setupMap();
-        setupAutocomplete();
         setupUIFeatures();
+        setupAutocomplete();
         observeData();
 
         locationPermissionRequest.launch(new String[]{
@@ -121,24 +130,39 @@ public class NearbyFragment extends Fragment {
     private void setupMap() {
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.setMultiTouchControls(true);
-        mapView.setBuiltInZoomControls(true);
 
         mapController = mapView.getController();
         mapView.setFlingEnabled(true);
         mapController.setZoom(16.0);
+        mapView.setBuiltInZoomControls(false);
 
         myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(requireContext()), mapView);
         myLocationOverlay.enableMyLocation();
+
+        Drawable locationDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_current_location);
+        if (locationDrawable != null) {
+            int width = locationDrawable.getIntrinsicWidth();
+            int height = locationDrawable.getIntrinsicHeight();
+            android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888);
+            android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
+            locationDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            locationDrawable.draw(canvas);
+
+            myLocationOverlay.setPersonIcon(bitmap);
+            myLocationOverlay.setDirectionIcon(bitmap);
+            myLocationOverlay.setPersonAnchor(0.5f, 0.5f);
+        }
         mapView.getOverlays().add(myLocationOverlay);
 
-        mapView.addMapListener(new org.osmdroid.events.MapListener() {
+        mapView.addMapListener(new MapListener() {
             @Override
-            public boolean onScroll(org.osmdroid.events.ScrollEvent event) {
-                scheduleFetch();
+            public boolean onScroll(ScrollEvent event) {
+                checkAndFetchWhileMoving();
                 return true;
             }
+
             @Override
-            public boolean onZoom(org.osmdroid.events.ZoomEvent event) {
+            public boolean onZoom(ZoomEvent event) {
                 scheduleFetch();
                 return true;
             }
@@ -152,21 +176,36 @@ public class NearbyFragment extends Fragment {
                 GeoPoint userPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                 mapController.setZoom(16.0);
                 mapController.animateTo(userPoint);
+                fetchNearbyFromMap();
+            } else {
+                fetchNearbyFromMap();
             }
         });
     }
 
     private void setupUIFeatures() {
-        // 1. TẮT BÀN PHÍM VÀ FOCUS KHI BẤM NÚT BACK (Sửa lại thứ tự)
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPanel);
+        bottomSheetBehavior.setHideable(false);
+
+        locationAdapter = new LocationAdapter(this::onLocationSelected);
+        binding.recyclerViewPlaces.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.recyclerViewPlaces.setAdapter(locationAdapter);
+
         binding.btnBack.setOnClickListener(v -> {
-            hideKeyboard(); // Đóng bàn phím trước
-            binding.editTextSearch.clearFocus(); // Gỡ focus sau
-            
-            // Nút back này nếu bố muốn nó quay về màn hình trước (Home) thì thêm dòng này:
-            // requireActivity().getOnBackPressedDispatcher().onBackPressed();
+            hideKeyboard();
+            requireActivity().getOnBackPressedDispatcher().onBackPressed();
         });
 
-        // Delegate sự kiện Click sang ViewModel
+        binding.fabMyLocation.setOnClickListener(v -> {
+            if (myLocationOverlay.getMyLocation() != null) {
+                mapController.animateTo(myLocationOverlay.getMyLocation());
+                mapController.setZoom(17.0);
+                binding.containerPreviewCard.setVisibility(View.GONE);
+                bottomSheetBehavior.setHideable(false);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+
         View.OnClickListener chipClickListener = v -> {
             String targetIcon = "";
             if (v.getId() == R.id.chipFood) targetIcon = "ic_category_food";
@@ -175,62 +214,110 @@ public class NearbyFragment extends Fragment {
             else if (v.getId() == R.id.chipShop) targetIcon = "ic_category_shop";
             else if (v.getId() == R.id.chipService) targetIcon = "ic_category_service";
 
+            // 1. Cập nhật State
             nearbyViewModel.toggleCategory(targetIcon);
-        };
+            
+            // 2. Fetch data độc lập cho Panel nếu đang có Category được chọn
+            GeoPoint myLoc = myLocationOverlay.getMyLocation();
+            if (myLoc != null && nearbyViewModel.getSelectedCategoryIcon().getValue() != null) {
+                locationViewModel.fetchPanelLocationsByCategory(myLoc.getLatitude(), myLoc.getLongitude(), targetIcon);
+            }
 
+            bottomSheetBehavior.setHideable(false);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+        };
+        
         binding.chipFood.setOnClickListener(chipClickListener);
         binding.chipHotel.setOnClickListener(chipClickListener);
         binding.chipAttraction.setOnClickListener(chipClickListener);
-        binding.chipShop.setOnClickListener(chipClickListener);
-        binding.chipService.setOnClickListener(chipClickListener);
+        if (binding.chipShop != null) binding.chipShop.setOnClickListener(chipClickListener);
+        if (binding.chipService != null) binding.chipService.setOnClickListener(chipClickListener);
+
+        binding.btnZoomIn.setOnClickListener(v -> {
+            if (mapController != null) mapController.zoomIn();
+        });
+
+        binding.btnZoomOut.setOnClickListener(v -> {
+            if (mapController != null) mapController.zoomOut();
+        });
     }
 
     private void observeData() {
-        // --- 1. LUỒNG DỮ LIỆU TỪ SERVER CHẢY VÀO NEARBY_VIEWMODEL ---
+        // Luồng 1: Dữ liệu từ Map Scroll (Radius)
         locationViewModel.getNearbyLocations().observe(getViewLifecycleOwner(), locations -> {
-            nearbyViewModel.setLocations(locations);
+            GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
+            nearbyViewModel.setMapData(locations, myLoc);
         });
 
-        locationViewModel.getSearchResults().observe(getViewLifecycleOwner(), locations -> {
-            nearbyViewModel.setSearchSuggestions(locations);
+        // Luồng 2: Dữ liệu từ API Category riêng (Không Radius)
+        locationViewModel.getCategoryPanelLocations().observe(getViewLifecycleOwner(), locations -> {
+            GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
+            nearbyViewModel.setCategoryPanelData(locations, myLoc);
         });
 
-        // --- 2. LUỒNG DỮ LIỆU TỪ NEARBY_VIEWMODEL CHẢY RA UI ---
-        
-        // Cập nhật lại bản đồ mỗi khi danh sách lọc thay đổi
-        nearbyViewModel.getFilteredLocations().observe(getViewLifecycleOwner(), this::drawCustomMarkers);
+        // Output 1: Vẽ lên bản đồ (Map)
+        nearbyViewModel.getMapMarkers().observe(getViewLifecycleOwner(), this::drawCustomMarkers);
 
-        // Cập nhật lại UI các Nút Chip (Độ sáng mờ)
+        // Output 2: Đổ vào Adapter (Danh sách Panel)
+        nearbyViewModel.getPanelList().observe(getViewLifecycleOwner(), locations -> {
+            GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
+            locationAdapter.updateData(locations, myLoc);
+        });
+
+        // Hiệu ứng mờ/sáng khi bấm Category
         nearbyViewModel.getSelectedCategoryIcon().observe(getViewLifecycleOwner(), selectedIcon -> {
             binding.chipFood.setAlpha(selectedIcon == null || selectedIcon.equals("ic_category_food") ? 1.0f : 0.5f);
             binding.chipHotel.setAlpha(selectedIcon == null || selectedIcon.equals("ic_category_hotel") ? 1.0f : 0.5f);
             binding.chipAttraction.setAlpha(selectedIcon == null || selectedIcon.equals("ic_category_attraction") ? 1.0f : 0.5f);
-            binding.chipShop.setAlpha(selectedIcon == null || selectedIcon.equals("ic_category_shop") ? 1.0f : 0.5f);
-            binding.chipService.setAlpha(selectedIcon == null || selectedIcon.equals("ic_category_service") ? 1.0f : 0.5f);
+            if (binding.chipShop != null) binding.chipShop.setAlpha(selectedIcon == null || selectedIcon.equals("ic_category_shop") ? 1.0f : 0.5f);
+            if (binding.chipService != null) binding.chipService.setAlpha(selectedIcon == null || selectedIcon.equals("ic_category_service") ? 1.0f : 0.5f);
         });
 
-        // Đổ dữ liệu vào Dropdown tìm kiếm
-        nearbyViewModel.getDisplaySearchNames().observe(getViewLifecycleOwner(), names -> {
-            currentDisplayNames.clear();
-            if (names != null) currentDisplayNames.addAll(names);
-            customAdapter.notifyDataSetChanged();
-            if (!currentDisplayNames.isEmpty() && binding.editTextSearch.hasFocus()) {
-                binding.editTextSearch.showDropDown();
-            }
-        });
-
-        // Giữ lại Observer của Photon
         mapViewModel.getAutocompleteResults().observe(getViewLifecycleOwner(), features -> {
             currentSuggestions.clear();
             currentSuggestions.addAll(features);
             currentDisplayNames.clear();
             for (PhotonResponse.Feature feature : features) {
                 String name = feature.properties.name != null ? feature.properties.name : feature.properties.street;
-                String city = feature.properties.city != null ? " (" + feature.properties.city + ")" : "";
-                if (name != null) currentDisplayNames.add(name + city);
+                if (name != null) currentDisplayNames.add(name);
             }
             customAdapter.notifyDataSetChanged();
             if (!currentDisplayNames.isEmpty()) binding.editTextSearch.showDropDown();
+        });
+    }
+
+    private void showLocationPreview(Location loc) {
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        
+        binding.containerPreviewCard.setVisibility(View.VISIBLE);
+
+        View card = binding.containerPreviewCard;
+        ((TextView) card.findViewById(R.id.tvPlaceName)).setText(loc.getName());
+        
+        double rating = loc.getAvgRating() != null ? loc.getAvgRating() : 0.0;
+        int count = loc.getRatingCount() != null ? loc.getRatingCount() : 0;
+        String priceStr = (loc.getPriceLevel() != null && loc.getPriceLevel() > 0) 
+            ? " • " + new String(new char[loc.getPriceLevel()]).replace("\0", "$") : "";
+        ((TextView) card.findViewById(R.id.tvRating)).setText("⭐ " + rating + " (" + count + ")" + priceStr);
+
+        GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
+        if (myLoc != null && loc.getLatitude() != null) {
+            double dist = myLoc.distanceToAsDouble(new GeoPoint(loc.getLatitude(), loc.getLongitude()));
+            String distStr = dist > 1000 ? String.format("%.1f km", dist / 1000) : Math.round(dist) + " m";
+            ((TextView) card.findViewById(R.id.tvDistanceAddress)).setText(distStr + " • " + (loc.getAddress() != null ? loc.getAddress() : ""));
+        } else {
+            ((TextView) card.findViewById(R.id.tvDistanceAddress)).setText(loc.getAddress() != null ? loc.getAddress() : "");
+        }
+
+        Glide.with(this).load(loc.getImageUrl())
+            .centerCrop().placeholder(R.drawable.ic_placeholder)
+            .into((ImageView) card.findViewById(R.id.imgPlace));
+
+        card.setOnClickListener(v -> {
+            binding.containerPreviewCard.setVisibility(View.GONE);
+            bottomSheetBehavior.setHideable(false);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         });
     }
 
@@ -239,6 +326,7 @@ public class NearbyFragment extends Fragment {
 
         if (locations != null) {
             for (Location loc : locations) {
+                if (loc.getLatitude() == null || loc.getLongitude() == null) continue;
                 Marker marker = new Marker(mapView);
                 marker.setPosition(new GeoPoint(loc.getLatitude(), loc.getLongitude()));
                 marker.setTitle(loc.getName());
@@ -257,13 +345,15 @@ public class NearbyFragment extends Fragment {
     }
 
     private void fetchNearbyFromMap() {
+        if (mapView == null) return;
         double currentLat = mapView.getMapCenter().getLatitude();
         double currentLng = mapView.getMapCenter().getLongitude();
         double currentZoom = mapView.getZoomLevelDouble();
-        
-        // Delegate logic tính toán bán kính sang ViewModel
-        int radius = nearbyViewModel.calculateRadiusFromZoom(currentZoom);
 
+        lastFetchPoint = new GeoPoint(currentLat, currentLng);
+        lastFetchTime = System.currentTimeMillis();
+
+        int radius = nearbyViewModel.calculateRadiusFromZoom(currentZoom);
         locationViewModel.fetchNearbyLocations(currentLat, currentLng, radius, null);
     }
 
@@ -286,7 +376,13 @@ public class NearbyFragment extends Fragment {
                 String keyword = s.toString().trim();
                 if (keyword.length() >= 2) {
                     if (searchRunnable != null) searchHandler.removeCallbacks(searchRunnable);
-                    searchRunnable = () -> locationViewModel.searchLocations(keyword, null, null, 1, 5);
+                    searchRunnable = () -> {
+                        org.osmdroid.util.BoundingBox box = mapView.getBoundingBox();
+                        String bboxString = box.getLonWest() + "," + box.getLatSouth() + "," + box.getLonEast() + "," + box.getLatNorth();
+                        double centerLat = mapView.getMapCenter().getLatitude();
+                        double centerLon = mapView.getMapCenter().getLongitude();
+                        mapViewModel.fetchAutocomplete(keyword, centerLat, centerLon, bboxString);
+                    };
                     searchHandler.postDelayed(searchRunnable, 500);
                 } else {
                     currentDisplayNames.clear();
@@ -296,16 +392,14 @@ public class NearbyFragment extends Fragment {
         });
 
         binding.editTextSearch.setOnItemClickListener((parent, v, position, id) -> {
-            List<Location> dbSuggestions = nearbyViewModel.getCurrentDbSuggestions().getValue();
-            if (dbSuggestions != null && position < dbSuggestions.size()) {
-                Location selectedLoc = dbSuggestions.get(position);
-                
-                binding.editTextSearch.setText(selectedLoc.getName());
-                binding.editTextSearch.setSelection(selectedLoc.getName().length());
+            if (position < currentSuggestions.size()) {
+                PhotonResponse.Feature selectedFeature = currentSuggestions.get(position);
+                String name = selectedFeature.properties.name != null ? selectedFeature.properties.name : selectedFeature.properties.street;
+                binding.editTextSearch.setText(name);
+                binding.editTextSearch.setSelection(name != null ? name.length() : 0);
                 binding.editTextSearch.dismissDropDown();
                 hideKeyboard();
-                
-                onLocationSelected(selectedLoc);
+                executeSearch();
             }
         });
 
@@ -319,51 +413,15 @@ public class NearbyFragment extends Fragment {
         });
     }
 
-    private void showLocationPreview(Location loc) {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View view = getLayoutInflater().inflate(R.layout.layout_location_preview, null);
-
-        TextView tvName = view.findViewById(R.id.tvName);
-        TextView tvRating = view.findViewById(R.id.tvRating);
-        TextView tvAddress = view.findViewById(R.id.tvAddress);
-        TextView tvDistance = view.findViewById(R.id.tvDistance);
-        ImageView imgLocation = view.findViewById(R.id.imgLocation);
-
-        tvName.setText(loc.getName() != null ? loc.getName() : "Chưa có tên");
-        tvAddress.setText(loc.getAddress() != null ? loc.getAddress() : "Chưa có địa chỉ");
-
-        double rating = loc.getAvgRating() != null ? loc.getAvgRating() : 0.0;
-        int count = loc.getRatingCount() != null ? loc.getRatingCount() : 0;
-        tvRating.setText("⭐ " + rating + " (" + count + ")");
-
-        Double displayDistance = null;
-        GeoPoint myActualLocation = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
-
-        if (myActualLocation != null && loc.getLatitude() != null && loc.getLongitude() != null) {
-            GeoPoint placeLocation = new GeoPoint(loc.getLatitude(), loc.getLongitude());
-            displayDistance = myActualLocation.distanceToAsDouble(placeLocation);
-        } else if (loc.getDistance() != null) {
-            displayDistance = loc.getDistance();
+    private void executeSearch() {
+        String keyword = binding.editTextSearch.getText().toString().trim();
+        if (!keyword.isEmpty()) {
+            hideKeyboard();
+            binding.editTextSearch.dismissDropDown();
+            binding.editTextSearch.clearFocus();
+            nearbyViewModel.toggleCategory("CLEAR_ALL");
+            locationViewModel.searchLocations(keyword, null, null, 1, 20);
         }
-
-        if (displayDistance != null) {
-            String distanceStr = displayDistance > 1000
-                    ? String.format("%.1f km", displayDistance / 1000)
-                    : Math.round(displayDistance) + " m";
-            tvDistance.setText("Cách đây " + distanceStr);
-            tvDistance.setVisibility(View.VISIBLE);
-        } else {
-            tvDistance.setVisibility(View.GONE);
-        }
-
-        if (loc.getImageUrl() != null && !loc.getImageUrl().isEmpty()) {
-            Glide.with(this).load(loc.getImageUrl()).into(imgLocation);
-        } else {
-            imgLocation.setImageResource(R.drawable.ic_placeholder);
-        }
-
-        bottomSheetDialog.setContentView(view);
-        bottomSheetDialog.show();
     }
 
     private void onLocationSelected(Location selectedLoc) {
@@ -378,27 +436,11 @@ public class NearbyFragment extends Fragment {
         showLocationPreview(selectedLoc);
     }
 
-    private void executeSearch() {
-        String keyword = binding.editTextSearch.getText().toString().trim();
-        if (!keyword.isEmpty()) {
-            hideKeyboard();
-            binding.editTextSearch.dismissDropDown();
-            binding.editTextSearch.clearFocus();
-
-            org.osmdroid.util.BoundingBox box = mapView.getBoundingBox();
-            String bboxString = box.getLonWest() + "," + box.getLatSouth() + "," + box.getLonEast() + "," + box.getLatNorth();
-            double centerLat = mapView.getMapCenter().getLatitude();
-            double centerLon = mapView.getMapCenter().getLongitude();
-
-            mapViewModel.performSearch(keyword, centerLat, centerLon, bboxString);
-            Toast.makeText(requireContext(), "Đang tìm...", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        // Ép nó đóng bàn phím của đúng cái ô nhập liệu này
-        imm.hideSoftInputFromWindow(binding.editTextSearch.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(binding.editTextSearch.getWindowToken(), 0);
+        }
     }
 
     private Drawable getIconForCategory(String iconName) {
@@ -417,13 +459,16 @@ public class NearbyFragment extends Fragment {
 
     @Override
     public void onResume() { super.onResume(); if (mapView != null) mapView.onResume(); }
+
     @Override
     public void onPause() { super.onPause(); if (mapView != null) mapView.onPause(); }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (mapView != null) mapView.onDetach();
         if (searchRunnable != null) searchHandler.removeCallbacks(searchRunnable);
+        if (mapRunnable != null) mapHandler.removeCallbacks(mapRunnable);
         binding = null;
     }
 
@@ -448,6 +493,25 @@ public class NearbyFragment extends Fragment {
                     notifyDataSetChanged();
                 }
             };
+        }
+    }
+
+    private void checkAndFetchWhileMoving() {
+        if (mapView == null) return;
+        GeoPoint currentCenter = new GeoPoint(mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude());
+        long currentTime = System.currentTimeMillis();
+
+        if (lastFetchPoint == null) {
+            fetchNearbyFromMap();
+            return;
+        }
+
+        double distanceMoved = lastFetchPoint.distanceToAsDouble(currentCenter);
+        if (distanceMoved > 300 && (currentTime - lastFetchTime > 1000)) {
+            if (mapRunnable != null) mapHandler.removeCallbacks(mapRunnable);
+            fetchNearbyFromMap();
+        } else {
+            scheduleFetch();
         }
     }
 }

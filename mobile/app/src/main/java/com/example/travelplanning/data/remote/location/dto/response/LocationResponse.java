@@ -14,7 +14,7 @@ public class LocationResponse {
     private String name;
     private String address;
     private Integer priceLevel;
-
+    private String description;
     private Double latitude;
     private Double longitude;
     private Double distance;
