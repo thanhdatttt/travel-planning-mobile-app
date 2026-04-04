@@ -129,6 +129,25 @@ public class AdminUserFragment extends Fragment {
         popup.show();
     }
 
+    private void showUserInfoDialog(UserProfile user) {
+        com.google.android.material.dialog.MaterialAlertDialogBuilder builder =
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext());
+
+        // Build a simple but clean summary string
+        StringBuilder info = new StringBuilder();
+        info.append("ID: ").append(user.getId()).append("\n\n");
+        info.append("Email: ").append(user.getEmail()).append("\n\n");
+        info.append("Role: ").append(user.getRole()).append("\n\n");
+        info.append("Banned: ").append(user.getIsBanned() ? "Yes" : "No").append("\n");
+        info.append("Deleted: ").append(user.getIsDeleted() ? "Yes" : "No");
+
+        builder.setTitle(user.getUsername() + "'s Information")
+                .setMessage(info.toString())
+                .setPositiveButton("Close", (dialog, which) -> dialog.dismiss())
+                .setIcon(R.drawable.ic_user) // Ensure you have a user icon
+                .show();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

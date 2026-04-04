@@ -53,7 +53,7 @@ public class AdminLocationViewModel extends AndroidViewModel {
     }
 
     public void fetchLocations(boolean isLoadMore) {
-        if (isLoading.getValue() || (isLoadMore && isLastPage)) return;
+        if (Boolean.TRUE.equals(isLoading.getValue()) || (isLoadMore && isLastPage)) return;
 
         if (!isLoadMore) {
             currentOffset = 0;

@@ -56,7 +56,7 @@ public class AdminUserViewModel extends AndroidViewModel {
             public void onSuccess(List<UserProfile> data) {
                 isLoading.setValue(false);
                 users.setValue(data);
-                System.out.print(users);
+                System.out.println(data);
             }
 
             @Override

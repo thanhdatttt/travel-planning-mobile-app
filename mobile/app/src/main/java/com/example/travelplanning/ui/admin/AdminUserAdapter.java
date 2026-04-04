@@ -59,6 +59,14 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
             binding.tvUsername.setText(user.getUsername());
             binding.tvEmail.setText(user.getEmail());
 
+            // RENDER AVATAR
+            com.bumptech.glide.Glide.with(binding.ivAvatar.getContext())
+                    .load(user.getAvatarUrl() != null ? user.getAvatarUrl() : R.drawable.no_avatar)
+                    .circleCrop()
+                    .placeholder(R.drawable.no_avatar)
+                    .error(R.drawable.no_avatar)
+                    .into(binding.ivAvatar);
+
             // Hiển thị Role lên TextView tvRole trong XML của bạn
             String roleName = user.getRole() != null ? user.getRole().name() : "USER";
             binding.tvRole.setText(roleName.toLowerCase());
@@ -82,6 +90,7 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
 
             binding.tvRole.setTextColor(color);
 
+            binding.getRoot().setOnClickListener(v -> itemListener.onUserClick(user));
             binding.ivOptions.setOnClickListener(v -> listener.onOptionClick(v, user));
         }
     }
