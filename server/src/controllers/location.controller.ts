@@ -182,6 +182,8 @@ export const locationController = {
       };
     });
 
+    console.log(formattedLocations);
+
     return res.status(200).json(
       createResponse({
         data: {

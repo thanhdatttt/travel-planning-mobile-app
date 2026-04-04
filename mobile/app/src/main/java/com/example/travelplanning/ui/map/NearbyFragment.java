@@ -1,5 +1,6 @@
 package com.example.travelplanning.ui.map;
-
+import org.osmdroid.events.MapEventsReceiver;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -77,11 +78,20 @@ public class NearbyFragment extends Fragment {
     private SuggestAdapter customAdapter;
     private final List<String> currentDisplayNames = new ArrayList<>();
     private List<PhotonResponse.Feature> currentSuggestions = new ArrayList<>();
+    private NoFilterSuggestAdapter noFilterSuggestAdapter; 
+
+    private List<Location> currentSearchLocations = new ArrayList<>();
+    private List<String> currentSearchNames = new ArrayList<>();
+    private ArrayAdapter<String> searchAdapter;
 
     private final Handler mapHandler = new Handler(Looper.getMainLooper());
     private Runnable mapRunnable;
     private final Handler searchHandler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
+
+    private int lastBottomSheetState = BottomSheetBehavior.STATE_COLLAPSED;
+    private boolean isViewingPreview = false;
+    private boolean isSilentFetch = false;
 
     private final ActivityResultLauncher<String[]> locationPermissionRequest =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -125,6 +135,48 @@ public class NearbyFragment extends Fragment {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
         });
+
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING || 
+                    newState == BottomSheetBehavior.STATE_HALF_EXPANDED || 
+                    newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    
+                    if (binding != null && binding.editTextSearch.hasFocus()) {
+                        binding.editTextSearch.clearFocus();
+                        hideKeyboard();
+                    }
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        locationViewModel.getSearchResults().observe(getViewLifecycleOwner(), locations -> {
+            if (locations != null) {
+                currentSearchLocations.clear();
+                currentSearchNames.clear();
+                for (Location loc : locations) {
+                    currentSearchLocations.add(loc);
+                    currentSearchNames.add(loc.getName()); 
+                }
+                if (searchAdapter != null) {
+                    searchAdapter.notifyDataSetChanged();
+                }
+
+                String currentText = binding.editTextSearch.getText().toString().trim();
+                if (currentText.length() > 0 && !currentSearchNames.isEmpty() && binding.editTextSearch.hasFocus()) {
+                    binding.editTextSearch.showDropDown();
+                }
+                if (locationAdapter != null) {
+                    GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
+                    locationAdapter.updateData(locations, myLoc);
+                }
+            }
+        });
     }
 
     private void setupMap() {
@@ -154,9 +206,31 @@ public class NearbyFragment extends Fragment {
         }
         mapView.getOverlays().add(myLocationOverlay);
 
+        MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
+            @Override
+            public boolean singleTapConfirmedHelper(GeoPoint p) {
+                if (binding != null && binding.editTextSearch.hasFocus()) {
+                    binding.editTextSearch.clearFocus();
+                    hideKeyboard();
+                }
+                return false; 
+            }
+
+            @Override
+            public boolean longPressHelper(GeoPoint p) {
+                return false;
+            }
+        };
+        mapView.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
+
         mapView.addMapListener(new MapListener() {
             @Override
             public boolean onScroll(ScrollEvent event) {
+                if (binding != null && binding.editTextSearch.hasFocus()) {
+                    binding.editTextSearch.clearFocus();
+                    hideKeyboard();
+                }
+                
                 checkAndFetchWhileMoving();
                 return true;
             }
@@ -214,17 +288,15 @@ public class NearbyFragment extends Fragment {
             else if (v.getId() == R.id.chipShop) targetIcon = "ic_category_shop";
             else if (v.getId() == R.id.chipService) targetIcon = "ic_category_service";
 
-            // 1. Cập nhật State
             nearbyViewModel.toggleCategory(targetIcon);
             
-            // 2. Fetch data độc lập cho Panel nếu đang có Category được chọn
             GeoPoint myLoc = myLocationOverlay.getMyLocation();
             if (myLoc != null && nearbyViewModel.getSelectedCategoryIcon().getValue() != null) {
                 locationViewModel.fetchPanelLocationsByCategory(myLoc.getLatitude(), myLoc.getLongitude(), targetIcon);
             }
 
             bottomSheetBehavior.setHideable(false);
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         };
         
         binding.chipFood.setOnClickListener(chipClickListener);
@@ -243,28 +315,23 @@ public class NearbyFragment extends Fragment {
     }
 
     private void observeData() {
-        // Luồng 1: Dữ liệu từ Map Scroll (Radius)
         locationViewModel.getNearbyLocations().observe(getViewLifecycleOwner(), locations -> {
             GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
             nearbyViewModel.setMapData(locations, myLoc);
         });
 
-        // Luồng 2: Dữ liệu từ API Category riêng (Không Radius)
         locationViewModel.getCategoryPanelLocations().observe(getViewLifecycleOwner(), locations -> {
             GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
             nearbyViewModel.setCategoryPanelData(locations, myLoc);
         });
 
-        // Output 1: Vẽ lên bản đồ (Map)
         nearbyViewModel.getMapMarkers().observe(getViewLifecycleOwner(), this::drawCustomMarkers);
 
-        // Output 2: Đổ vào Adapter (Danh sách Panel)
         nearbyViewModel.getPanelList().observe(getViewLifecycleOwner(), locations -> {
             GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
             locationAdapter.updateData(locations, myLoc);
         });
 
-        // Hiệu ứng mờ/sáng khi bấm Category
         nearbyViewModel.getSelectedCategoryIcon().observe(getViewLifecycleOwner(), selectedIcon -> {
             binding.chipFood.setAlpha(selectedIcon == null || selectedIcon.equals("ic_category_food") ? 1.0f : 0.5f);
             binding.chipHotel.setAlpha(selectedIcon == null || selectedIcon.equals("ic_category_hotel") ? 1.0f : 0.5f);
@@ -284,13 +351,40 @@ public class NearbyFragment extends Fragment {
             customAdapter.notifyDataSetChanged();
             if (!currentDisplayNames.isEmpty()) binding.editTextSearch.showDropDown();
         });
+
+        locationViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+        if (binding.layoutLoadingOverlay != null) {
+            
+            if (isLoading && isSilentFetch) {
+                return; 
+            }
+
+            binding.layoutLoadingOverlay.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            
+            if (!isLoading) {
+                isSilentFetch = false;
+            }
+        }
+    });
+
     }
 
     private void showLocationPreview(Location loc) {
+        if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+            lastBottomSheetState = bottomSheetBehavior.getState();
+        }
+
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         
         binding.containerPreviewCard.setVisibility(View.VISIBLE);
+        
+        binding.containerPreviewCard.setAlpha(0f);
+        binding.containerPreviewCard.setVisibility(View.VISIBLE);
+        binding.containerPreviewCard.animate()
+                .alpha(1f) 
+                .setDuration(250) 
+                .start();
 
         View card = binding.containerPreviewCard;
         ((TextView) card.findViewById(R.id.tvPlaceName)).setText(loc.getName());
@@ -314,10 +408,30 @@ public class NearbyFragment extends Fragment {
             .centerCrop().placeholder(R.drawable.ic_placeholder)
             .into((ImageView) card.findViewById(R.id.imgPlace));
 
+        isViewingPreview = true; 
+
+        ImageView btnClosePreview = card.findViewById(R.id.btnClosePreview);
+        if (btnClosePreview != null) {
+            btnClosePreview.setOnClickListener(v -> {
+                
+                binding.containerPreviewCard.animate()
+                        .alpha(0f) 
+                        .setDuration(200) 
+                        .withEndAction(() -> { 
+                            binding.containerPreviewCard.setVisibility(View.GONE);
+                            
+                            bottomSheetBehavior.setState(lastBottomSheetState);
+                            
+                            binding.getRoot().postDelayed(() -> {
+                                bottomSheetBehavior.setHideable(false);
+                                isViewingPreview = false; 
+                            }, 300);
+                        }).start();
+            });
+        }
+
         card.setOnClickListener(v -> {
-            binding.containerPreviewCard.setVisibility(View.GONE);
-            bottomSheetBehavior.setHideable(false);
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            // Trang chi tiết location
         });
     }
 
@@ -354,6 +468,7 @@ public class NearbyFragment extends Fragment {
         lastFetchTime = System.currentTimeMillis();
 
         int radius = nearbyViewModel.calculateRadiusFromZoom(currentZoom);
+        isSilentFetch = true;
         locationViewModel.fetchNearbyLocations(currentLat, currentLng, radius, null);
     }
 
@@ -364,49 +479,103 @@ public class NearbyFragment extends Fragment {
     }
 
     private void setupAutocomplete() {
-        customAdapter = new SuggestAdapter(requireContext(), currentDisplayNames);
-        binding.editTextSearch.setAdapter(customAdapter);
+        searchAdapter = new NoFilterSuggestAdapter(requireContext(), currentSearchNames);
+        binding.editTextSearch.setAdapter(searchAdapter);
+
+        binding.btnClearSearch.setOnClickListener(v -> {
+            binding.editTextSearch.setText(""); 
+        });
+
+        if (binding.btnSearchBack != null) {
+            binding.btnSearchBack.setOnClickListener(v -> {
+                binding.editTextSearch.clearFocus();
+                hideKeyboard();
+            });
+        }
+
+        binding.editTextSearch.setOnFocusChangeListener((v, hasFocus) -> {
+            if (binding.imgSearchIcon != null && binding.btnSearchBack != null) {
+                if (hasFocus) {
+                    binding.imgSearchIcon.setVisibility(View.GONE);
+                    binding.btnSearchBack.setVisibility(View.VISIBLE);
+                    
+                    if (bottomSheetBehavior != null) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                } else {
+                    binding.btnSearchBack.setVisibility(View.GONE);
+                    binding.imgSearchIcon.setVisibility(View.VISIBLE);  
+                }
+            }
+        });
 
         binding.editTextSearch.addTextChangedListener(new android.text.TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override 
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override 
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s != null && s.toString().trim().length() > 0) {
+                    binding.btnClearSearch.setVisibility(View.VISIBLE);
+                } else {
+                    binding.btnClearSearch.setVisibility(View.GONE);
+                }
+                
                 if (searchRunnable != null) searchHandler.removeCallbacks(searchRunnable);
             }
-            @Override public void afterTextChanged(android.text.Editable s) {
+
+            @Override 
+            public void afterTextChanged(android.text.Editable s) {
                 String keyword = s.toString().trim();
                 if (keyword.length() >= 2) {
-                    if (searchRunnable != null) searchHandler.removeCallbacks(searchRunnable);
                     searchRunnable = () -> {
-                        org.osmdroid.util.BoundingBox box = mapView.getBoundingBox();
-                        String bboxString = box.getLonWest() + "," + box.getLatSouth() + "," + box.getLonEast() + "," + box.getLatNorth();
-                        double centerLat = mapView.getMapCenter().getLatitude();
-                        double centerLon = mapView.getMapCenter().getLongitude();
-                        mapViewModel.fetchAutocomplete(keyword, centerLat, centerLon, bboxString);
+                        locationViewModel.searchLocations(keyword, null, null, 1, 10);
                     };
                     searchHandler.postDelayed(searchRunnable, 500);
                 } else {
-                    currentDisplayNames.clear();
-                    customAdapter.notifyDataSetChanged();
+                    currentSearchNames.clear();
+                    currentSearchLocations.clear();
+                    searchAdapter.notifyDataSetChanged();
                 }
             }
         });
 
         binding.editTextSearch.setOnItemClickListener((parent, v, position, id) -> {
-            if (position < currentSuggestions.size()) {
-                PhotonResponse.Feature selectedFeature = currentSuggestions.get(position);
-                String name = selectedFeature.properties.name != null ? selectedFeature.properties.name : selectedFeature.properties.street;
+            if (position < currentSearchLocations.size()) {
+                Location selectedLocation = currentSearchLocations.get(position);
+                String name = selectedLocation.getName();
+                
                 binding.editTextSearch.setText(name);
                 binding.editTextSearch.setSelection(name != null ? name.length() : 0);
                 binding.editTextSearch.dismissDropDown();
+                binding.editTextSearch.clearFocus();
                 hideKeyboard();
-                executeSearch();
+                
+                if (selectedLocation.getLatitude() != null && selectedLocation.getLongitude() != null) {
+                    org.osmdroid.util.GeoPoint point = new org.osmdroid.util.GeoPoint(
+                            selectedLocation.getLatitude(), 
+                            selectedLocation.getLongitude()
+                    );
+                    mapController.animateTo(point, 17.0, 1500L);
+                }
             }
         });
 
         binding.editTextSearch.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE ||
                     (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                executeSearch();
+                
+                String currentKeyword = binding.editTextSearch.getText().toString().trim();
+                if (!currentKeyword.isEmpty()) {
+                    locationViewModel.searchLocations(currentKeyword, null, null, 1, 10);
+                    
+                    binding.editTextSearch.dismissDropDown();
+                    binding.editTextSearch.clearFocus();
+                    hideKeyboard();
+                    if (bottomSheetBehavior != null) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                }
                 return true;
             }
             return false;
@@ -430,6 +599,7 @@ public class NearbyFragment extends Fragment {
             showLocationPreview(selectedLoc);
             return;
         }
+        isViewingPreview = true;
         GeoPoint targetPoint = new GeoPoint(selectedLoc.getLatitude(), selectedLoc.getLongitude());
         mapController.setZoom(18.0);
         mapController.animateTo(targetPoint);
@@ -497,7 +667,7 @@ public class NearbyFragment extends Fragment {
     }
 
     private void checkAndFetchWhileMoving() {
-        if (mapView == null) return;
+        if (mapView == null || isViewingPreview) return;
         GeoPoint currentCenter = new GeoPoint(mapView.getMapCenter().getLatitude(), mapView.getMapCenter().getLongitude());
         long currentTime = System.currentTimeMillis();
 
@@ -514,4 +684,37 @@ public class NearbyFragment extends Fragment {
             scheduleFetch();
         }
     }
+
+    private class NoFilterSuggestAdapter extends ArrayAdapter<String> {
+        private final List<String> items;
+
+        public NoFilterSuggestAdapter(Context context, List<String> items) {
+            super(context, android.R.layout.simple_dropdown_item_1line, items);
+            this.items = items;
+        }
+
+        @NonNull
+        @Override
+        public android.widget.Filter getFilter() {
+            return new android.widget.Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults filterResults = new FilterResults();
+                    filterResults.values = items;
+                    filterResults.count = items.size();
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged();
+                    } else {
+                        notifyDataSetInvalidated();
+                    }
+                }
+            };
+        }
+    }
+
 }
