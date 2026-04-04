@@ -10,4 +10,8 @@
     <style name="BottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet">
         <item name="android:background">@android:color/transparent</item>
     </style>
+    <style name="ShapeAppearanceOverlay.Material3.Corner.Small" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
 </resources>

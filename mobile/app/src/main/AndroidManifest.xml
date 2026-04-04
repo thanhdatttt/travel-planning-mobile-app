@@ -46,6 +46,7 @@
         <activity
             android:name=".ui.mainscreen.MainScreenActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.TravelPlanning" />
 
         <activity

@@ -1,148 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout 
+<androidx.coordinatorlayout.widget.CoordinatorLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/mapView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/topBar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/mapView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_margin="16dp"
             android:background="@drawable/bg_circle_yellow"
             android:src="@drawable/ic_back" 
-            android:elevation="4dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/bg_search_outline_teal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="16dp"
             android:elevation="4dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_search_teal" />
-
-            <AutoCompleteTextView
-                android:id="@+id/editTextSearch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@null"
-                android:hint="Tìm kiếm địa điểm..."
-                android:textSize="15sp"
-                android:singleLine="true"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+        
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_white_rounded_8dp"
+            android:elevation="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <TextView android:id="@+id/btnZoomIn" android:layout_width="match_parent" android:layout_height="40dp" android:gravity="center" android:text="+" android:textSize="24sp" android:textStyle="bold" android:textColor="#424242" />
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" />
+            <TextView android:id="@+id/btnZoomOut" android:layout_width="match_parent" android:layout_height="40dp" android:gravity="center" android:text="−" android:textSize="24sp" android:textStyle="bold" android:textColor="#424242" />
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <HorizontalScrollView
-        android:id="@+id/categoryScroll"
+    <FrameLayout
+        android:id="@+id/containerPreviewCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="16dp"
-        android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/topBar">
+        android:visibility="gone"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="16dp">
+
+        <include 
+            layout="@layout/item_place" 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/btnClosePreview"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="top|end"
+            
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            
+            android:background="@drawable/bg_circle_white_semi_transparent"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:padding="6dp"
+            app:tint="#757575"
+            android:elevation="10dp"/> 
+    </FrameLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabMyLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_gravity="top|end"
+        android:src="@android:drawable/ic_menu_mylocation"
+        app:backgroundTint="#FFFFFF"
+        app:tint="#2196F3"
+        app:fabSize="mini"
+        app:elevation="6dp" />
+
+    <LinearLayout
+        android:id="@+id/bottomSheetPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bg_bottom_sheet" 
+        android:elevation="8dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_peekHeight="88dp" 
+        app:behavior_hideable="false">
+
+        <View android:layout_width="40dp" android:layout_height="4dp" android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:background="#D0D0D0" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/layoutSearchList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/chipFood"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip_teal"
-                android:text="Ăn uống"
-                android:textColor="#008080"
-                android:textSize="13sp"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                app:drawableStartCompat="@drawable/ic_category_food"
-                android:drawablePadding="6dp"
-                android:layout_marginEnd="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_search_outline_teal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp">
 
-            <TextView
-                android:id="@+id/chipHotel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip_teal"
-                android:text="Lưu trú"
-                android:textColor="#008080"
-                android:textSize="13sp"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                app:drawableStartCompat="@drawable/ic_category_hotel"
-                android:drawablePadding="6dp"
-                android:layout_marginEnd="8dp"/>
+                <ImageView
+                    android:id="@+id/btnSearchBack"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_back"
+                    android:visibility="gone"
+                    app:tint="#757575" />
 
-            <TextView
-                android:id="@+id/chipAttraction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip_teal"
-                android:text="Tham quan"
-                android:textColor="#008080"
-                android:textSize="13sp"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                app:drawableStartCompat="@drawable/ic_category_attraction"
-                android:drawablePadding="6dp"
-                android:layout_marginEnd="8dp"/>
+                <ImageView
+                    android:id="@+id/imgSearchIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_search_teal" />
 
-             <TextView
-                android:id="@+id/chipShop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip_teal"
-                android:text="Mua sắm"
-                android:textColor="#008080"
-                android:textSize="13sp"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                app:drawableStartCompat="@drawable/ic_category_shop"
-                android:drawablePadding="6dp"
-                android:layout_marginEnd="8dp"/>
-                
-            <TextView
-                android:id="@+id/chipService"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip_teal"
-                android:text="Dịch vụ"
-                android:textColor="#008080"
-                android:textSize="13sp"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                app:drawableStartCompat="@drawable/ic_category_service"
-                android:drawablePadding="6dp"
-                android:layout_marginEnd="8dp"/>
+                <AutoCompleteTextView
+                    android:id="@+id/editTextSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@null"
+                    android:hint="Tìm kiếm địa điểm..."
+                    android:textSize="15sp"
+                    android:singleLine="true"
+                    android:imeOptions="actionSearch"/>
+
+                <ImageView
+                    android:id="@+id/btnClearSearch"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:visibility="gone"
+                    app:tint="#757575" />
+            </LinearLayout>
+
+            <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:scrollbars="none" android:layout_marginTop="16dp" android:paddingHorizontal="16dp">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:id="@+id/chipFood" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_chip_teal" android:text="Ăn uống" android:textColor="#008080" android:paddingHorizontal="14dp" android:paddingVertical="8dp" app:drawableStartCompat="@drawable/ic_category_food" android:drawablePadding="6dp" android:layout_marginEnd="8dp"/>
+                    <TextView android:id="@+id/chipHotel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_chip_teal" android:text="Lưu trú" android:textColor="#008080" android:paddingHorizontal="14dp" android:paddingVertical="8dp" app:drawableStartCompat="@drawable/ic_category_hotel" android:drawablePadding="6dp" android:layout_marginEnd="8dp"/>
+                    <TextView android:id="@+id/chipAttraction" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_chip_teal" android:text="Tham quan" android:textColor="#008080" android:paddingHorizontal="14dp" android:paddingVertical="8dp" app:drawableStartCompat="@drawable/ic_category_attraction" android:drawablePadding="6dp" android:layout_marginEnd="8dp"/>
+                    <TextView android:id="@+id/chipShop" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_chip_teal" android:text="Mua sắm" android:textColor="#008080" android:paddingHorizontal="14dp" android:paddingVertical="8dp" app:drawableStartCompat="@drawable/ic_category_shop" android:drawablePadding="6dp" android:layout_marginEnd="8dp"/>
+                    <TextView android:id="@+id/chipService" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_chip_teal" android:text="Dịch vụ" android:textColor="#008080" android:paddingHorizontal="14dp" android:paddingVertical="8dp" app:drawableStartCompat="@drawable/ic_category_service" android:drawablePadding="6dp" android:layout_marginEnd="8dp"/>
+                </LinearLayout>
+            </HorizontalScrollView>                
+            <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewPlaces"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="100dp"
+            android:clipToPadding="false"/>
         </LinearLayout>
-    </HorizontalScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/layoutLoadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#33000000" android:visibility="gone"
+        android:clickable="true" 
+        android:focusable="true" 
+        android:elevation="100dp"> <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="#008080" />
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

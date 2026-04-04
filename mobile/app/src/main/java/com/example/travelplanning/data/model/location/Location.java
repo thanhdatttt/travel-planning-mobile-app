@@ -28,7 +28,7 @@ public class Location implements Parcelable{
     String phone;
     String website;
     Integer priceLevel;
-
+    String description;
     Double latitude;
     Double longitude;
     Double distance;
