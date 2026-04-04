@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        TokenManager.saveRefreshToken(this,"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYmIzMzQ1Yy0yYTkxLTQ4NjYtYjU5OC03NWFhZDQ2YTBmZjciLCJpYXQiOjE3NzQ3MDkwMjUsImV4cCI6MjM3OTUwOTAyNX0.pgWyU_Ku9ugrM91puOwCTjZLM-k5-7Bme8ejz0etpk0");
+
         // init splash screen
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
