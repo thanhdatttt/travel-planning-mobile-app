@@ -50,16 +50,17 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:id="@+id/tvDetailName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
+                    android:gravity="start"
+                    android:text="@string/location_name"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_toStartOf="@id/btnBookmark"
-                    android:text="@string/location_name" />
+                    android:textStyle="bold" />
+
                 <ImageButton
                     android:id="@+id/btnBookmark"
                     android:layout_width="wrap_content"
@@ -105,7 +106,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCall"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
@@ -115,17 +116,18 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnWebsite"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:text="@string/website"
+                    android:insetTop="0dp"
                     app:icon="@drawable/ic_website" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnEmail"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/email"

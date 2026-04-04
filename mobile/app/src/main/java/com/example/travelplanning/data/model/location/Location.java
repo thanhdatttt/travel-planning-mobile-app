@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AccessLevel;
@@ -35,7 +36,8 @@ public class Location implements Parcelable{
     String categoryName;
     String categoryIcon;
     String imageUrl;
-    List<String> photoUrls;
+    @Builder.Default
+    List<Photo> photos = new ArrayList<>();
     Integer ratingCount;
 
     protected Location(Parcel in) {
@@ -53,7 +55,7 @@ public class Location implements Parcelable{
         categoryName = in.readString();
         categoryIcon = in.readString();
         imageUrl = in.readString();
-        photoUrls = in.createStringArrayList();
+        photos = in.createTypedArrayList(Photo.CREATOR);
         if (in.readByte() == 0) ratingCount = null; else ratingCount = in.readInt();
     }
 
@@ -73,7 +75,7 @@ public class Location implements Parcelable{
         dest.writeString(categoryName);
         dest.writeString(categoryIcon);
         dest.writeString(imageUrl);
-        dest.writeStringList(photoUrls);
+        dest.writeTypedList(photos);
         if (ratingCount == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeInt(ratingCount); }
     }
 
