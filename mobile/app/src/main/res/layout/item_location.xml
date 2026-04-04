@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
     android:padding="16dp">
 
     <com.google.android.material.card.MaterialCardView
@@ -22,6 +23,7 @@
             android:id="@+id/ivLocationImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="@string/trip_image"
             android:scaleType="centerCrop"
             tools:srcCompat="@drawable/ic_category_attraction" />
     </com.google.android.material.card.MaterialCardView>
