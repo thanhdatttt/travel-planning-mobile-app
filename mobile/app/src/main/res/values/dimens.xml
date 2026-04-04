@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="icon_limit">200dp</dimen>
+    <dimen name="icon_limit">30dp</dimen>
 
     <dimen name="recycler_icon_size">35dp</dimen>
     <dimen name="recycler_text_size">16sp</dimen>

@@ -13,41 +13,24 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register"
+            android:text="@string/create_account"
             android:textColor="@color/text"
             android:textSize="36sp"
             android:textStyle="bold"/>
-
-        <!--    login button    -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/already_have_an_account"
-                android:textSize="18sp"
-                android:textColor="@color/text_secondary" />
-            <TextView
-                android:id="@+id/tvLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/login"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary" />
-        </LinearLayout>
-
+            android:layout_marginTop="8dp"
+            android:text="@string/enter_your_email_to_get_started"
+            android:textSize="20sp"
+            android:textColor="@color/text_secondary" />
 
         <!--    Enter email    -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40sp"
-            android:text="@string/enter_your_email"
+            android:text="@string/email_address"
             android:textStyle="bold"
             android:textSize="26sp"
             android:textColor="@color/text" />
@@ -56,13 +39,16 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:textColor="@color/black"
             android:autofillHints=""
+            android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="10dp"
             android:background="@drawable/edit_textbox"
             android:hint="@string/example_gmail_com"
+            android:textColorHint="@color/text_secondary"
             android:inputType="textEmailAddress" />
         <Button
             android:id="@+id/btnEmailContinue"
@@ -72,6 +58,7 @@
             android:backgroundTint="@color/primary"
             android:text="@string/next"
             android:textAllCaps="false"
+            android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -82,7 +69,7 @@
             android:gravity="center"
             android:orientation="horizontal">
             <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="1dp" android:background="#CCCCCC" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/or" android:padding="8dp" android:textSize="16sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/or_continue_with" android:padding="8dp" android:textSize="16sp"/>
             <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="1dp" android:background="#CCCCCC" />
         </LinearLayout>
 
@@ -93,11 +80,13 @@
             android:layout_height="55dp"
             android:layout_marginTop="20dp"
             android:backgroundTint="#d4372f"
-            android:text="@string/continue_with_google"
+            android:text="@string/google"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:icon="@drawable/google"
+            app:iconTint="@color/white"
             app:iconGravity="textStart"
             app:iconPadding="12dp"
             app:iconSize="20dp"/>
@@ -108,14 +97,39 @@
             android:layout_height="55dp"
             android:layout_marginTop="20dp"
             android:backgroundTint="#2b20f7"
-            android:text="@string/continue_with_facebook"
+            android:text="@string/facebook"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:icon="@drawable/facebook"
+            app:iconTint="@color/white"
             app:iconGravity="textStart"
             app:iconPadding="10dp"
             app:iconSize="20dp"/>
+
+        <!--    login button    -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/already_have_an_account"
+                android:textSize="18sp"
+                android:textColor="@color/text_secondary" />
+            <TextView
+                android:id="@+id/tvLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary" />
+        </LinearLayout>
     </LinearLayout>
 
     <ProgressBar
