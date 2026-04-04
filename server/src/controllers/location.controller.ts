@@ -46,7 +46,7 @@ export const locationController = {
       const longitude = parseFloat(lng);
       const rad = parseInt(radius) || 5000;
 
-      // Chú ý: l."categoryId" phải khớp với tên cột trong DB
+      // categoryId phải khớp với tên cột trong DB
       const categoryFilter = categoryId
         ? `AND l."categoryId" = ${parseInt(categoryId)}`
         : "";

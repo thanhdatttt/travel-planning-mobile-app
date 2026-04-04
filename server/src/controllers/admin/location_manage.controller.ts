@@ -15,12 +15,16 @@ export const getList = async (req: Request, res: Response) => {
     sortOrder = "asc",
     minPrice = 0,
     maxPrice = MAX_VALUE,
-    minDistance = 0,
-    maxDistance = MAX_VALUE,
     minRating = 0,
-    maxRating = 10,
+    maxRating = 5,
+    skip = 0, 
+    take = 20
   } = req.query;
-  const type = req.query.type as string;
+
+  const categoryParam = req.query.categoryId as string;
+  const categoryId = categoryParam ? categoryParam.split(",").map((c) => Number(c.trim())).filter(val => !isNaN(val)) : [1, 2, 3, 4];
+
+  console.log(req.query);
 
   const locations = await prisma.location.findMany({
     where: {
@@ -30,17 +34,14 @@ export const getList = async (req: Request, res: Response) => {
         { priceLevel: { lte: Number(maxPrice) } },
         { avgRating: { gte: Number(minRating) } },
         { avgRating: { lte: Number(maxRating) } },
-        {
-          type:
-            type?.toLowerCase() === "attraction"
-              ? locationType.attraction
-              : locationType.restaurant,
-        },
+        { categoryId: { in: categoryId}}
       ],
     },
     orderBy: {
       [String(sortBy)]: sortOrder,
     },
+    skip: Number(skip),
+    take: Number(take),
   });
 
   return res.status(200).json(

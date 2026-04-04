@@ -3,7 +3,6 @@ import express from "express";
 import authRoutes from "./routes/auth/index.routes";
 import userRoutes from "./routes/user/index.routes";
 import authRoute from "./routes/auth/index.routes";
-import userRoutes from "./routes/user/index.routes";
 import { requireAuth, requireRole } from "./middlewares/auth.middleware";
 import {
   globalErrorHandler,
