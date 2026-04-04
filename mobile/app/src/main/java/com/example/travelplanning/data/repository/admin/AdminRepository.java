@@ -6,6 +6,7 @@ import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.data.model.profile.UserRole;
 import com.example.travelplanning.data.remote.admin.AdminApi;
 import com.example.travelplanning.data.remote.admin.dto.request.BanUserRequest;
+import com.example.travelplanning.data.remote.admin.dto.request.EditUserProfileRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRequest;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.model.profile.UserProfile;
@@ -70,6 +71,27 @@ public class AdminRepository {
             @Override
             public void onResponse(Call<ApiResponse<UserProfileResponse>> call, Response<ApiResponse<UserProfileResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(userMapper.mapToDomain(response.body().getData()));
+                } else {
+                    callback.onError("Thao tác thất bại");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<UserProfileResponse>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void updateProfile(String id, String fullname, String email, String address, String phone, String dob, UserRole role, AdminCallback<UserProfile> callback){
+        String roleString = role.getStringValue().toLowerCase();
+        EditUserProfileRequest request = new EditUserProfileRequest(fullname, email, address, phone, dob, roleString);
+        adminApi.updateProfile(id, request).enqueue(new Callback<ApiResponse<UserProfileResponse>>() {
+
+            @Override
+            public void onResponse(Call<ApiResponse<UserProfileResponse>> call, Response<ApiResponse<UserProfileResponse>> response) {
+                if(response.isSuccessful() && response.body() != null){
                     callback.onSuccess(userMapper.mapToDomain(response.body().getData()));
                 } else {
                     callback.onError("Thao tác thất bại");

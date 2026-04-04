@@ -56,3 +56,17 @@ export const locationListQuerySchema = {
         type: z.string().default("")
     }),
 }
+
+export const updateProfileSchema ={ 
+    params: z.object({
+        id: z.string()
+    }),
+    body: z.object({
+        fullName: z.string().min(1, "Name cannot be empty").optional(),
+        email: z.string().email("Invalid email format").optional(),
+        phone: z.string().optional(),
+        address: z.string().optional(),
+        dob: z.coerce.date().optional(),
+        role: z.enum(["user", "admin", "moderator"]).optional(),
+        }),
+}

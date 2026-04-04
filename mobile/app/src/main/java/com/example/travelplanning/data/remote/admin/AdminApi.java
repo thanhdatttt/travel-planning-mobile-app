@@ -1,8 +1,8 @@
 package com.example.travelplanning.data.remote.admin;
 
-//import com.example.travelplanning.data.remote.admin.dto.request;
 import com.example.travelplanning.data.remote.admin.dto.request.BanUserRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRequest;
+import com.example.travelplanning.data.remote.admin.dto.request.EditUserProfileRequest;
 
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.remote.admin.dto.response.UserProfileResponse;
@@ -38,6 +38,12 @@ public interface AdminApi{
     Call<ApiResponse<UserProfileResponse>> softDeleteUser(
             @Path("id") String id,
             @Body SoftDeleteUserRequest request
+    );
+
+    @POST("api/admin/user/{id}")
+    Call<ApiResponse<UserProfileResponse>> updateProfile(
+            @Path("id") String id,
+            @Body  EditUserProfileRequest request
     );
 
     @GET("api/admin/location/list")

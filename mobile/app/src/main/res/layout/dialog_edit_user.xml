@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <LinearLayout style="@style/AdminInfoRow">
+            <TextView style="@style/AdminInfoLabel" android:text="ID" />
+            <View android:layout_height="0dp" android:layout_width="0dp" android:layout_weight="1"/>
+            <TextView android:id="@+id/tvEditId" style="@style/AdminInfoValue" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#999999"
+            android:layout_marginVertical="5dp"/>
+
+        <LinearLayout style="@style/AdminInfoRow">
+            <TextView style="@style/AdminInfoLabel" android:text="Full Name" />
+            <View android:layout_height="0dp" android:layout_width="0dp" android:layout_weight="1"/>
+            <EditText android:id="@+id/etEditFullName"
+                style="@style/AdminEditInfoValue"
+                android:inputType="textPersonName"
+                android:hint="Enter name"/>
+        </LinearLayout>
+
+        <LinearLayout style="@style/AdminInfoRow">
+            <TextView style="@style/AdminInfoLabel" android:text="Email" />
+            <View android:layout_height="0dp" android:layout_width="0dp" android:layout_weight="1"/>
+            <EditText android:id="@+id/etEditEmail"
+                style="@style/AdminEditInfoValue"
+                android:inputType="textEmailAddress"
+                android:hint="Enter email"/>
+        </LinearLayout>
+
+        <LinearLayout style="@style/AdminInfoRow">
+            <TextView style="@style/AdminInfoLabel" android:text="Address" />
+            <View android:layout_height="0dp" android:layout_width="0dp" android:layout_weight="1"/>
+            <EditText android:id="@+id/etEditAddress"
+                style="@style/AdminEditInfoValue"
+                android:inputType="textPostalAddress"
+                android:hint="Enter address"/>
+        </LinearLayout>
+
+        <LinearLayout style="@style/AdminInfoRow">
+            <TextView style="@style/AdminInfoLabel" android:text="Phone" />
+            <View android:layout_height="0dp" android:layout_width="0dp" android:layout_weight="1"/>
+            <EditText android:id="@+id/etEditPhone"
+                style="@style/AdminEditInfoValue"
+                android:inputType="phone"
+                android:hint="Enter phone"/>
+        </LinearLayout>
+
+        <LinearLayout style="@style/AdminInfoRow">
+            <TextView style="@style/AdminInfoLabel" android:text="Date of Birth" />
+            <View android:layout_height="0dp" android:layout_width="0dp" android:layout_weight="1"/>
+            <EditText android:id="@+id/etEditDob"
+                style="@style/AdminEditInfoValue"
+                android:inputType="date"
+                android:focusable="false"
+                android:clickable="true"
+                android:hint="Select Date"/>
+        </LinearLayout>
+
+        <LinearLayout style="@style/AdminInfoRow">
+            <TextView style="@style/AdminInfoLabel" android:text="Role" />
+            <View android:layout_height="0dp" android:layout_width="0dp" android:layout_weight="1"/>
+            <Spinner
+                android:id="@+id/spEditRole"
+                style="@style/AdminEditInfoValue"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:textAlignment="textEnd"
+                android:gravity="end" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

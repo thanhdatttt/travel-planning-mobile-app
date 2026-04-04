@@ -82,7 +82,6 @@ public class AdminUserViewModel extends AndroidViewModel {
 
     public void toggleSoftDelete(UserProfile user){
         isLoading.setValue(true);
-        System.out.println(user.getIsDeleted());
         adminRepository.softDeleteUser(user.getId(), Boolean.FALSE.equals(user.getIsDeleted()), new AdminRepository.AdminCallback<UserProfile>() {
             @Override
             public void onSuccess(UserProfile data) {
@@ -95,6 +94,26 @@ public class AdminUserViewModel extends AndroidViewModel {
             }
         });
     }
+
+    public void editUser(UserProfile user) {
+        isLoading.setValue(true);
+        String dobString = null;
+        if (user != null && user.getDob() != null) {
+            dobString = user.getDob().toString();
+        }
+        adminRepository.updateProfile(user.getId(), user.getFullName(), user.getEmail(), user.getAddress(), user.getPhone(), dobString, user.getRole(), new AdminRepository.AdminCallback<UserProfile>() {
+            @Override
+            public void onSuccess(UserProfile data) {
+                isLoading.setValue(false);
+            }
+
+            @Override
+            public void onError(String err) {
+                error.setValue(err);
+            }
+        });
+    }
+
 
     public void applyFilters(boolean banned, boolean deleted, boolean inactive, String sortBy, String sortOrder, List<UserRole> roles) {
         this.isBanned = banned;
