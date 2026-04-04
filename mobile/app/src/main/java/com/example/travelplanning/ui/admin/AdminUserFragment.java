@@ -2,6 +2,7 @@ package com.example.travelplanning.ui.admin;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,7 @@ public class AdminUserFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        adapter = new AdminUserAdapter(userList, this::showPopupMenu);
+        adapter = new AdminUserAdapter(userList, this::showPopupMenu, this::showUserInfoDialog);
 
         binding.rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvUsers.setAdapter(adapter);
@@ -129,20 +130,36 @@ public class AdminUserFragment extends Fragment {
         popup.show();
     }
 
+    private void appendBold(SpannableStringBuilder sb, String title, String value) {
+        int start = sb.length();
+        sb.append(title);
+        // Apply BOLD style only to the 'title' part
+        sb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                start, sb.length(), android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sb.append(value).append("\n");
+    }
     private void showUserInfoDialog(UserProfile user) {
         com.google.android.material.dialog.MaterialAlertDialogBuilder builder =
                 new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext());
 
         // Build a simple but clean summary string
-        StringBuilder info = new StringBuilder();
-        info.append("ID: ").append(user.getId()).append("\n\n");
-        info.append("Email: ").append(user.getEmail()).append("\n\n");
-        info.append("Role: ").append(user.getRole()).append("\n\n");
-        info.append("Banned: ").append(user.getIsBanned() ? "Yes" : "No").append("\n");
-        info.append("Deleted: ").append(user.getIsDeleted() ? "Yes" : "No");
+        SpannableStringBuilder info = new SpannableStringBuilder();
+        appendBold(info, "ID: ", user.getId() != null ? user.getId() : "N/A");
+        info.append("\n");
+
+        appendBold(info, "Full name: ", user.getFullName());
+        appendBold(info, "Email: ", user.getEmail());
+        appendBold(info, "Address: ", user.getAddress() != null ? user.getAddress() : "N/A");
+        appendBold(info, "Phone: ", user.getPhone() != null ? user.getPhone() : "N/A");
+        appendBold(info, "Date of birth: ", user.getDob() != null ? user.getDob().toString() : "N/A");
+        appendBold(info, "Role: ", String.valueOf(user.getRole()));
+        info.append("\n");
+
+        appendBold(info, "Banned: ", Boolean.TRUE.equals(user.getIsBanned()) ? "Yes" : "No");
+        appendBold(info, "Deleted: ", Boolean.TRUE.equals(user.getIsDeleted()) ? "Yes" : "No");
 
         builder.setTitle(user.getUsername() + "'s Information")
-                .setMessage(info.toString())
+                .setMessage(info)
                 .setPositiveButton("Close", (dialog, which) -> dialog.dismiss())
                 .setIcon(R.drawable.ic_user) // Ensure you have a user icon
                 .show();

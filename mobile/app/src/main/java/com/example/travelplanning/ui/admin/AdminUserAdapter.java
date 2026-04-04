@@ -1,5 +1,6 @@
 package com.example.travelplanning.ui.admin;
 
+import com.bumptech.glide.Glide;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -18,15 +19,22 @@ import java.util.List;
 
 public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.UserViewHolder> {
     private List<UserProfile> users;
-    private final OnUserOptionClickListener listener;
+    private final OnUserOptionClickListener optionListener;
+    private final OnUserClickListener itemListener;
 
     public interface OnUserOptionClickListener {
         void onOptionClick(View anchor, UserProfile user);
     }
+    public interface OnUserClickListener {
+        void onUserClick(UserProfile user);
+    }
 
-    public AdminUserAdapter(List<UserProfile> users, OnUserOptionClickListener listener) {
+    public AdminUserAdapter(List<UserProfile> users,
+                            OnUserOptionClickListener optionListener,
+                            OnUserClickListener itemListener) {
         this.users = users;
-        this.listener = listener;
+        this.optionListener = optionListener;
+        this.itemListener = itemListener;
     }
 
     @NonNull
@@ -39,7 +47,7 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        holder.bind(users.get(position), listener);
+        holder.bind(users.get(position), optionListener, itemListener);
     }
 
     @Override
@@ -55,23 +63,22 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
             this.binding = binding;
         }
 
-        public void bind(UserProfile user, OnUserOptionClickListener listener) {
+        public void bind(UserProfile user, OnUserOptionClickListener optionListener, OnUserClickListener itemListener) {
             binding.tvUsername.setText(user.getUsername());
             binding.tvEmail.setText(user.getEmail());
 
-            // RENDER AVATAR
-            com.bumptech.glide.Glide.with(binding.ivAvatar.getContext())
-                    .load(user.getAvatarUrl() != null ? user.getAvatarUrl() : R.drawable.no_avatar)
-                    .circleCrop()
-                    .placeholder(R.drawable.no_avatar)
-                    .error(R.drawable.no_avatar)
-                    .into(binding.ivAvatar);
+            // RENDER AVATAR WITH GLIDE
+//            Glide.with(binding.ivAvatar.getContext())
+//                    .load(user.getAvatarUrl() != null ? user.getAvatarUrl() : R.drawable.no_avatar)
+//                    .circleCrop()
+//                    .placeholder(R.drawable.no_avatar)
+//                    .error(R.drawable.no_avatar)
+//                    .into(binding.ivAvatar);
 
-            // Hiển thị Role lên TextView tvRole trong XML của bạn
             String roleName = user.getRole() != null ? user.getRole().name() : "USER";
             binding.tvRole.setText(roleName.toLowerCase());
 
-            // Logic màu sắc theo Role
+            // Role Color Logic
             int color;
             if (user.getRole() == UserRole.ADMIN) {
                 color = Color.RED;
@@ -80,18 +87,21 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
             } else {
                 color = Color.parseColor("#4CAF50");
             }
-
-            int strokeColor;
-            if(user.getIsDeleted()) strokeColor = Color.GRAY;
-            else if(user.getIsBanned()) strokeColor = Color.RED;
-            else strokeColor = ContextCompat.getColor(binding.getRoot().getContext(), R.color.dark_green);
-
-            binding.ivAvatar.setStrokeColor(ColorStateList.valueOf(strokeColor));
-
             binding.tvRole.setTextColor(color);
 
+            // Stroke Color Logic
+            int strokeColor;
+            if (Boolean.TRUE.equals(user.getIsDeleted())) {
+                strokeColor = Color.GRAY;
+            } else if (Boolean.TRUE.equals(user.getIsBanned())) {
+                strokeColor = Color.RED;
+            } else {
+                strokeColor = ContextCompat.getColor(binding.getRoot().getContext(), R.color.dark_green);
+            }
+            binding.ivAvatar.setStrokeColor(ColorStateList.valueOf(strokeColor));
+
             binding.getRoot().setOnClickListener(v -> itemListener.onUserClick(user));
-            binding.ivOptions.setOnClickListener(v -> listener.onOptionClick(v, user));
+            binding.ivOptions.setOnClickListener(v -> optionListener.onOptionClick(v, user));
         }
     }
 }
