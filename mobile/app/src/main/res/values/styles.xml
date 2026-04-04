@@ -14,8 +14,8 @@
         <item name="chipStrokeWidth">1dp</item>
         <item name="android:checkable">true</item>
         <item name="chipCornerRadius">100dp</item>
-        <item name="chipEndPadding">5dp</item>
-        <item name="chipStartPadding">5dp</item>
+        <item name="chipEndPadding">7dp</item>
+        <item name="chipStartPadding">7dp</item>
         <item name="android:strokeWidth">2</item>
         <item name="strokeWidth">2dp</item>
         <item name="android:paddingLeft">2dp</item>

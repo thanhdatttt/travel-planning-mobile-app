@@ -65,4 +65,21 @@
 
     <string name="update_profile_success">Profile\'s changes saved</string>
     <string name="update_profile_error"></string>
+    <string name="manage_location">Manage Location</string>
+    <string name="manage_user">Manage User</string>
+    <string name="back_button">back button</string>
+    <string name="admin_chart">admin chart</string>
+    <string name="min_price">Min Price</string>
+    <string name="price">Price:</string>
+    <string name="max_price">Max Price</string>
+    <string name="ratings">Ratings:</string>
+    <string name="min_rating">Min Rating</string>
+    <string name="max_rating">Max Rating</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_order">Sort Order</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="hotel">Hotel</string>
+    <string name="attraction">Attraction</string>
+    <string name="shopping">Shopping</string>
+    <string name="filter">FILTER</string>
 </resources>

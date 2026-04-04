@@ -1,91 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@drawable/admin_header_gradient">
 
-    <FrameLayout
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/admin_header_gradient">
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:src="@drawable/admin_dots" />
+
+    <LinearLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleX="1.1"
-            android:scaleY="1.1"
-            android:src="@drawable/admin_dots" />
+            android:id="@+id/ivBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/back_button"
+            android:padding="4dp"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="#000000" />
 
         <LinearLayout
-            android:id="@+id/headerContainer"
+            android:id="@+id/toggleGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            app:checkedButton="@+id/btnUserMgt"
+            app:layout_constraintTop_toBottomOf="@id/ivBack">
+
+            <Button
+                android:id="@+id/btnUser"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:backgroundTint="@animator/admin_header_selector"
+                android:text="@string/manage_user"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:paddingHorizontal="15dp"
+                app:cornerRadius="5dp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:backgroundTint="@animator/admin_header_selector"
+                android:text="@string/manage_location"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:paddingHorizontal="15dp"
+                app:cornerRadius="5dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:backgroundTint="@animator/admin_header_selector"
+                android:layout_weight="1" />
 
             <ImageView
-                android:id="@+id/ivBack"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:padding="4dp"
-                android:src="@drawable/ic_back"
-                app:layout_constraintStart_toStartOf="parent"
-                app:tint="#000000" />
-
-            <LinearLayout
-                android:id="@+id/toggleGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
-                app:checkedButton="@+id/btnUserMgt"
-                app:layout_constraintTop_toBottomOf="@id/ivBack">
-
-                <Button
-                    android:id="@+id/btnUser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:backgroundTint="@animator/admin_header_selector"
-                    android:text="Manage User"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:paddingHorizontal="15dp"
-                    app:cornerRadius="5dp"/>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:id="@+id/btnLocation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:backgroundTint="@animator/admin_header_selector"
-                    android:text="Manage Location"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:paddingHorizontal="15dp"
-                    app:cornerRadius="5dp" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:backgroundTint="@animator/admin_header_selector"
-                    android:layout_weight="1" />
-
-                <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:src="@drawable/ic_admin_chart"/>
-            </LinearLayout>
-
-
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:contentDescription="@string/admin_chart"
+                android:src="@drawable/ic_admin_chart"/>
         </LinearLayout>
-    </FrameLayout>
-
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>

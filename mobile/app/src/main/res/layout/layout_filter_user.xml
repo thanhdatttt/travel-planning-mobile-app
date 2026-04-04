@@ -66,28 +66,16 @@
             android:layout_marginBottom="20dp">
 
             <!-- Role Label -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_role"
-                    android:layout_marginEnd="6dp"
-                    android:contentDescription="Vai trò icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Role:"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#1A1A1A" />
-            </LinearLayout>
+                android:text="Role:"
+                android:drawableLeft="@drawable/ic_role"
+                android:drawablePadding="5dp"
+                android:layout_marginBottom="5dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A1A" />
 
             <!-- Role Chips Row -->
             <com.google.android.material.chip.ChipGroup
@@ -129,29 +117,16 @@
             android:layout_marginBottom="16dp">
 
             <!-- Sort Label -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_sort"
-                    android:layout_marginEnd="6dp"
-                    android:contentDescription="Xắp xếp icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Xắp xếp:"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#1A1A1A" />
-            </LinearLayout>
-
+                android:text="@string/sort_order"
+                android:drawableLeft="@drawable/ic_sort"
+                android:drawablePadding="5dp"
+                android:layout_marginBottom="5dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A1A" />
             <!-- Sort Dropdowns Row -->
             <LinearLayout
                 android:layout_width="match_parent"

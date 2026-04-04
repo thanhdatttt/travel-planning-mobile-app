@@ -29,8 +29,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_close"
-                android:contentDescription="Đóng" />
+                android:src="@drawable/ic_close"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -66,28 +65,16 @@
             android:layout_marginBottom="20dp">
 
             <!-- Price Label -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_price"
-                    android:layout_marginEnd="6dp"
-                    android:contentDescription="Vai trò icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Price:"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#1A1A1A" />
-            </LinearLayout>
+                android:text="@string/price"
+                android:drawableLeft="@drawable/ic_price"
+                android:drawablePadding="5dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textColor="#1A1A1A" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -107,7 +94,7 @@
                         android:id="@+id/actvMinPrice"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Min Price"
+                        android:hint="@string/min_price"
                         style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
                 <!-- Divider -->
@@ -130,7 +117,7 @@
                         android:id="@+id/actvMaxPrice"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Max Price"
+                        android:hint="@string/max_price"
                         style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -227,28 +214,16 @@
             android:layout_marginBottom="20dp">
 
             <!-- Rating Label -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_star_black"
-                    android:layout_marginEnd="6dp"
-                    android:contentDescription="Vai trò icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ratings:"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#1A1A1A" />
-            </LinearLayout>
+                android:text="@string/ratings"
+                android:drawableLeft="@drawable/ic_star_black"
+                android:drawablePadding="5dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textColor="#1A1A1A" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -268,7 +243,7 @@
                         android:id="@+id/actvMinRating"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Min Rating"
+                        android:hint="@string/min_rating"
                         style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
                 <!-- Divider -->
@@ -291,7 +266,7 @@
                         android:id="@+id/actvMaxRating"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Max Rating"
+                        android:hint="@string/max_rating"
                         style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -305,28 +280,16 @@
             android:layout_marginBottom="16dp">
 
             <!-- Sort Label -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_sort"
-                    android:layout_marginEnd="6dp"
-                    android:contentDescription="Xắp xếp icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sort order:"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#1A1A1A" />
-            </LinearLayout>
+                android:text="@string/sort_order"
+                android:drawableStart="@drawable/ic_sort"
+                android:drawablePadding="5dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textColor="#1A1A1A" />
 
             <!-- Sort Dropdowns Row -->
             <LinearLayout
@@ -347,7 +310,7 @@
                         android:id="@+id/actvSortBy"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Sort by"
+                        android:hint="@string/sort_by"
                         style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -371,7 +334,7 @@
                         android:id="@+id/actvSortOrder"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Sort Order"
+                        android:hint="@string/sort_order"
                         style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -381,19 +344,19 @@
         <!-- Status Chips Row -->
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupStatus"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             app:singleSelection="false"
             android:gravity="center"
             android:layout_gravity="center"
-            app:chipSpacingHorizontal="15dp">
+            app:chipSpacingHorizontal="5dp">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipRestaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Restaurant"
+                android:text="@string/restaurant"
                 app:chipIcon="@drawable/ic_restaurant"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
@@ -402,7 +365,7 @@
                 android:id="@+id/chipHotel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hotel"
+                android:text="@string/hotel"
                 app:chipIcon="@drawable/ic_hotel"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
@@ -411,7 +374,7 @@
                 android:id="@+id/chipAttraction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Attraction"
+                android:text="@string/attraction"
                 app:chipIcon="@drawable/ic_entertainment"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
@@ -420,7 +383,7 @@
                 android:id="@+id/chipShopping"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Shopping"
+                android:text="@string/shopping"
                 app:chipIcon="@drawable/ic_coffee"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
@@ -448,7 +411,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="2"
                 android:layout_marginEnd="10dp"
-                android:text="Reset"
+                android:text="@string/reset"
                 android:textSize="15sp"
                 android:textColor="#2E7D32"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -467,7 +430,7 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="3"
-                android:text="Filter"
+                android:text="@string/filter"
                 android:textSize="15sp"
                 android:textColor="@android:color/white"
                 style="@style/Widget.MaterialComponents.Button"

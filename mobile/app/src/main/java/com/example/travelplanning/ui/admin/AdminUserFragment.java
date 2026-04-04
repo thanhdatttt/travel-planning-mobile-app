@@ -1,6 +1,5 @@
 package com.example.travelplanning.ui.admin;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -58,14 +56,8 @@ public class AdminUserFragment extends Fragment {
         viewModel.fetchUsers();
     }
 
-    // Khởi tạo adapter với listener cho nút Option (Ban/Delete...)
     private void setupRecyclerView() {
-        adapter = new AdminUserAdapter(userList, new AdminUserAdapter.OnUserOptionClickListener() {
-            @Override
-            public void onOptionClick(View anchor, UserProfile user) {
-                showPopupMenu(anchor, user);
-            }
-        });
+        adapter = new AdminUserAdapter(userList, this::showPopupMenu);
 
         binding.rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvUsers.setAdapter(adapter);
@@ -104,7 +96,7 @@ public class AdminUserFragment extends Fragment {
         });
 
         adminHeaderBinding.ivBack.setOnClickListener(v -> {
-            if (getActivity() != null) getActivity().onBackPressed();
+            if (getActivity() != null) getActivity();
         });
 
         searchAndFilterBinding.btnFilter.setOnClickListener(v -> {
