@@ -20,7 +20,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LocationRepository {
-
     private final LocationApi locationApi;
     private final LocationMapper locationMapper;
 
@@ -96,6 +95,34 @@ public class LocationRepository {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<PaginatedData<LocationResponse>>> call, @NonNull Throwable t) {
+                callback.onError("Lỗi kết nối: " + t.getLocalizedMessage());
+            }
+        });
+    }
+
+    public interface LocationDetailCallback {
+        void onSuccess(Location data);
+        void onError(String errorMessage);
+    }
+    public void getLocationById(String id, LocationDetailCallback callback) {
+        locationApi.getLocationById(id).enqueue(new Callback<ApiResponse<LocationResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<LocationResponse>> call,
+                                   @NonNull Response<ApiResponse<LocationResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    LocationResponse dto = response.body().getData();
+                    if (dto != null) {
+                        callback.onSuccess(locationMapper.mapToDomain(dto));
+                    } else {
+                        callback.onError("Không tìm thấy thông tin chi tiết.");
+                    }
+                } else {
+                    callback.onError("Lỗi: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<LocationResponse>> call, @NonNull Throwable t) {
                 callback.onError("Lỗi kết nối: " + t.getLocalizedMessage());
             }
         });
