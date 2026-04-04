@@ -12,5 +12,6 @@ router.post("/ban/:id", validate(adminSchema.toggleBanSchema) , userManageContro
 router.post("/soft-delete/:id", validate(adminSchema.toggleSoftDeleteSchema) , userManageController.toggleSoftDeleteUser);
 router.post("/update-password/:id", validate(adminSchema.updatePasswordSchema), userManageController.updatePassword);
 router.post("/demote-moderator/:id", validate(adminSchema.updateRoleSchema), userManageController.demoteFromModerator);
+router.post("/:id", validate(adminSchema.updateProfileSchema), userManageController.updateProfile);
 
 export default router;

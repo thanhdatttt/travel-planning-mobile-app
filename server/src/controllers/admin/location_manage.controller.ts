@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { prisma } from "../../libs/prisma";
 import { config } from "../../configs/config";
 import { createResponse } from "../../utils/response";
-import { locationType, userRole } from "../../generated/prisma/browser";
+import { userRole } from "../../generated/prisma/browser";
 import { equal } from "node:assert";
 
 const MAX_VALUE = 32767;

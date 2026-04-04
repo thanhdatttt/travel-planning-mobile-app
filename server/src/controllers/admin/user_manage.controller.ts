@@ -46,6 +46,7 @@ export const getList = async (req: Request, res: Response) => {
 export const toggleBan = async (req: Request, res: Response) => {
     const {id} = req.params;
     const {ban} = req.body;
+    console.log(req.body);
 
     const updatedUser = await prisma.user.update({
         where: { id: String(id)},
@@ -153,5 +154,30 @@ export const demoteFromModerator = async (req: Request, res: Response) => {
             data: demotedUser
         })
     );
+}
 
+export const updateProfile = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { fullName, email, phone, address, dob, role } = req.body;
+    console.log(req.body);
+
+    const updateData: any = {};
+    if (fullName) updateData.fullName = fullName;
+    if (email) updateData.email = email;
+    if (phone) updateData.phone = phone;
+    if (address) updateData.address = address;
+    if (dob) updateData.dob = new Date(dob);
+    if (role) updateData.role = role as userRole;
+
+    const updatedUser = await prisma.user.update({
+        where: { id: String(id) },
+        data: updateData
+    });
+
+    return res.status(200).json(
+        createResponse({
+            message: "User updated successfully",
+            data: updatedUser
+        })
+    );
 }
