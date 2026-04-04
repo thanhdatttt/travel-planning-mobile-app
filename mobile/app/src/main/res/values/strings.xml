@@ -103,4 +103,14 @@
     <string name="clone_trip">Clone trip</string>
     <string name="delete_trip">Delete trip</string>
     <string name="public_your_trip">Public your trip</string>
+    <string name="location_name">Location Name</string>
+    <string name="call">Call</string>
+    <string name="see_more">See more</string>
+    <string name="loading_description">Loading description...</string>
+    <string name="description">Description</string>
+    <string name="email">Email</string>
+    <string name="website">Website</string>
+    <string name="back">Back</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="location_image">location image</string>
 </resources>

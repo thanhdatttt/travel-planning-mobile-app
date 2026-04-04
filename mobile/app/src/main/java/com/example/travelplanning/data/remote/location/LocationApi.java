@@ -8,6 +8,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface LocationApi {
@@ -28,4 +29,7 @@ public interface LocationApi {
             @Query("page") int page,
             @Query("limit") int limit
     );
+
+    @GET("api/locations/{id}")
+    Call<ApiResponse<LocationResponse>> getLocationById(@Path("id") String id);
 }

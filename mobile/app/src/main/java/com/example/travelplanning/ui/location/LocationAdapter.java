@@ -56,6 +56,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         } else {
             holder.ivImage.setImageResource(android.R.drawable.ic_menu_gallery);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onLocationClick(location);
+        });
     }
 
     @Override
@@ -74,4 +78,15 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             tvRating = itemView.findViewById(R.id.tvRating);
         }
     }
+
+    public interface OnLocationClickListener {
+        void onLocationClick(Location location);
+    }
+
+    private OnLocationClickListener listener;
+
+    public void setOnLocationClickListener(OnLocationClickListener listener) {
+        this.listener = listener;
+    }
+
 }

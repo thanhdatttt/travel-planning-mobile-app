@@ -27,6 +27,15 @@
         android:name="com.example.travelplanning.ui.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
-    
+
+    <fragment
+        android:id="@+id/nav_location_detail"
+        android:name="com.example.travelplanning.ui.location_detail.LocationDetailFragment"
+        android:label="Location Detail"
+        tools:layout="@layout/fragment_location_detail">
+        <argument
+            android:name="location_id"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

@@ -39,7 +39,7 @@ android {
     buildTypes {
 
         debug {
-            buildConfigField "String", "BASE_URL", "\"${properties.getProperty('BASE_URL', 'http://10.0.0.2:5000/')}\""
+            buildConfigField "String", "BASE_URL", "\"${properties.getProperty('BASE_URL', 'http://192.168.1.174:5000/')}\""
         }
         release {
             minifyEnabled false
@@ -65,8 +65,8 @@ dependencies {
     implementation libs.activity
     implementation libs.constraintlayout
     // lombok
-    compileOnly libs.lombok
-    annotationProcessor libs.lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
     // retrofit
     implementation libs.retrofit
     // gson
@@ -99,4 +99,5 @@ dependencies {
 
     // GPS
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+
 }
