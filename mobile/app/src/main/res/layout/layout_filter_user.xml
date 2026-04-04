@@ -165,16 +165,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    app:boxStrokeColor="#CCCCCC"
-                    app:boxStrokeWidth="1dp">
+                    style="@style/CustomDropdownLayout">
 
                     <AutoCompleteTextView
                         android:id="@+id/actvSortBy"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:hint="Sort by"
-                        style="@style/GrayComboBox" />
+                        style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Divider -->
@@ -191,16 +189,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    app:boxStrokeColor="#CCCCCC"
-                    app:boxStrokeWidth="1dp">
+                    style="@style/CustomDropdownLayout">
 
                     <AutoCompleteTextView
                         android:id="@+id/actvSortOrder"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Ascending"
-                        style="@style/GrayComboBox" />
+                        android:hint="Sort Order"
+                        style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>

@@ -95,24 +95,21 @@
                 android:orientation="horizontal"
                 android:gravity="center">
 
-                <!-- MinPrice -->
+                <!-- Rating Spinner -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlMinPrice"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="135dp"
-                    android:layout_height="35dp"
-                    android:hint="Min Price"
-                    app:endIconMode="clear_text">
+                    android:id="@+id/tilMinPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMinPrice"
+                    <AutoCompleteTextView
+                        android:id="@+id/actvMinPrice"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:gravity="center"
-                        android:maxLines="1" />
+                        android:layout_height="35dp"
+                        android:hint="Min Price"
+                        style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
-
                 <!-- Divider -->
                 <View
                     android:layout_width="24dp"
@@ -121,108 +118,106 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp" />
 
-                <!-- MaxPrice -->
+                <!-- Sort Order Spinner -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlMaxPrice"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="135dp"
-                    android:layout_height="35dp"
-                    android:hint="Max Price"
-                    app:endIconMode="clear_text">
+                    android:id="@+id/tilMaxPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMaxPrice"
+                    <AutoCompleteTextView
+                        android:id="@+id/actvMaxPrice"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:gravity="center"
-                        android:maxLines="1" />
+                        android:layout_height="35dp"
+                        android:hint="Max Price"
+                        style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
 
         <!-- Distance Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="20dp">
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_marginBottom="20dp">-->
 
             <!-- Distance Label -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:layout_marginBottom="10dp">-->
 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_distance"
-                    android:layout_marginEnd="6dp"
-                    android:contentDescription="Vai trò icon" />
+<!--                <ImageView-->
+<!--                    android:layout_width="18dp"-->
+<!--                    android:layout_height="18dp"-->
+<!--                    android:src="@drawable/ic_distance"-->
+<!--                    android:layout_marginEnd="6dp"-->
+<!--                    android:contentDescription="Vai trò icon" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Distance:"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#1A1A1A" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Distance:"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textColor="#1A1A1A" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="center">-->
 
-                <!-- MinPrice -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlMinDist"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="135dp"
-                    android:layout_height="35dp"
-                    android:hint="Min Distance"
-                    app:endIconMode="clear_text">
+<!--                &lt;!&ndash; MinPrice &ndash;&gt;-->
+<!--                <com.google.android.material.textfield.TextInputLayout-->
+<!--                    android:id="@+id/tlMinDist"-->
+<!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--                    android:layout_width="135dp"-->
+<!--                    android:layout_height="35dp"-->
+<!--                    android:hint="Min Distance"-->
+<!--                    app:endIconMode="clear_text">-->
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMinDist"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:gravity="center"
-                        android:maxLines="1" />
-                </com.google.android.material.textfield.TextInputLayout>
+<!--                    <com.google.android.material.textfield.TextInputEditText-->
+<!--                        android:id="@+id/etMinDist"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:inputType="number"-->
+<!--                        android:gravity="center"-->
+<!--                        android:maxLines="1" />-->
+<!--                </com.google.android.material.textfield.TextInputLayout>-->
 
-                <!-- Divider -->
-                <View
-                    android:layout_width="24dp"
-                    android:layout_height="2dp"
-                    android:background="#1A1A1A"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp" />
+<!--                &lt;!&ndash; Divider &ndash;&gt;-->
+<!--                <View-->
+<!--                    android:layout_width="24dp"-->
+<!--                    android:layout_height="2dp"-->
+<!--                    android:background="#1A1A1A"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginEnd="8dp" />-->
 
-                <!-- MaxPrice -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlMaxDist"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="135dp"
-                    android:layout_height="35dp"
-                    android:hint="Max Distance"
-                    app:endIconMode="clear_text">
+<!--                &lt;!&ndash; MaxPrice &ndash;&gt;-->
+<!--                <com.google.android.material.textfield.TextInputLayout-->
+<!--                    android:id="@+id/tlMaxDist"-->
+<!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--                    android:layout_width="135dp"-->
+<!--                    android:layout_height="35dp"-->
+<!--                    android:hint="Max Distance"-->
+<!--                    app:endIconMode="clear_text">-->
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMaxDist"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:gravity="center"
-                        android:maxLines="1" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-        </LinearLayout>
+<!--                    <com.google.android.material.textfield.TextInputEditText-->
+<!--                        android:id="@+id/etMaxDist"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:inputType="number"-->
+<!--                        android:gravity="center"-->
+<!--                        android:maxLines="1" />-->
+<!--                </com.google.android.material.textfield.TextInputLayout>-->
+<!--            </LinearLayout>-->
+<!--        </LinearLayout>-->
 
         <!-- Rating Section -->
         <LinearLayout
@@ -261,24 +256,21 @@
                 android:orientation="horizontal"
                 android:gravity="center">
 
-                <!-- MinRating -->
+                <!-- Rating Spinner -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlMinRating"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="135dp"
-                    android:layout_height="35dp"
-                    android:hint="Min Rating"
-                    app:endIconMode="clear_text">
+                    android:id="@+id/tilMinRating"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMinRating"
+                    <AutoCompleteTextView
+                        android:id="@+id/actvMinRating"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:gravity="center"
-                        android:maxLines="1" />
+                        android:layout_height="35dp"
+                        android:hint="Min Rating"
+                        style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
-
                 <!-- Divider -->
                 <View
                     android:layout_width="24dp"
@@ -287,22 +279,20 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp" />
 
-                <!-- MaxRating -->
+                <!-- Sort Order Spinner -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlMaxRating"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="135dp"
-                    android:layout_height="35dp"
-                    android:hint="Max Rating"
-                    app:endIconMode="clear_text">
+                    android:id="@+id/tilMaxRating"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMaxRating"
+                    <AutoCompleteTextView
+                        android:id="@+id/actvMaxRating"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:gravity="center"
-                        android:maxLines="1" />
+                        android:layout_height="35dp"
+                        android:hint="Max Rating"
+                        style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
@@ -332,7 +322,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Xắp xếp:"
+                    android:text="Sort order:"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="#1A1A1A" />
@@ -351,16 +341,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    app:boxStrokeColor="#CCCCCC"
-                    app:boxStrokeWidth="1dp">
+                    style="@style/CustomDropdownLayout">
 
                     <AutoCompleteTextView
                         android:id="@+id/actvSortBy"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:hint="Sort by"
-                        style="@style/GrayComboBox" />
+                        style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Divider -->
@@ -377,16 +365,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    app:boxStrokeColor="#CCCCCC"
-                    app:boxStrokeWidth="1dp">
+                    style="@style/CustomDropdownLayout">
 
                     <AutoCompleteTextView
                         android:id="@+id/actvSortOrder"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Ascending"
-                        style="@style/GrayComboBox" />
+                        android:hint="Sort Order"
+                        style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
@@ -404,20 +390,11 @@
             app:chipSpacingHorizontal="15dp">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipRestaurent"
+                android:id="@+id/chipRestaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Restaurant"
                 app:chipIcon="@drawable/ic_restaurant"
-                app:chipIconSize="@dimen/base_margin"
-                style="@style/ChipStyle" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipCoffee"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Coffee"
-                app:chipIcon="@drawable/ic_coffee"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
 
@@ -431,13 +408,23 @@
                 style="@style/ChipStyle" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipEntertain"
+                android:id="@+id/chipAttraction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Entertainment"
+                android:text="Attraction"
                 app:chipIcon="@drawable/ic_entertainment"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipShopping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shopping"
+                app:chipIcon="@drawable/ic_coffee"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
 
         </com.google.android.material.chip.ChipGroup>
 

@@ -6,6 +6,7 @@ import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRe
 
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.remote.admin.dto.response.UserProfileResponse;
+import com.example.travelplanning.data.remote.location.dto.response.LocationResponse;
 
 import java.util.List;
 
@@ -38,4 +39,16 @@ public interface AdminApi{
             @Path("id") String id,
             @Body SoftDeleteUserRequest request
     );
+
+    @GET("api/admin/location/list")
+    Call<ApiResponse<List<LocationResponse>>> getAllLocations(@Query("name") String name,
+                                                            @Query("sortBy") String sortBy,
+                                                            @Query("sortOrder") String sortOrder,
+                                                            @Query("minPrice") int minPrice,
+                                                            @Query("maxPrice") int maxPrice,
+                                                            @Query("minRating") int minRating,
+                                                            @Query("maxRating") int maxRating,
+                                                            @Query("categoryId") String categoryId,
+                                                            @Query("skip") int skip,
+                                                            @Query("take") int take);
 }

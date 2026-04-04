@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingVertical="12dp"
+        android:paddingVertical="20dp"
         android:paddingHorizontal="16dp"
         android:background="?attr/selectableItemBackground"
         android:clipChildren="false"
@@ -19,7 +19,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivImage"
-            android:layout_width="85dp"
+            android:layout_width="80dp"
             android:layout_height="65dp"
             android:layout_marginEnd="12dp"
             android:scaleType="centerCrop"
@@ -38,7 +38,7 @@
                 android:id="@+id/tvUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="#000000"
                 android:maxLines="2"
@@ -54,7 +54,7 @@
                     android:id="@+id/tvRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:layout_marginEnd="5dp"
                     android:text="4.9" />
 

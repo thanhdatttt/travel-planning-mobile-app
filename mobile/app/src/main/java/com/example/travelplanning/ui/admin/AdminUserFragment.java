@@ -23,7 +23,7 @@ import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.databinding.FragmentAdminUserBinding;
 import com.example.travelplanning.databinding.SearchAndFilterBinding;
 import com.example.travelplanning.databinding.AdminHeaderBinding;
-import com.example.travelplanning.viewmodel.admin.AdminViewModel;
+import com.example.travelplanning.viewmodel.admin.AdminUserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class AdminUserFragment extends Fragment {
     private FragmentAdminUserBinding binding;
     private SearchAndFilterBinding searchAndFilterBinding;
     private AdminHeaderBinding adminHeaderBinding;
-    private AdminViewModel viewModel;
+    private AdminUserViewModel viewModel;
     private AdminUserAdapter adapter;
     private List<UserProfile> userList = new ArrayList<>();
 
@@ -48,7 +48,7 @@ public class AdminUserFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(AdminViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AdminUserViewModel.class);
 
         adminHeaderBinding.btnUser.setSelected(true);
         setupRecyclerView();
@@ -108,7 +108,7 @@ public class AdminUserFragment extends Fragment {
         });
 
         searchAndFilterBinding.btnFilter.setOnClickListener(v -> {
-            new AdminFilterDialog().show(getChildFragmentManager(), "AdminFilterDialog");
+            new AdminUserFilterDialog().show(getChildFragmentManager(), "AdminFilterDialog");
         });
 
         adminHeaderBinding.btnLocation.setOnClickListener(v -> {

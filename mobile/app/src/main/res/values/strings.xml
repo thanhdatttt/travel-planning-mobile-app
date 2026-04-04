@@ -33,6 +33,8 @@
     <string name="enter_your_new_password_to_reset">Enter your new password to reset</string>
     <string name="resend">Resend</string>
     <string name="logout">Logout</string>
+    <string name="don_t_have_an_account_register">Don\'t have an account register</string>
+
 
     //main screen nav bar
     <string name="discover">Discover</string>
