@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 public class LocationResponse {
     private String id;
     private String name;
+    private String description;
     private String address;
+    private String phone;
+    private String website;
     private Integer priceLevel;
     private String description;
     private Double latitude;
@@ -22,11 +25,9 @@ public class LocationResponse {
     private CategoryResponse category;
 
     // Đổi tên Class con cho khớp với khai báo List
-    @SerializedName("locationPhotos")
-    private List<LocationPhotoResponse> locationPhotos;
+    private List<LocationPhotoResponse> photos;
 
     private Double avgRating;
-
     private Integer ratingCount;
 
     @Data
@@ -37,7 +38,11 @@ public class LocationResponse {
 
     @Data
     public static class LocationPhotoResponse {
+        @SerializedName("id")
+        private String id;
         @SerializedName("url")
         private String url;
+        @SerializedName("isFeature")
+        private Boolean isFeature;
     }
 }
