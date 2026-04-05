@@ -24,7 +24,6 @@ public class LocaleHelper extends ContextWrapper {
         Configuration configuration = res.getConfiguration();
         configuration.setLocale(locale);
 
-        // This is the non-deprecated way for API 24+
         context = context.createConfigurationContext(configuration);
 
         return new LocaleHelper(context);

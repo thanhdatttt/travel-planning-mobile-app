@@ -37,12 +37,10 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setupUIState(SharedPreferences prefs) {
-        // Set Theme Switch State
         boolean isDark = prefs.getBoolean("dark_mode", false);
         binding.switchTheme.setChecked(isDark);
         binding.switchTheme.setText(isDark ? getString(R.string.theme_dark) : getString(R.string.theme_light));
 
-        // Set Language Button Text based on saved preference
         String lang = prefs.getString("lang", "en");
         binding.btnLanguage.setText(lang.equals("vi") ? getString(R.string.lang_vi) : getString(R.string.lang_en));
     }
