@@ -91,4 +91,9 @@
         <item name="android:textColor">#666666</item>
         <item name="android:textSize">14sp</item>
     </style>
+
+    <style name="WhiteDialog" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="android:backgroundTint">@color/white</item>
+    </style>
+
 </resources>

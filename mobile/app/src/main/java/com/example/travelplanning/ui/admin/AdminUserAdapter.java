@@ -68,12 +68,12 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
             binding.tvEmail.setText(user.getEmail());
 
             // RENDER AVATAR WITH GLIDE
-//            Glide.with(binding.ivAvatar.getContext())
-//                    .load(user.getAvatarUrl() != null ? user.getAvatarUrl() : R.drawable.no_avatar)
-//                    .circleCrop()
-//                    .placeholder(R.drawable.no_avatar)
-//                    .error(R.drawable.no_avatar)
-//                    .into(binding.ivAvatar);
+            Glide.with(binding.ivAvatar.getContext())
+                    .load(user.getAvatarUrl() != null ? user.getAvatarUrl() : R.drawable.no_avatar)
+                    .circleCrop()
+                    .placeholder(R.drawable.no_avatar)
+                    .error(R.drawable.no_avatar)
+                    .into(binding.ivAvatar);
 
             String roleName = user.getRole() != null ? user.getRole().name() : "USER";
             binding.tvRole.setText(roleName.toLowerCase());

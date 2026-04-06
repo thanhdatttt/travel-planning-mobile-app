@@ -1,6 +1,7 @@
 package com.example.travelplanning.ui.admin;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -29,9 +31,11 @@ import com.example.travelplanning.databinding.FragmentAdminUserBinding;
 import com.example.travelplanning.databinding.SearchAndFilterBinding;
 import com.example.travelplanning.databinding.AdminHeaderBinding;
 import com.example.travelplanning.viewmodel.admin.AdminUserViewModel;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminUserFragment extends Fragment {
     private FragmentAdminUserBinding binding;
@@ -65,15 +69,12 @@ public class AdminUserFragment extends Fragment {
 
     private void setupRecyclerView() {
         adapter = new AdminUserAdapter(userList, this::showPopupMenu, this::showUserInfoDialog);
-
         binding.rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvUsers.setAdapter(adapter);
     }
 
     private void setupObservers() {
-        viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
-
-        });
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {});
 
         viewModel.getUsers().observe(getViewLifecycleOwner(), users -> {
             if (users != null) {
@@ -171,7 +172,7 @@ public class AdminUserFragment extends Fragment {
         tvDeleted.setText(isDeleted ? "Yes" : "No");
         tvDeleted.setTextColor(isDeleted ? Color.RED : Color.parseColor("#4CAF50"));
 
-        androidx.appcompat.app.AlertDialog userDialog = new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+        AlertDialog userDialog = new MaterialAlertDialogBuilder(requireContext(), R.style.WhiteDialog)
                 .setTitle(user.getUsername() + "'s Information")
                 .setIcon(R.drawable.ic_user)
                 .setView(dialogView)
@@ -182,10 +183,8 @@ public class AdminUserFragment extends Fragment {
                 .setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_green));
     }
     private void showEditUserDialog(UserProfile user) {
-        // 1. Inflate the layout
         View view = getLayoutInflater().inflate(R.layout.dialog_edit_user, null);
 
-        // 2. Find all EditTexts and TextViews
         TextView tvId = view.findViewById(R.id.tvEditId);
         EditText etName = view.findViewById(R.id.etEditFullName);
         EditText etEmail = view.findViewById(R.id.etEditEmail);
@@ -243,7 +242,7 @@ public class AdminUserFragment extends Fragment {
             }
         }
 
-        androidx.appcompat.app.AlertDialog dialog = new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.WhiteDialog)
                 .setTitle("Edit Profile: " + user.getUsername())
                 .setView(view)
                 .setPositiveButton("Update", (d, which) -> {
@@ -262,7 +261,6 @@ public class AdminUserFragment extends Fragment {
                 .setNegativeButton("Cancel", (d, which) -> d.dismiss())
                 .show();
 
-        // 5. Apply your dark_green theme to the "Update" button
         dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.dark_green));
     }

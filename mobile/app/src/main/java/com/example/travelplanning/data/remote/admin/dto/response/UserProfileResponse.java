@@ -13,8 +13,11 @@ public class UserProfileResponse {
         String id;
         String email;
         String username;
+        String fullName;
         String role;
         boolean isBanned;
         boolean isDeleted;
         String avatarUrl;
+        String address;
+        String phone;
 }
