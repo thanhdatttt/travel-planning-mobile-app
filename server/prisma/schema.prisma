@@ -201,7 +201,7 @@ model ItineraryItem {
   itineraryId String
   locationId  String
   note        String?
-  orderIdx    Int       @default(0)
+  orderIdx    Int?
   date        DateTime?
   itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
   location    Location  @relation(fields: [locationId], references: [id])

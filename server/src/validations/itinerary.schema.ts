@@ -1,4 +1,5 @@
 import z from "zod";
+import { id } from "zod/locales";
 
 // itinerary
 export const createItinerarySchema = {
@@ -77,7 +78,7 @@ export const updateItinerarySchema = {
 // itinerary item
 export const addItemSchema = {
   params: z.object({
-    itemId: z.uuid("Invalid itinerary ID format"),
+    id: z.uuid("Invalid itinerary ID format"),
   }),
   body: z.object({
     locationId: z.uuid("Invalid location ID format"),
@@ -91,12 +92,14 @@ export const addItemSchema = {
 
 export const idItemParamSchema = {
   params: z.object({
-    itemId: z.uuid("Invalid itinerary ID format"),
+    id: z.uuid("Invalid itinerary ID format"),
+    itemId: z.uuid("Invalid itinerary item ID format"),
   }),
 }
 
 export const scheduleItemSchema = {
   params: z.object({
+    id: z.uuid("Invalid itinerary ID format"),
     itemId: z.uuid("Invalid itinerary item ID format"),
   }),
   body: z.object({
@@ -109,6 +112,7 @@ export const scheduleItemSchema = {
 
 export const updateItemNoteSchema = {
   params: z.object({
+    id: z.uuid("Invalid itinerary ID format"),
     itemId: z.uuid("Invalid itinerary item ID format"),
   }),
   body: z.object({

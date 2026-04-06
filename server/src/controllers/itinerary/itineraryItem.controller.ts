@@ -24,18 +24,23 @@ export const addItineraryItem = async (req: Request, res: Response) => {
         .json(createResponse({ message: "Forbbiden", error: "Itinerary not yours" }));
     }
 
-    const lastItem = await prisma.itineraryItem.findFirst({
-      where: { itineraryId: String(id), date: null },
-      orderBy: { orderIdx: 'desc' }
-    });
-    const newOrderIdx = lastItem ? lastItem.orderIdx + 1 : 0;
-    const itineraryItem = await prisma.itineraryItem.create({
-      data: {
-        itineraryId: String(id),
-        locationId: data.locationId,
-        note: data.note ?? null,
-        orderIdx: newOrderIdx
+    const itineraryItem = await prisma.$transaction(async (tx) => {
+      // check existing
+      const existing = await tx.itineraryItem.findFirst({
+        where: { itineraryId: String(id), locationId: data.locationId },
+      });
+      if (existing) {
+        return res.status(409).json(
+          createResponse({ message: "Conflict", error: "Location already in itinerary" })
+        );
       }
+      return tx.itineraryItem.create({
+        data: {
+          itineraryId: String(id),
+          locationId: data.locationId,
+          note: data.note ?? null,
+        },
+      });
     });
 
     return res.status(201).json(
@@ -54,12 +59,12 @@ export const addItineraryItem = async (req: Request, res: Response) => {
 
 export const deleteItineraryItem = async (req: Request, res: Response) => {
   try {
-    const { itemId } = req.params;
+    const { id, itemId } = req.params;
     const userId = req.user.id;
 
     // only owner can delete
     const itineraryItem = await prisma.itineraryItem.findFirst({
-        where: { id: String(itemId) },
+        where: { id: String(itemId), itineraryId: String(id) },
         include: { itinerary: true }
       });
     if (!itineraryItem) {
@@ -73,7 +78,19 @@ export const deleteItineraryItem = async (req: Request, res: Response) => {
         .json(createResponse({ message: "Forbbiden", error: "Itinerary item not yours" }));
     }
 
-    await prisma.itineraryItem.delete({ where: { id: String(itemId) } });
+    await prisma.$transaction(async (tx) => {
+      await tx.itineraryItem.delete({ where: { id: String(itemId) } });
+
+      // update order
+      await tx.itineraryItem.updateMany({
+        where: {
+          itineraryId: itineraryItem.itineraryId,
+          date: itineraryItem.date,
+          orderIdx: { gt: itineraryItem.orderIdx ?? 0 },
+        },
+        data: { orderIdx: { decrement: 1 } },
+      });
+    });
 
     return res.status(200).json(
       createResponse({
@@ -91,7 +108,7 @@ export const deleteItineraryItem = async (req: Request, res: Response) => {
 
 export const scheduleItineraryItem = async (req: Request, res: Response) => {
   try {
-    const { itemId } = req.params;
+    const { id, itemId } = req.params;
     const data: {
       targetDate: Date;
     } = req.body;
@@ -99,7 +116,7 @@ export const scheduleItineraryItem = async (req: Request, res: Response) => {
 
     // only owner can order
     const itineraryItem = await prisma.itineraryItem.findFirst({
-        where: { id: String(itemId) },
+        where: { id: String(itemId), itineraryId: String(id) },
         include: { itinerary: true }
       });
     if (!itineraryItem) {
@@ -115,27 +132,24 @@ export const scheduleItineraryItem = async (req: Request, res: Response) => {
 
     // check schedule date valid
     const { startDate, endDate } = itineraryItem.itinerary;
-    const isValid = data.targetDate >= startDate && data.targetDate <= endDate;
+    const targetDate = new Date(data.targetDate);
+    const isValid = targetDate >= startDate && targetDate <= endDate;
     if (!isValid) {
       return res
         .status(400)
         .json(createResponse({ message: "Bad request", error: "Invalid schedule date" }));
     }
 
-    const lastItemInDay = await prisma.itineraryItem.findFirst({
-      where: {
-        itineraryId: itineraryItem.itineraryId,
-        date: data.targetDate,
-      },
-      orderBy: { orderIdx: 'desc' },
-    });
-    const newOrderIdx = lastItemInDay ? lastItemInDay.orderIdx + 1 : 0;
-    const updatedItem = await prisma.itineraryItem.update({
-      where: { id: String(itemId) },
-      data: {
-        date: data.targetDate,
-        orderIdx: newOrderIdx,
-      },
+    const updatedItem = await prisma.$transaction(async (tx) => {
+      const lastItemInDay = await tx.itineraryItem.findFirst({
+        where: { itineraryId: itineraryItem.itineraryId, date: targetDate },
+        orderBy: { orderIdx: 'desc' },
+      });
+      const newOrderIdx = lastItemInDay ? (lastItemInDay.orderIdx ?? 0) + 1 : 0;
+      return tx.itineraryItem.update({
+        where: { id: String(itemId) },
+        data: { date: targetDate, orderIdx: newOrderIdx },
+      });
     });
 
     return res.status(200).json(
@@ -154,12 +168,12 @@ export const scheduleItineraryItem = async (req: Request, res: Response) => {
 
 export const unscheduleItineraryItem = async (req: Request, res: Response) => {
   try {
-    const { itemId } = req.params;
+    const { id, itemId } = req.params;
     const userId = req.user.id;
 
     // only owner can order
     const itineraryItem = await prisma.itineraryItem.findFirst({
-        where: { id: String(itemId) },
+        where: { id: String(itemId), itineraryId: String(id) },
         include: { itinerary: true }
       });
     if (!itineraryItem) {
@@ -182,24 +196,21 @@ export const unscheduleItineraryItem = async (req: Request, res: Response) => {
 
     // unschedule and reorder
     const oldDate = itineraryItem.date;
-    const oldOrderIdx = itineraryItem.orderIdx;
-    const updatedItem = await prisma.itineraryItem.update({
-      where: { id: String(itemId) },
-      data: {
-        date: null,
-        orderIdx: 0,
-      },
-    });
-    await prisma.itineraryItem.updateMany({
-      where: {
-        itineraryId: itineraryItem.itineraryId,
-        date: oldDate,
-        orderIdx: { gt: oldOrderIdx }
-      },
-      data: {
-        orderIdx: { decrement: 1 }
-      }
-    });
+    const oldOrderIdx = itineraryItem.orderIdx || 0;
+    const [updatedItem] = await prisma.$transaction([
+      prisma.itineraryItem.update({
+        where: { id: String(itemId) },
+        data: { date: null, orderIdx: null },
+      }),
+      prisma.itineraryItem.updateMany({
+        where: {
+          itineraryId: itineraryItem.itineraryId,
+          date: oldDate,
+          orderIdx: { gt: oldOrderIdx },
+        },
+        data: { orderIdx: { decrement: 1 } },
+      }),
+    ]);
 
     return res.status(200).json(
       createResponse({
@@ -217,7 +228,7 @@ export const unscheduleItineraryItem = async (req: Request, res: Response) => {
 
 export const updateItineraryItemNote = async (req: Request, res: Response) => {
   try {
-    const { itemId } = req.params;
+    const { id, itemId } = req.params;
     const data: {
       note: string;
     } = req.body;
@@ -225,7 +236,7 @@ export const updateItineraryItemNote = async (req: Request, res: Response) => {
 
     // only owner can update
     const itineraryItem = await prisma.itineraryItem.findFirst({
-        where: { id: String(itemId) },
+        where: { id: String(itemId), itineraryId: String(id) },
         include: { itinerary: true }
       });
     if (!itineraryItem) {

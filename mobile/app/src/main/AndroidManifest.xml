@@ -16,9 +16,6 @@
         android:theme="@style/Theme.TravelPlanning"
         android:usesCleartextTraffic="true"
         >
-        <activity
-            android:name=".ui.auth.AuthActivity"
-            android:exported="false" />
         <!-- Auth activities -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -48,10 +45,6 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.TravelPlanning" />
-
-        <activity
-            android:name=".ui.admin.AdminActivity"
-            android:exported="false" />
 
         <activity 
             android:name=".ui.location.LocationSearchActivity"

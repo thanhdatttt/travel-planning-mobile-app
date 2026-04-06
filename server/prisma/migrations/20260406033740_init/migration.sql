@@ -1,6 +1,11 @@
-CREATE EXTENSION IF NOT EXISTS postgis;
 -- CreateEnum
-CREATE TYPE "locationType" AS ENUM ('attraction', 'restaurant');
+CREATE TYPE "authProvider" AS ENUM ('local', 'facebook', 'google');
+
+-- CreateEnum
+CREATE TYPE "userRole" AS ENUM ('user', 'admin', 'moderator');
+
+-- CreateEnum
+CREATE TYPE "otpType" AS ENUM ('register', 'reset');
 
 -- CreateEnum
 CREATE TYPE "privacy" AS ENUM ('public', 'private', 'unlisted');
@@ -12,22 +17,94 @@ CREATE TYPE "objType" AS ENUM ('location', 'review', 'itinerary');
 CREATE TYPE "reportStatus" AS ENUM ('pending', 'processed');
 
 -- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "fullName" TEXT,
+    "phone" TEXT,
+    "address" TEXT,
+    "avatarUrl" TEXT,
+    "bio" TEXT,
+    "preference" JSONB,
+    "role" "userRole" NOT NULL DEFAULT 'user',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isBanned" BOOLEAN NOT NULL DEFAULT false,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "dob" TIMESTAMP(3),
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "AuthProvider" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "provider" "authProvider" NOT NULL DEFAULT 'local',
+    "providerId" TEXT NOT NULL,
+    "hashPassword" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "AuthProvider_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Session" (
+    "id" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "token" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EmailOTP" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "otp" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "verified" BOOLEAN NOT NULL DEFAULT false,
+    "type" "otpType" NOT NULL DEFAULT 'register',
+
+    CONSTRAINT "EmailOTP_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "LocationCategory" (
+    "id" SERIAL NOT NULL,
+    "slug" TEXT NOT NULL,
+    "nameEn" TEXT NOT NULL,
+    "nameVi" TEXT NOT NULL,
+    "icon" TEXT,
+    "displayOrder" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "LocationCategory_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Location" (
     "id" TEXT NOT NULL,
+    "osmId" TEXT,
     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
-    "createdBy" TEXT NOT NULL,
+    "createdBy" TEXT NOT NULL DEFAULT 'system',
     "name" TEXT NOT NULL,
     "slug" TEXT,
-    "description" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
-    "phone" TEXT NOT NULL,
+    "description" TEXT,
+    "address" TEXT,
+    "phone" TEXT,
     "website" TEXT,
     "avgRating" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "ratingCount" INTEGER NOT NULL DEFAULT 0,
-    "priceLevel" SMALLINT NOT NULL,
-    "type" "locationType" NOT NULL DEFAULT 'attraction',
+    "priceLevel" SMALLINT,
     "metadata" JSONB,
-    "location" geography(Point, 4326) NOT NULL,
+    "categoryId" INTEGER NOT NULL,
+    "location" geography NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -93,7 +170,7 @@ CREATE TABLE "Itinerary" (
     "id" TEXT NOT NULL,
     "ownerId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
     "privacy" "privacy" NOT NULL DEFAULT 'private',
     "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "endDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -108,11 +185,9 @@ CREATE TABLE "ItineraryItem" (
     "id" TEXT NOT NULL,
     "itineraryId" TEXT NOT NULL,
     "locationId" TEXT NOT NULL,
-    "days" INTEGER NOT NULL DEFAULT 1,
-    "startTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "endTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "note" TEXT,
-    "orderIdx" INTEGER NOT NULL,
+    "orderIdx" INTEGER,
+    "date" TIMESTAMP(3),
 
     CONSTRAINT "ItineraryItem_pkey" PRIMARY KEY ("id")
 );
@@ -143,7 +218,46 @@ CREATE TABLE "Report" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "AuthProvider_provider_providerId_key" ON "AuthProvider"("provider", "providerId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "AuthProvider_userId_provider_key" ON "AuthProvider"("userId", "provider");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Session_token_key" ON "Session"("token");
+
+-- CreateIndex
+CREATE INDEX "Session_userId_idx" ON "Session"("userId");
+
+-- CreateIndex
+CREATE INDEX "EmailOTP_email_idx" ON "EmailOTP"("email");
+
+-- CreateIndex
+CREATE INDEX "EmailOTP_expiresAt_idx" ON "EmailOTP"("expiresAt");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "LocationCategory_slug_key" ON "LocationCategory"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Location_osmId_key" ON "Location"("osmId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Location_slug_key" ON "Location"("slug");
+
+-- CreateIndex
 CREATE INDEX "Location_name_idx" ON "Location"("name");
+
+-- CreateIndex
+CREATE INDEX "Location_categoryId_idx" ON "Location"("categoryId");
+
+-- CreateIndex
+CREATE INDEX "location_idx" ON "Location" USING GIST ("location");
 
 -- CreateIndex
 CREATE INDEX "LocationHour_locationId_idx" ON "LocationHour"("locationId");
@@ -153,9 +267,6 @@ CREATE INDEX "LocationPhoto_locationId_idx" ON "LocationPhoto"("locationId");
 
 -- CreateIndex
 CREATE INDEX "LocationPhoto_uploaderId_idx" ON "LocationPhoto"("uploaderId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "LocationPhoto_uploaderId_locationId_key" ON "LocationPhoto"("uploaderId", "locationId");
 
 -- CreateIndex
 CREATE INDEX "Review_locationId_idx" ON "Review"("locationId");
@@ -179,10 +290,7 @@ CREATE UNIQUE INDEX "Bookmark_userId_locationId_key" ON "Bookmark"("userId", "lo
 CREATE INDEX "Itinerary_ownerId_idx" ON "Itinerary"("ownerId");
 
 -- CreateIndex
-CREATE INDEX "ItineraryItem_itineraryId_idx" ON "ItineraryItem"("itineraryId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ItineraryItem_id_orderIdx_key" ON "ItineraryItem"("id", "orderIdx");
+CREATE INDEX "ItineraryItem_itineraryId_date_orderIdx_idx" ON "ItineraryItem"("itineraryId", "date", "orderIdx");
 
 -- CreateIndex
 CREATE INDEX "Favorite_userId_idx" ON "Favorite"("userId");
@@ -192,6 +300,15 @@ CREATE UNIQUE INDEX "Favorite_userId_itineraryId_key" ON "Favorite"("userId", "i
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Report_reporterId_targetId_key" ON "Report"("reporterId", "targetId");
+
+-- AddForeignKey
+ALTER TABLE "AuthProvider" ADD CONSTRAINT "AuthProvider_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Location" ADD CONSTRAINT "Location_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "LocationCategory"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Location" ADD CONSTRAINT "Location_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -222,6 +339,9 @@ ALTER TABLE "Itinerary" ADD CONSTRAINT "Itinerary_ownerId_fkey" FOREIGN KEY ("ow
 
 -- AddForeignKey
 ALTER TABLE "ItineraryItem" ADD CONSTRAINT "ItineraryItem_itineraryId_fkey" FOREIGN KEY ("itineraryId") REFERENCES "Itinerary"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ItineraryItem" ADD CONSTRAINT "ItineraryItem_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Location"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Favorite" ADD CONSTRAINT "Favorite_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
