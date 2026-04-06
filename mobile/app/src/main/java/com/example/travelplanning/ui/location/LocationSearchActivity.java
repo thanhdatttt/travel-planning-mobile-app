@@ -11,12 +11,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelplanning.R;
+import com.example.travelplanning.databinding.ActivityLocationSearchBinding;
 import com.example.travelplanning.ui.adapter.LocationAdapter;
+import com.example.travelplanning.ui.location_detail.LocationDetailFragment;
 import com.example.travelplanning.viewmodel.location.LocationViewModel;
 import com.example.travelplanning.viewmodel.category.CategoryViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -25,7 +28,6 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 public class LocationSearchActivity extends AppCompatActivity {
-
     private LocationViewModel locationViewModel;
     private LocationAdapter adapter;
     
@@ -42,6 +44,7 @@ public class LocationSearchActivity extends AppCompatActivity {
     private String currentQuery = "";
     private int currentPage = 1;
     private CategoryViewModel categoryViewModel;
+    private ActivityLocationSearchBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,13 @@ public class LocationSearchActivity extends AppCompatActivity {
             if (locations != null) {
                 // Giả sử Adapter của bạn đã có hàm setList(locations)
                 adapter.setList(locations);
+                adapter.setOnLocationClickListener(location -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("location_id", location.getId());
+
+                    Navigation.findNavController(binding.getRoot())
+                            .navigate(R.id.nav_location_detail, bundle);
+                });
             }
         });
 

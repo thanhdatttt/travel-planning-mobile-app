@@ -26,13 +26,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        TokenManager.saveRefreshToken(this,"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYmIzMzQ1Yy0yYTkxLTQ4NjYtYjU5OC03NWFhZDQ2YTBmZjciLCJpYXQiOjE3NzQ3MDkwMjUsImV4cCI6MjM3OTUwOTAyNX0.pgWyU_Ku9ugrM91puOwCTjZLM-k5-7Bme8ejz0etpk0");
+
         // init splash screen
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
         super.onCreate(savedInstanceState);
 
         //hard code token for testing
-        String manualAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDQ5ZGFiMS1jYjMzLTQ5NWQtYWNjZC0zMGQ1ZTBkZjRmOTEiLCJpYXQiOjE3NzU0MDk5NzMsImV4cCI6MTc3NTQ5NjM3M30.JVHOKqSoUBl35pkMh3Yx_-FKEVWsuUKuVgkParIXfTc";
+        String manualAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjODIyOGZkYi0wNDNmLTQyY2ItOGE0Yy1mZDE1MDQ1ZDUxNjAiLCJpYXQiOjE3NzU0NDgwNzcsImV4cCI6MTc3NTUzNDQ3N30.WgaGy82ci-fuimCo0PiBVqH0UTWFJiIqsst9zTUa9JA";
         String manualRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzAxYTk2Ny0zMTYyLTQ4ZjctOWIyYS1kODc5MmRmYzY2OTciLCJpYXQiOjE3NzQxMzg0NzUsImV4cCI6MjM3ODkzODQ3NX0.PDEAHbhlHWr8v6ZsLR_p1BMV6JOxjc-nXpPdJjisxuc";
         TokenManager.saveTokens(this, manualAccessToken, manualRefreshToken);
 

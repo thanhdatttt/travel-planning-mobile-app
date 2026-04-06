@@ -7,12 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.databinding.FragmentProfileBinding;
@@ -58,7 +62,7 @@ public class ProfileFragment extends Fragment {
 
     private void setupObservers(){
         viewModel.getUserProfile().observe(getViewLifecycleOwner(), user -> {
-            Log.d("DEBUG_UI", "Dữ liệu User nhận được: " + (user != null ? user.getFullName() : "null"));
+//            Log.d("DEBUG_UI", "Dữ liệu User nhận được: " + (user != null ? user.getFullName() : "null"));
             if (user != null)
                 updateUI(user);
         });
@@ -74,6 +78,14 @@ public class ProfileFragment extends Fragment {
         profileItems.add(new ProfileItem(R.string.label_birthdate, dobString, "birthdate", false));
 
         adapter.notifyDataSetChanged();
+
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+            Glide.with(this)
+                    .load(user.getAvatarUrl())
+                    .placeholder(R.drawable.suprised_car) // Ảnh mặc định khi đang load
+                    .circleCrop() // Bo tròn ảnh
+                    .into(binding.ivAvatar);
+        }
     }
 
     private void setupListeners() {
@@ -92,7 +104,11 @@ public class ProfileFragment extends Fragment {
             binding.btnEdit.setVisibility(View.VISIBLE);
         });
 
-
+        binding.ivAvatar.setOnClickListener(v -> {
+            pickMedia.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+        });
     }
 
     private UserProfile convertItemsToUserProfile() {
@@ -119,4 +135,13 @@ public class ProfileFragment extends Fragment {
         }
         return user;
     }
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    //hiển thị ảnh tạm thời bằng Glide (cho mượt UX)
+                    Glide.with(this).load(uri).circleCrop().into(binding.ivAvatar);
+                    viewModel.uploadAvatar(uri);
+                }
+            });
 }

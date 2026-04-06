@@ -38,10 +38,6 @@ android {
 
     buildTypes {
 
-        debug {
-            //http://10.0.2.2:5000
-            buildConfigField "String", "BASE_URL", "\"http://192.168.22.107:5000/\""
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

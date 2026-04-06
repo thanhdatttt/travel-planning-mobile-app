@@ -9,12 +9,12 @@ const router = express.Router();
 // itinerary
 router.post("/", 
     validate(itiSchema.createItinerarySchema), itiController.createItinerary);
-router.get("/:id",
-    validate(itiSchema.idParamSchema), itiController.getItinerary);
 router.get("/me",
     validate(itiSchema.paginationSchema), itiController.getUserItineraries);
 router.get("/public",
     validate(itiSchema.paginationSchema), itiController.getPublicItineraries);
+router.get("/by-id/:id",
+    validate(itiSchema.idParamSchema), itiController.getItinerary);
 router.delete("/:id", 
     validate(itiSchema.idParamSchema), itiController.deleteItinerary);
 router.patch("/:id", 

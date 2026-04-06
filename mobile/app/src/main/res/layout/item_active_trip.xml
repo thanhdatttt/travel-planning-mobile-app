@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardActiveTrip"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/background"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp">
+
+    <!-- Cover image with badge overlay -->
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Cover image with badge overlay -->
+        <FrameLayout android:layout_width="match_parent" android:layout_height="150dp">
+            <ImageView android:id="@+id/ivCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/trip_image"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_placeholder"/>
+            <ImageView
+                android:id="@+id/btnConfig"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end"
+                android:contentDescription="@string/config_button"
+                android:src="@drawable/ic_dots"
+                app:tint="@color/text" />
+        </FrameLayout>
+
+        <!-- Info row -->
+        <LinearLayout android:orientation="vertical"
+            android:padding="14dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView android:id="@+id/tvTripName"
+                android:textColor="@color/text"
+                android:textSize="24sp"
+                android:text="@string/trip_to_ha_noi"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView android:id="@+id/tvTripDates"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp"
+                android:text="@string/_10_5_2026_15_5_2026"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

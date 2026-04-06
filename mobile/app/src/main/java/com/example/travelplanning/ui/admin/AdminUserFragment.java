@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -226,7 +227,7 @@ public class AdminUserFragment extends Fragment {
 
         UserRole[] roles = {UserRole.USER, UserRole.MODERATOR, UserRole.ADMIN};
 
-        android.widget.ArrayAdapter<UserRole> roleAdapter = new android.widget.ArrayAdapter<>(
+        ArrayAdapter<UserRole> roleAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 roles
@@ -246,7 +247,6 @@ public class AdminUserFragment extends Fragment {
                 .setTitle("Edit Profile: " + user.getUsername())
                 .setView(view)
                 .setPositiveButton("Update", (d, which) -> {
-                    // Collect the NEW values from the inputs
                     user.setFullName(etName.getText().toString());
                     user.setEmail(etEmail.getText().toString());
                     user.setAddress(etAddress.getText().toString());

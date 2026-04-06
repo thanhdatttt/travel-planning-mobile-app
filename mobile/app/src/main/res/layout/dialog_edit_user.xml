@@ -78,8 +78,10 @@
                 style="@style/AdminEditInfoValue"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
-                android:textAlignment="textEnd"
-                android:gravity="end" />
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:minHeight="1dp"
+                android:textAlignment="textEnd" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

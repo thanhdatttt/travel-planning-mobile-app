@@ -19,10 +19,13 @@ public class LocationViewModel extends AndroidViewModel {
 
     private final LocationRepository locationRepository;
 
-    private final MutableLiveData<List<Location>> nearbyLocations = new MutableLiveData<>(); // Cho Nearby
-    private final MutableLiveData<List<Location>> searchResults = new MutableLiveData<>();   // Cho Search
-
-    private final MutableLiveData<Boolean> hasMoreData = new MutableLiveData<>(false);       // Check Load More
+    // Data cho Map (dựa trên radius)
+    private final MutableLiveData<List<Location>> nearbyLocations = new MutableLiveData<>();
+    // Data cho Panel (khi bấm Category, không radius)
+    private final MutableLiveData<List<Location>> categoryPanelLocations = new MutableLiveData<>();
+    
+    private final MutableLiveData<List<Location>> searchResults = new MutableLiveData<>();   
+    private final MutableLiveData<Boolean> hasMoreData = new MutableLiveData<>(false);  
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
@@ -31,6 +34,7 @@ public class LocationViewModel extends AndroidViewModel {
         this.locationRepository = new LocationRepository(application);
     }
 
+    // Dùng khi kéo Map
     public void fetchNearbyLocations(double lat, double lng, Integer radius, Integer categoryId) {
         isLoading.setValue(true);
         locationRepository.getNearbyLocations(lat, lng, radius, categoryId, new LocationRepository.LocationListCallback() {
@@ -39,7 +43,6 @@ public class LocationViewModel extends AndroidViewModel {
                 isLoading.setValue(false);
                 nearbyLocations.setValue(data);
             }
-
             @Override
             public void onError(String error) {
                 isLoading.setValue(false);
@@ -47,30 +50,39 @@ public class LocationViewModel extends AndroidViewModel {
             }
         });
     }
+
+    // Dùng khi bấm vào Category Chip
+    public void fetchPanelLocationsByCategory(double lat, double lng, String categoryIcon) {
+        isLoading.setValue(true);
+        // Cố tình truyền radius = null để Backend lấy toàn bộ, ta sẽ tự cắt Top 10
+        locationRepository.getNearbyLocations(lat, lng, null, null, new LocationRepository.LocationListCallback() {
+            @Override
+            public void onSuccess(List<Location> data) {
+                isLoading.setValue(false);
+                categoryPanelLocations.setValue(data);
+            }
+            @Override
+            public void onError(String error) {
+                isLoading.setValue(false);
+                errorMessage.setValue(error);
+            }
+        });
+    }
+
     public void searchLocations(String query, Integer categoryId, Integer priceLevel, int page, int limit) {
         isLoading.setValue(true);
         locationRepository.searchLocations(query, categoryId, priceLevel, page, limit, new LocationRepository.LocationSearchCallback() {
             @Override
             public void onSuccess(List<Location> data, MetaResponse meta) {
                 isLoading.setValue(false);
-                
-                // Lấy danh sách hiện tại ra
                 List<Location> currentList = searchResults.getValue();
-                
-                if (page == 1 || currentList == null) {
-                    // Nếu là trang 1, set list mới hoàn toàn
-                    searchResults.setValue(data);
-                } else {
-                    // Nếu là trang tiếp theo, cộng dồn vào list cũ
+                if (page == 1 || currentList == null) searchResults.setValue(data);
+                else {
                     currentList.addAll(data);
-                    searchResults.setValue(currentList); // Notify observer
+                    searchResults.setValue(currentList);
                 }
-
-                if (meta != null) {
-                    hasMoreData.setValue(meta.getPage() < meta.getTotalPages());
-                }
+                if (meta != null) hasMoreData.setValue(meta.getPage() < meta.getTotalPages());
             }
-
             @Override
             public void onError(String error) {
                 isLoading.setValue(false);

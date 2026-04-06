@@ -25,8 +25,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">35dp</item>
         <item name="android:textSize">13sp</item>
-        <item name="android:textColor">#1A1A1A</item>
-        <item name="android:textColorHint">#000000</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
         <item name="android:paddingStart">14dp</item>
         <item name="android:paddingEnd">6dp</item>
         <item name="android:paddingTop">0dp</item>
@@ -57,6 +57,10 @@
     <style name="BottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet">
         <item name="android:background">@android:color/transparent</item>
     </style>
+    <style name="ShapeAppearanceOverlay.Material3.Corner.Small" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
 
     <style name="AdminInfoRow">
         <item name="android:layout_width">match_parent</item>
@@ -69,7 +73,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">#333333</item>
+        <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">14sp</item>
     </style>
 
@@ -77,19 +81,22 @@
         <item name="android:layout_width">200dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">end</item>
-        <item name="android:textColor">#666666</item>
+        <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="AdminEditInfoValue">
-        <item name="android:layout_width">200dp</item>
+    <style name="AdminEditInfoValue" parent="android:Widget.EditText">
+        <item name="android:layout_width">180dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/edit_textbox</item>
         <item name="android:paddingHorizontal">10dp</item>
-        <item name="android:paddingVertical">5dp</item>>
+        <item name="android:paddingVertical">10dp</item>>
         <item name="android:gravity">end</item>
-        <item name="android:textColor">#666666</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
     </style>
 
     <style name="WhiteDialog" parent="Theme.MaterialComponents.Light.Dialog">

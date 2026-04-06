@@ -71,6 +71,7 @@ public class AdminUserViewModel extends AndroidViewModel {
         adminRepository.banUser(user.getId(), Boolean.FALSE.equals(user.getIsBanned()), new AdminRepository.AdminCallback<UserProfile>() {
             @Override
             public void onSuccess(UserProfile updatedUser) {
+                fetchUsers();
             }
 
             @Override
@@ -86,6 +87,7 @@ public class AdminUserViewModel extends AndroidViewModel {
             @Override
             public void onSuccess(UserProfile data) {
                 isLoading.setValue(false);
+                fetchUsers();
             }
 
             @Override

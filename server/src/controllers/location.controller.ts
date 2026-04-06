@@ -39,20 +39,18 @@ export const locationController = {
       .json(createResponse({ data: { ...location, photos } }));
   },
   async getMapLocations(req: Request, res: Response) {
-    try {
-      const { lat, lng, radius, categoryId } = req.query as any;
+    const { lat, lng, radius, categoryId } = req.query as any;
 
-      const latitude = parseFloat(lat);
-      const longitude = parseFloat(lng);
-      const rad = parseInt(radius) || 5000;
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+    const rad = parseInt(radius) || 5000000;
 
-      // categoryId phải khớp với tên cột trong DB
-      const categoryFilter = categoryId
-        ? `AND l."categoryId" = ${parseInt(categoryId)}`
-        : "";
+    const categoryFilter = categoryId
+      ? `AND l."categoryId" = ${parseInt(categoryId)}`
+      : "";
 
-      const locations: any[] = await prisma.$queryRawUnsafe(
-        `
+    const locations: any[] = await prisma.$queryRawUnsafe(
+      `
         SELECT 
           l.id, 
           l.name, 
@@ -92,22 +90,17 @@ export const locationController = {
         AND l."isDeleted" = false
         ORDER BY distance ASC
         `,
-        longitude,
-        latitude,
-        rad,
-      );
+      longitude,
+      latitude,
+      rad,
+    );
 
-      return res.status(200).json({
-        message: "Lấy danh sách địa điểm thành công",
-        data: locations,
-      });
-    } catch (error: any) {
-      console.error("Error fetching map locations:", error);
-      return res.status(400).json({
-        message: error.message || "Đã có lỗi xảy ra",
-        error: "Bad Request",
-      });
-    }
+    console.log(locations);
+
+    return res.status(200).json({
+      message: "Lấy danh sách địa điểm thành công",
+      data: locations,
+    });
   },
   async search(req: Request, res: Response) {
     const q = req.query.q as string;
@@ -162,12 +155,8 @@ export const locationController = {
       prisma.location.count({ where }),
     ]);
 
-    // ==========================================
-    // BƯỚC MỚI: DÙNG RAW SQL ĐỂ LẤY TỌA ĐỘ BÙ VÀO
-    // ==========================================
     let coordinates: any[] = [];
     if (locations.length > 0) {
-      // Biến mảng id thành chuỗi để đưa vào WHERE IN (ví dụ: 'id1','id2')
       const idsString = locations.map((loc) => `'${loc.id}'`).join(",");
 
       coordinates = await prisma.$queryRawUnsafe(`
@@ -180,11 +169,9 @@ export const locationController = {
       `);
     }
 
-    // 2. MAP LẠI DATA ĐỂ TRẢ VỀ CHO MOBILE (Nhồi thêm latitude và longitude)
     const formattedLocations = locations.map((loc) => {
       const { _count, ...rest } = loc;
 
-      // Tìm tọa độ tương ứng với id của địa điểm này
       const coord = coordinates.find((c: any) => c.id === loc.id);
 
       return {
@@ -194,6 +181,8 @@ export const locationController = {
         longitude: coord ? coord.longitude : null,
       };
     });
+
+    console.log(formattedLocations);
 
     return res.status(200).json(
       createResponse({
