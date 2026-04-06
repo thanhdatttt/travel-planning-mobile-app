@@ -55,7 +55,7 @@ export const getItinerary = async (req: Request, res: Response) => {
     if (!itinerary) {
       return res
         .status(404)
-        .json(createResponse({ message: "Not found", error: "Itinerary ot found" }));
+        .json(createResponse({ message: "Not found", error: "Itinerary not found" }));
     }
 
     // check privacy
@@ -100,6 +100,8 @@ export const getUserItineraries = async (req: Request, res: Response) => {
               { date: 'asc' },
               { orderIdx: 'asc' }
             ],
+            take: 1, // only take 1 for preview
+            include: { location: true }
           }
         }
       }),
@@ -147,6 +149,8 @@ export const getPublicItineraries = async (req: Request, res: Response) => {
               { date: 'asc' },
               { orderIdx: 'asc' }
             ],
+            take: 1, // only take 1 for preview
+            include: { location: true }
           }
         }
       }),
@@ -181,14 +185,19 @@ export const deleteItinerary = async (req: Request, res: Response) => {
     const userId: string = req.user.id;
 
     // only owner can delete itinerary
-    const itinerary = await prisma.itinerary.delete({
-      where: { id: String(id), ownerId: userId },
+    const itinerary = await prisma.itinerary.findUnique({
+      where: { id: String(id) },
     });
     if (!itinerary) {
       return res
         .status(404)
         .json(createResponse({ message: "Not found", error: "Itinerary not found" }));
     }
+    if (itinerary.ownerId !== userId) {
+      return res.status(403).json(createResponse({ message: "Forbidden", error: "Itinerary not yours" }));
+    }
+
+    await prisma.itinerary.delete({ where: { id: String(id) } });
 
     return res.status(200).json(
       createResponse({
@@ -244,19 +253,29 @@ export const updateItinerary = async (req: Request, res: Response) => {
 
     // unschedule items if start date or end date changed
     if (data.startDate || data.endDate) {
-      await prisma.itineraryItem.updateMany({
+      // find out-of-range items
+      const outOfRangeItems = await prisma.itineraryItem.findMany({
         where: {
           itineraryId: String(id),
+          date: { not: null },
           OR: [
             { date: { lt: updatedItinerary.startDate } },
-            { date: { gt: updatedItinerary.endDate } }
-          ]
+            { date: { gt: updatedItinerary.endDate } },
+          ],
         },
-        data: {
-          date: null,
-          orderIdx: 0
-        }
+        orderBy: { orderIdx: 'asc' },
       });
+
+      if (outOfRangeItems.length > 0) {
+        await prisma.$transaction(
+          outOfRangeItems.map((item) =>
+            prisma.itineraryItem.update({
+              where: { id: item.id },
+              data: { date: null, orderIdx: null },
+            })
+          )
+        );
+      }
     }
 
     return res.status(200).json(
@@ -307,11 +326,12 @@ export const cloneItinerary = async (req: Request, res: Response) => {
         description: originalItinerary.description,
         privacy: originalItinerary.privacy,
         itineraryItems: {
-          create: originalItinerary.itineraryItems.map((item) => ({
-            date: item.date,
-            locationId: item.locationId,
-            orderIdx: item.orderIdx,
-          })),
+          create:
+            originalItinerary.itineraryItems.map((item) => ({
+              date: item.date,
+              locationId: item.locationId,
+              orderIdx: item.orderIdx,
+            })),
         },
       },
       include: { itineraryItems: true }

@@ -113,4 +113,6 @@
     <string name="back">Back</string>
     <string name="bookmark">Bookmark</string>
     <string name="location_image">location image</string>
+    <string name="saved_locations">Saved locations</string>
+    <string name="itinerary">Itinerary</string>
 </resources>
