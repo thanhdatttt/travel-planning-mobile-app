@@ -11,7 +11,7 @@ const router = express.Router();
 router.use(requireRole("admin"));
 router.use("/user", userManageRoute);
 router.use("/location", locationManageRoute);
-router.use("/stats", statRoute);
+router.use("/stat", statRoute);
 router.use("/reports", reportRoute);
 
 export default router;

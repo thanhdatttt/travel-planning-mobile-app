@@ -11,4 +11,6 @@
     <color name="admin_header_color">#15000000</color>
     <color name="admin_dark_green">#3E814D</color>
     <color name="dark_green">#219D0E</color>
+    <color name="gray">#888888</color>
+
 </resources>

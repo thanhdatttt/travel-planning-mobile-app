@@ -8,6 +8,7 @@ import com.example.travelplanning.data.remote.admin.AdminApi;
 import com.example.travelplanning.data.remote.admin.dto.request.BanUserRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.EditUserProfileRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRequest;
+import com.example.travelplanning.data.remote.admin.dto.response.AdminStatResponse;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.data.mapper.admin.AdminUserProfileMapper;
@@ -142,6 +143,24 @@ public class AdminRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<LocationResponse>>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void getStatistics(Integer month, Integer year, AdminCallback<AdminStatResponse> callback) {
+        adminApi.getAdminStats(month, year).enqueue(new Callback<ApiResponse<AdminStatResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<AdminStatResponse>> call, Response<ApiResponse<AdminStatResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body().getData());
+                } else {
+                    callback.onError("Failed to fetch statistics");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<AdminStatResponse>> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

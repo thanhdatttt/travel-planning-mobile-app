@@ -104,4 +104,9 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
             binding.ivOptions.setOnClickListener(v -> optionListener.onOptionClick(v, user));
         }
     }
+
+    public void setData(List<UserProfile> newUsers) {
+        this.users = newUsers;
+        notifyDataSetChanged();
+    }
 }

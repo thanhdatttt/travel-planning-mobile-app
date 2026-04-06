@@ -15,7 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.navigation.Navigation;
 
+import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.databinding.FragmentAdminLocationBinding;
 import com.example.travelplanning.databinding.SearchAndFilterBinding;
@@ -90,8 +92,12 @@ public class AdminLocationFragment extends Fragment {
         searchAndFilterBinding.btnFilter.setOnClickListener(v ->
                 new AdminLocationFilterDialog().show(getChildFragmentManager(), "AdminLocationFilter"));
 
+        adminHeaderBinding.btnChart.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.nav_admin_stat);
+        });
+
         adminHeaderBinding.btnUser.setOnClickListener(v -> {
-            if (getActivity() != null) getActivity().onBackPressed();
+            Navigation.findNavController(v).navigate(R.id.nav_admin);
         });
 
         // SCROLLING LISTENER

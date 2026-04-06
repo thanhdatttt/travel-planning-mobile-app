@@ -77,7 +77,7 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAdminChart"
+                android:id="@+id/btnChart"
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:stateListAnimator="@null"
                 android:layout_width="35dp"

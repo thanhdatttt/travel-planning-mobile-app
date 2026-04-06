@@ -4,6 +4,7 @@ import com.example.travelplanning.data.remote.admin.dto.request.BanUserRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.EditUserProfileRequest;
 
+import com.example.travelplanning.data.remote.admin.dto.response.AdminStatResponse;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.remote.admin.dto.response.UserProfileResponse;
 import com.example.travelplanning.data.remote.location.dto.response.LocationResponse;
@@ -57,4 +58,10 @@ public interface AdminApi{
                                                             @Query("categoryId") String categoryId,
                                                             @Query("skip") int skip,
                                                             @Query("take") int take);
+
+    @GET("api/admin/stat/all")
+    Call<ApiResponse<AdminStatResponse>> getAdminStats(
+            @Query("month") Integer month,
+            @Query("year") Integer year
+    );
 }

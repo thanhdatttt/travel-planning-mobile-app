@@ -70,3 +70,10 @@ export const updateProfileSchema ={
         role: z.enum(["user", "admin", "moderator"]).optional(),
         }),
 }
+
+export const statQuerySchema = {
+    query: z.object({
+        month: z.coerce.number().min(1).max(12).optional(),
+        year: z.coerce.number().optional(),
+    }),
+};

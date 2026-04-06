@@ -112,8 +112,10 @@ public class AdminUserFragment extends Fragment {
             new AdminUserFilterDialog().show(getChildFragmentManager(), "AdminFilterDialog");
         });
 
+        adminHeaderBinding.btnChart.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.nav_admin_stat);
+        });
         adminHeaderBinding.btnLocation.setOnClickListener(v -> {
-            adminHeaderBinding.btnUser.setSelected(false);
             Navigation.findNavController(v).navigate(R.id.nav_admin_location);
         });
     }
