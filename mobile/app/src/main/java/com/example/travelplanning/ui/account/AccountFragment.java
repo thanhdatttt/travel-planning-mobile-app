@@ -69,6 +69,9 @@ public class AccountFragment extends Fragment {
             // Sử dụng NavController để điều hướng
             Navigation.findNavController(requireView())
                     .navigate(R.id.nav_profile);
+        } else if (option.getId() == AccountViewModel.ID_SETTING) {
+            Navigation.findNavController(requireView())
+                    .navigate(R.id.nav_settings);
         } else if (option.getId() == AccountViewModel.ID_LOGOUT) {
             // Logout
 
