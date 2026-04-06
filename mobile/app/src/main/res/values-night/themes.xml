@@ -2,8 +2,12 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.TravelPlanning" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="colorSurface">@color/card_background</item>
+        <item name="android:textColorPrimary">@color/text</item>
+
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.TravelPlanning" parent="Base.Theme.TravelPlanning" />
