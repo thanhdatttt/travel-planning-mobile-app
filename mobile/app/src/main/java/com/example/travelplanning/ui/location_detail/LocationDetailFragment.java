@@ -1,5 +1,6 @@
 package com.example.travelplanning.ui.location_detail;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,6 +68,7 @@ public class LocationDetailFragment extends Fragment {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void setupObservers() {
         viewModel.getLocationDetail().observe(getViewLifecycleOwner(), location -> {
 //            if (location == null) {
@@ -101,7 +103,7 @@ public class LocationDetailFragment extends Fragment {
             ratingBar.setRating((float) avgRating);
 
             int count = location.getRatingCount() != null ? location.getRatingCount() : 0;
-            tvRatingCount.setText(String.format(java.util.Locale.US, "(%d reviews)", count));
+            tvRatingCount.setText(getString(R.string.reviews_count, count));
 
             // Setup Slider
             if (location.getPhotos() != null && !location.getPhotos().isEmpty()) {
@@ -129,7 +131,7 @@ public class LocationDetailFragment extends Fragment {
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(intent);
                     } catch (Exception e) {
-                        Toast.makeText(getContext(), "Không thể mở liên kết này", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.error_cannot_open_link), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -142,10 +144,10 @@ public class LocationDetailFragment extends Fragment {
             tvSeeMore.setOnClickListener(v -> {
                 if (tvDescription.getMaxLines() == 4) {
                     tvDescription.setMaxLines(Integer.MAX_VALUE);
-                    tvSeeMore.setText("Show less");
+                    tvSeeMore.setText(getString(R.string.show_less));
                 } else {
                     tvDescription.setMaxLines(4);
-                    tvSeeMore.setText("See more");
+                    tvSeeMore.setText(getString(R.string.see_more));
                 }
             });
         });

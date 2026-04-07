@@ -1,5 +1,6 @@
 package com.example.travelplanning.ui.mainscreen;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.travelplanning.R;
 import com.example.travelplanning.databinding.ActivityMainScreenBinding;
+import com.example.travelplanning.ui.util.LocaleHelper;
 
 public class MainScreenActivity extends AppCompatActivity {
     private ActivityMainScreenBinding binding;
@@ -27,5 +29,10 @@ public class MainScreenActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
 
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase));
     }
 }
