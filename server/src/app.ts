@@ -10,9 +10,6 @@ import {
 import adminRoutes from "./routes/admin/index.routes";
 import itineraryRoutes from "./routes/itinerary/index.routes";
 
-import { syncOpeningHours } from "./services/location.hours.parse";
-syncOpeningHours;
-
 const app = express();
 
 app.use(express.json());
