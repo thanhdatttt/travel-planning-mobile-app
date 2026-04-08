@@ -199,4 +199,8 @@ export const locationController = {
       }),
     );
   },
+
+  async getAll(req: Request, res:Response){
+    
+  }
 };
