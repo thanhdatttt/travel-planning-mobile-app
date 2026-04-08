@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelplanning.R;
 import com.example.travelplanning.databinding.ActivityLocationSearchBinding;
-import com.example.travelplanning.ui.adapter.LocationAdapter;
 import com.example.travelplanning.ui.location_detail.LocationDetailFragment;
 import com.example.travelplanning.viewmodel.location.LocationViewModel;
 import com.example.travelplanning.viewmodel.category.CategoryViewModel;

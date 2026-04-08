@@ -45,7 +45,7 @@ public class RegisterDetailFragment extends Fragment {
 
         viewModel.getRegisterSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success != null) {
-                // return to login and delete all back stack
+                // return to lo gin and delete all back stack
                 requireActivity().getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 ((AuthActivity) requireActivity()).navigateTo(new LoginFragment(), false);
 

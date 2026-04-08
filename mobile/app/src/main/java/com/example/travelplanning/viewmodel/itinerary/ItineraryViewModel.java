@@ -26,7 +26,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ItineraryViewModel extends AndroidViewModel {
-
     private final ItineraryRepository itineraryRepository;
 
     //  general states
@@ -37,6 +36,10 @@ public class ItineraryViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Itinerary>> userItineraries = new MutableLiveData<>();
     private final MutableLiveData<List<Itinerary>> publicItineraries = new MutableLiveData<>();
     private final MutableLiveData<MetaResponse> itineraryMeta = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> cloneSuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> deleteSuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> updateSuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> createSuccess = new MutableLiveData<>(false);
 
     // single itinerary state
     private final MutableLiveData<Itinerary> selectedItinerary = new MutableLiveData<>();
@@ -135,12 +138,14 @@ public class ItineraryViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(Itinerary data) {
                         isLoading.setValue(false);
+                        createSuccess.setValue(true);
                         prependToUserItineraries(data);
                     }
 
                     @Override
                     public void onError(String errorMsg) {
                         isLoading.setValue(false);
+                        createSuccess.setValue(false);
                         errorMessage.setValue(errorMsg);
                     }
                 });
@@ -162,6 +167,7 @@ public class ItineraryViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(Itinerary data) {
                         isLoading.setValue(false);
+                        updateSuccess.setValue(true);
                         replaceInUserItineraries(data);
                         syncSelectedItinerary(data);
                     }
@@ -169,6 +175,7 @@ public class ItineraryViewModel extends AndroidViewModel {
                     @Override
                     public void onError(String errorMsg) {
                         isLoading.setValue(false);
+                        updateSuccess.setValue(false);
                         errorMessage.setValue(errorMsg);
                     }
                 });
@@ -181,6 +188,7 @@ public class ItineraryViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess() {
                         isLoading.setValue(false);
+                        deleteSuccess.setValue(true);
                         removeFromUserItineraries(id);
 
                         Itinerary current = selectedItinerary.getValue();
@@ -192,6 +200,7 @@ public class ItineraryViewModel extends AndroidViewModel {
                     @Override
                     public void onError(String errorMsg) {
                         isLoading.setValue(false);
+                        deleteSuccess.setValue(false);
                         errorMessage.setValue(errorMsg);
                     }
                 });
@@ -204,12 +213,14 @@ public class ItineraryViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(Itinerary data) {
                         isLoading.setValue(false);
+                        cloneSuccess.setValue(true);
                         prependToUserItineraries(data);
                     }
 
                     @Override
                     public void onError(String errorMsg) {
                         isLoading.setValue(false);
+                        cloneSuccess.setValue(false);
                         errorMessage.setValue(errorMsg);
                     }
                 });
@@ -396,7 +407,7 @@ public class ItineraryViewModel extends AndroidViewModel {
         });
     }
 
-    //
+    // update items in itinerary in list
     private void updateItineraryItems(String itineraryId, ItemListTransform transform) {
         List<Itinerary> current = userItineraries.getValue();
         if (current == null) return;

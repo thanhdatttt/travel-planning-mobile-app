@@ -236,7 +236,7 @@ export const updateItinerary = async (req: Request, res: Response) => {
     if (existingItinerary.ownerId !== userId) {
       return res
         .status(403)
-        .json(createResponse({ message: "Forbbiden", error: "Itinerary not yours" }));
+        .json(createResponse({ message: "Forbiddden", error: "Itinerary not yours" }));
     }
 
     // update data
@@ -310,7 +310,7 @@ export const cloneItinerary = async (req: Request, res: Response) => {
     }
 
     // check privacy
-    if (originalItinerary.privacy === "private") {
+    if (originalItinerary.privacy === "private" && originalItinerary.ownerId !== userId) {
       return res
         .status(403)
         .json(createResponse({ message: "Forbidden", error: "Cannot clone a private itinerary" }));
