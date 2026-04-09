@@ -2,7 +2,6 @@ package com.example.travelplanning.data.mapper.location;
 
 import android.util.Log;
 
-import com.example.travelplanning.core.util.StringProvider;
 import com.example.travelplanning.data.mapper.BaseMapper;
 import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.data.model.location.LocationHour;
@@ -13,11 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationMapper implements BaseMapper<LocationResponse, Location> {
-    private final StringProvider stringProvider;
-
-    public LocationMapper(StringProvider stringProvider) {
-        this.stringProvider = stringProvider;
-    }
     @Override
     public Location mapToDomain(LocationResponse dto) {
         if (dto == null) return null;
@@ -62,11 +56,6 @@ public class LocationMapper implements BaseMapper<LocationResponse, Location> {
 
 //        Log.d("DEBUG_MAPPER", "Image_url: " + domainPhotos.get(0).getUrl());
 //        Log.d("DEBUG_MAPPER", "Hours: " + domainHours.get(0).getOpenTime());
-        String categoryName = "Chưa phân loại";
-        if (dto.getCategory() != null)
-            categoryName = stringProvider.getString(dto.getCategory().getSlug());
-//            categoryName = dto.getCategory().getNameVi();
-
 
         return Location.builder()
                 .id(dto.getId())
@@ -80,8 +69,9 @@ public class LocationMapper implements BaseMapper<LocationResponse, Location> {
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
                 .distance(dto.getDistance())
-                .categoryName(categoryName)
+                .categoryName(dto.getCategory() != null ? dto.getCategory().getNameVi() : "Chưa phân loại")
                 .categoryIcon(dto.getCategory() != null ? dto.getCategory().getIcon() : null)
+                .categorySlug(dto.getCategory().getSlug())
                 .imageUrl(primaryImage)
                 .photos(domainPhotos)
                 .avgRating(dto.getAvgRating())

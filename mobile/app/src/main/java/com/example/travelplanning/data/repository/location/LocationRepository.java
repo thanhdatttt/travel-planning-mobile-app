@@ -27,7 +27,7 @@ public class LocationRepository {
 
     public LocationRepository(Context context) {
         StringProvider stringProvider = new AndroidStringProvider(context);
-        this.locationMapper = new LocationMapper(stringProvider);
+        this.locationMapper = new LocationMapper();
 
         this.locationApi = ApiServiceFactory.create(context, LocationApi.class);
     }
