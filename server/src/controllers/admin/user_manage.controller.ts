@@ -36,7 +36,6 @@ export const getList = async (req: Request, res: Response) => {
         }
     });
 
-    console.log(typeof(users[0]?.role));
     return res.status(200).json(
         createResponse({
             message: "Users retrieved successfully",
@@ -48,7 +47,6 @@ export const getList = async (req: Request, res: Response) => {
 export const toggleBan = async (req: Request, res: Response) => {
     const {id} = req.params;
     const {ban} = req.body;
-    console.log(req.body);
 
     const updatedUser = await prisma.user.update({
         where: { id: String(id)},
@@ -66,7 +64,6 @@ export const toggleBan = async (req: Request, res: Response) => {
 export const toggleSoftDeleteUser = async (req: Request, res: Response) => {
     const {id} = req.params;
     const {delete: isDeleted} = req.body;
-    console.log(isDeleted);
 
     const updatedUser = await prisma.user.update({
         where: { id: String(id)},
@@ -161,7 +158,6 @@ export const demoteFromModerator = async (req: Request, res: Response) => {
 export const updateProfile = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { fullName, email, phone, address, dob, role } = req.body;
-    console.log(req.body);
 
     const updateData: any = {};
     if (fullName) updateData.fullName = fullName;

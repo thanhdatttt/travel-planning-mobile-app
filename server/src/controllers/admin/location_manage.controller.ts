@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Request, Response } from "express";
 import { prisma } from "../../libs/prisma";
+import { Prisma } from '../../generated/prisma/client';
 import { config } from "../../configs/config";
 import { createResponse } from "../../utils/response";
 import { userRole } from "../../generated/prisma/browser";
@@ -23,28 +24,42 @@ export const getList = async (req: Request, res: Response) => {
   const categoryParam = req.query.categoryId as string;
   const categoryId = categoryParam ? categoryParam.split(",").map((c) => Number(c.trim())).filter(val => !isNaN(val)) : [1, 2, 3, 4];
 
-  const locations = await prisma.location.findMany({
-    where: {
-      AND: [
-        { name: { contains: String(name), mode: "insensitive" } },
-        { priceLevel: { gte: Number(minPrice) } },
-        { priceLevel: { lte: Number(maxPrice) } },
-        { avgRating: { gte: Number(minRating) } },
-        { avgRating: { lte: Number(maxRating) } },
-        { categoryId: { in: categoryId}}
-      ],
-    },
-    orderBy: {
-      [String(sortBy)]: sortOrder,
-    },
-    include: {
-      locationPhotos: true,
-    },
-    skip: Number(skip),
-    take: Number(take)
-  });
+  const searchName = `%${name}%`;
+  const categoryIds = Array.isArray(categoryId) ? categoryId : [categoryId];
+  const sortByStr = String(sortBy || "name");
+  const sortOrderStr = String(sortOrder || "asc").toUpperCase();
 
-  console.log(locations[0]);
+  const locations = await prisma.$queryRaw`
+  SELECT 
+    l.id, 
+    l.name, 
+    l."avgRating", 
+    l."priceLevel",
+    l."address",
+    (
+      SELECT json_agg(json_build_object(
+        'url', lp.url,
+        'id', lp.id,
+        'isFeature', lp."isFeature"
+      ))
+      FROM "LocationPhoto" lp 
+      WHERE lp."locationId" = l.id 
+      LIMIT 1
+    ) AS "photos" 
+  FROM "Location" l
+  WHERE 
+    l.name ILIKE ${searchName}
+    AND l."priceLevel" >= ${Number(minPrice)}
+    AND l."priceLevel" <= ${Number(maxPrice)}
+    AND l."avgRating" >= ${Number(minRating)}
+    AND l."avgRating" <= ${Number(maxRating)}
+    AND l."categoryId" IN (${Prisma.join(categoryIds)})
+  ORDER BY 
+    l.${Prisma.raw(sortByStr)} ${Prisma.raw(sortOrderStr)}
+  LIMIT ${Number(take)} 
+  OFFSET ${Number(skip)}
+`;
+  console.log(locations);
 
   return res.status(200).json(
     createResponse({
