@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.travelplanning.R;
+import com.example.travelplanning.core.util.AndroidStringProvider;
 import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.data.model.location.LocationHour;
 import com.example.travelplanning.data.model.location.Photo;
@@ -164,7 +165,8 @@ public class LocationDetailFragment extends Fragment {
         }
 
         // 5. Loại hình (Category)
-        infoList.add(new LocationInfoItem(R.drawable.ic_category, "Loại hình", location.getCategoryName(), textColor));
+        AndroidStringProvider stringProvider = new AndroidStringProvider(requireContext());
+        infoList.add(new LocationInfoItem(R.drawable.ic_category, "Loại hình", stringProvider.getString(location.getCategorySlug()), textColor));
 
         // 6. Website
         if (location.getWebsite() != null) {

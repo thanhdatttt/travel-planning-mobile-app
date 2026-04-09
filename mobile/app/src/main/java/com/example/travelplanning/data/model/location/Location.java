@@ -36,6 +36,7 @@ public class Location implements Parcelable{
     String category;
     String categoryName;
     String categoryIcon;
+    String categorySlug;
     String imageUrl;
     @Builder.Default
     List<Photo> photos = new ArrayList<>();
@@ -59,6 +60,7 @@ public class Location implements Parcelable{
         category = in.readString();
         categoryName = in.readString();
         categoryIcon = in.readString();
+        categorySlug = in.readString();
         imageUrl = in.readString();
         photos = in.createTypedArrayList(Photo.CREATOR);
         if (in.readByte() == 0) ratingCount = null; else ratingCount = in.readInt();
@@ -83,6 +85,7 @@ public class Location implements Parcelable{
         dest.writeString(category);
         dest.writeString(categoryName);
         dest.writeString(categoryIcon);
+        dest.writeString(categorySlug);
         dest.writeString(imageUrl);
         dest.writeTypedList(photos);
         if (ratingCount == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeInt(ratingCount); }
