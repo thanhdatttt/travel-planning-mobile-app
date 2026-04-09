@@ -65,12 +65,11 @@ export const locationController = {
             l.location, 
             ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
           ) as distance,
-          -- JOIN với bảng LocationCategory (viết hoa đúng theo @@map)
           json_build_object(
             'nameVi', c."nameVi", 
             'icon', c.icon
           ) as category,
-          -- Subquery lấy ảnh từ bảng LocationPhoto (bố kiểm tra lại @@map của bảng này nhé)
+          -- SỬA Ở ĐÂY: Đổi alias thành "photos"
           COALESCE(
             (
               SELECT json_agg(json_build_object('url', lp.url))
@@ -78,7 +77,7 @@ export const locationController = {
               WHERE lp."locationId" = l.id
             ), 
             '[]'::json
-          ) as "locationPhotos"
+          ) as photos
         FROM "Location" l
         LEFT JOIN "LocationCategory" c ON l."categoryId" = c.id
         WHERE ST_DWithin(
@@ -95,11 +94,17 @@ export const locationController = {
       rad,
     );
 
-    console.log(locations);
+    const formattedLocations = locations.map((loc: any) => {
+      return {
+        ...loc,
+        imageUrl:
+          loc.photos && loc.photos.length > 0 ? loc.photos[0].url : null,
+      };
+    });
 
     return res.status(200).json({
       message: "Lấy danh sách địa điểm thành công",
-      data: locations,
+      data: formattedLocations,
     });
   },
   async search(req: Request, res: Response) {
@@ -170,7 +175,7 @@ export const locationController = {
     }
 
     const formattedLocations = locations.map((loc) => {
-      const { _count, ...rest } = loc;
+      const { _count, locationPhotos, ...rest } = loc as any;
 
       const coord = coordinates.find((c: any) => c.id === loc.id);
 
@@ -179,11 +184,15 @@ export const locationController = {
         ratingCount: _count?.reviews || 0,
         latitude: coord ? coord.latitude : null,
         longitude: coord ? coord.longitude : null,
+
+        photos: locationPhotos || [],
+
+        imageUrl:
+          locationPhotos && locationPhotos.length > 0
+            ? locationPhotos[0].url
+            : null,
       };
     });
-
-    console.log(formattedLocations);
-
     return res.status(200).json(
       createResponse({
         data: {
@@ -200,7 +209,5 @@ export const locationController = {
     );
   },
 
-  async getAll(req: Request, res:Response){
-    
-  }
+  async getAll(req: Request, res: Response) {},
 };

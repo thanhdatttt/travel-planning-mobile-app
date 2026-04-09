@@ -77,7 +77,7 @@ public class LocationRepository {
                     PaginatedData<LocationResponse> paginatedData = apiResponse.getData();
 
                     if (paginatedData != null && paginatedData.getItems() != null) {
-
+                    
                         List<Location> domainList = new ArrayList<>();
                         for (LocationResponse dto : paginatedData.getItems()) {
                             domainList.add(locationMapper.mapToDomain(dto));

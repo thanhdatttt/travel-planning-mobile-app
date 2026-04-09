@@ -32,6 +32,7 @@ model User {
   reports            Report[]
   locationReviews    Review[]
   sessions           Session[]
+  chatSession ChatSession[]
 }
 
 model AuthProvider {
@@ -233,6 +234,21 @@ model Report {
   user       User         @relation(fields: [handledBy], references: [id])
 
   @@unique([reporterId, targetId])
+}
+
+model ChatSession {
+  id        String        @id @default(uuid())
+  userId    String
+  title     String        
+  messages  ChatMessage[]
+}
+
+model ChatMessage {
+  id        String      @id @default(uuid())
+  sessionId String
+  role      String
+  content   String      @db.Text
+  session   ChatSession @relation(fields: [sessionId], references: [id])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.

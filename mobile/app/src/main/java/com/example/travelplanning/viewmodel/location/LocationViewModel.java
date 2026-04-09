@@ -19,9 +19,7 @@ public class LocationViewModel extends AndroidViewModel {
 
     private final LocationRepository locationRepository;
 
-    // Data cho Map (dựa trên radius)
     private final MutableLiveData<List<Location>> nearbyLocations = new MutableLiveData<>();
-    // Data cho Panel (khi bấm Category, không radius)
     private final MutableLiveData<List<Location>> categoryPanelLocations = new MutableLiveData<>();
     
     private final MutableLiveData<List<Location>> searchResults = new MutableLiveData<>();   
@@ -34,7 +32,6 @@ public class LocationViewModel extends AndroidViewModel {
         this.locationRepository = new LocationRepository(application);
     }
 
-    // Dùng khi kéo Map
     public void fetchNearbyLocations(double lat, double lng, Integer radius, Integer categoryId) {
         isLoading.setValue(true);
         locationRepository.getNearbyLocations(lat, lng, radius, categoryId, new LocationRepository.LocationListCallback() {
@@ -51,10 +48,8 @@ public class LocationViewModel extends AndroidViewModel {
         });
     }
 
-    // Dùng khi bấm vào Category Chip
     public void fetchPanelLocationsByCategory(double lat, double lng, String categoryIcon) {
         isLoading.setValue(true);
-        // Cố tình truyền radius = null để Backend lấy toàn bộ, ta sẽ tự cắt Top 10
         locationRepository.getNearbyLocations(lat, lng, null, null, new LocationRepository.LocationListCallback() {
             @Override
             public void onSuccess(List<Location> data) {

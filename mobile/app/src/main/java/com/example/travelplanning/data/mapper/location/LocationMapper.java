@@ -15,13 +15,11 @@ public class LocationMapper implements BaseMapper<LocationResponse, Location> {
     @Override
     public Location mapToDomain(LocationResponse dto) {
         if (dto == null) return null;
-
         List<Photo> domainPhotos = new ArrayList<>();
         String primaryImage = null;
 
         if (dto.getPhotos() != null) {
             for (LocationResponse.LocationPhotoResponse p : dto.getPhotos()) {
-                // 1. Chuyển đổi từ DTO Photo sang Domain Photo
                 Photo domainPhoto = Photo.builder()
                         .id(p.getId())
                         .url(p.getUrl())
@@ -30,19 +28,16 @@ public class LocationMapper implements BaseMapper<LocationResponse, Location> {
 
                 domainPhotos.add(domainPhoto);
 
-                // 2. Xác định ảnh chính (Feature Image) cho thumbnail
                 if (p.getIsFeature() != null && p.getIsFeature()) {
                     primaryImage = p.getUrl();
                 }
             }
         }
 
-        // Nếu không có ảnh nào được đánh dấu là Feature, lấy ảnh đầu tiên làm primary
         if (primaryImage == null && !domainPhotos.isEmpty()) {
             primaryImage = domainPhotos.get(0).getUrl();
         }
 
-//        Log.d("DEBUG_MAPPER", "Image_url: " + domainPhotos.get(0).getUrl());
 
         return Location.builder()
                 .id(dto.getId())

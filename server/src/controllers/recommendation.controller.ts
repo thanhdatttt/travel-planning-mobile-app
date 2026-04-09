@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { RecommendationService } from "../utils/recommendationService";
+import { RecommendationUtils } from "../utils/recommendationUtils";
 
 export const recommendationController = {
   recommendLocations: async (req: Request, res: Response) => {
@@ -14,7 +14,7 @@ export const recommendationController = {
     }
 
     const finalRecommendations =
-      await RecommendationService.getSmartRecommendations(
+      await RecommendationUtils.getSmartRecommendations(
         userId,
         Number(lat),
         Number(lng),
