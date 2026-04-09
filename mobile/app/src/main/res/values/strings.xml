@@ -111,6 +111,25 @@
     <string name="back">Back</string>
     <string name="bookmark">Bookmark</string>
     <string name="location_image">location image</string>
+    <string name="saved_locations">Saved locations</string>
+    <string name="itinerary">Itinerary</string>
+
+    //settings
+    <string name="settings_title">Settings</string>
+    <string name="language">Language</string>
+    <string name="theme_appearance">Appearance</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="lang_en">English</string>
+    <string name="lang_vi">Tiếng Việt</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+
+    <string name="reviews_count">(%1$d reviews)</string>
+    <string name="show_less">Show less</string>
+
+    <string name="default_support_email">mailto:support@travel.com</string>
+    <string name="error_cannot_open_link">Can\'t open this link</string>
     <string name="manage_location">Manage Location</string>
     <string name="manage_user">Manage User</string>
     <string name="back_button">back button</string>

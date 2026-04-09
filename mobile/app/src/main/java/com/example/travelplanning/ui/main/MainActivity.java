@@ -1,6 +1,9 @@
 package com.example.travelplanning.ui.main;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,6 +16,7 @@ import com.example.travelplanning.core.storage.TokenManager;
 import com.example.travelplanning.databinding.ActivityMainBinding;
 import com.example.travelplanning.ui.auth.AuthActivity;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
+import com.example.travelplanning.ui.util.LocaleHelper;
 import com.example.travelplanning.ui.splash.SplashActivity;
 
 import androidx.core.graphics.Insets;
@@ -20,24 +24,18 @@ import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
     private boolean isReady = false;
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        TokenManager.saveRefreshToken(this,"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYmIzMzQ1Yy0yYTkxLTQ4NjYtYjU5OC03NWFhZDQ2YTBmZjciLCJpYXQiOjE3NzQ3MDkwMjUsImV4cCI6MjM3OTUwOTAyNX0.pgWyU_Ku9ugrM91puOwCTjZLM-k5-7Bme8ejz0etpk0");
-
         // init splash screen
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
         super.onCreate(savedInstanceState);
-
-        //hard code token for testing
-        String manualAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjODIyOGZkYi0wNDNmLTQyY2ItOGE0Yy1mZDE1MDQ1ZDUxNjAiLCJpYXQiOjE3NzU2MzE1OTksImV4cCI6MTc3NTcxNzk5OX0.QOWLY8W8PF05AoxKmTp7gTDJSDPmhnzxk0rwsG2a5xY";
-        String manualRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzAxYTk2Ny0zMTYyLTQ4ZjctOWIyYS1kODc5MmRmYzY2OTciLCJpYXQiOjE3NzQxMzg0NzUsImV4cCI6MjM3ODkzODQ3NX0.PDEAHbhlHWr8v6ZsLR_p1BMV6JOxjc-nXpPdJjisxuc";
-        TokenManager.saveTokens(this, manualAccessToken, manualRefreshToken);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -75,4 +73,18 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        SharedPreferences prefs = newBase.getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        String lang = prefs.getString("lang", "en");
+
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+
+        Configuration config = newBase.getResources().getConfiguration();
+        config.setLocale(locale);
+
+        Context context = newBase.createConfigurationContext(config);
+        super.attachBaseContext(context);
+    }
 }

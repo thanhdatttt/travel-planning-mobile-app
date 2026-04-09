@@ -39,6 +39,12 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.example.travelplanning.ui.settings.SettingsFragment"
+        android:label="App settings"
+        tools:layout="@layout/fragment_profile"/>
+
+    <fragment
         android:id="@+id/nav_admin"
         android:name="com.example.travelplanning.ui.admin.AdminUserFragment"
         android:label="fragment_admin_user"
