@@ -3,7 +3,6 @@ package com.example.travelplanning.ui.auth;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -25,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
 
@@ -79,7 +79,7 @@ public class AuthActivity extends AppCompatActivity {
                         String idToken = account.getIdToken();
                         viewModel.loginWithGoogle(idToken);
                     } catch (ApiException e) {
-                        Toast.makeText(this, "Google sign in failed", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.auth_fragment_container), "Google sign in failed", Snackbar.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -105,7 +105,7 @@ public class AuthActivity extends AppCompatActivity {
 
             @Override
             public void onError(@NonNull FacebookException error) {
-                Toast.makeText(AuthActivity.this, "Facebook sign in failed", Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.auth_fragment_container), "Facebook sign in failed", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
