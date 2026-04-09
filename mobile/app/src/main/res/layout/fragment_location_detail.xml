@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:text="@string/location_name"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/text"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -122,7 +122,7 @@
                     android:layout_marginEnd="4dp"
                     android:text="@string/website"
                     android:insetTop="0dp"
-                    app:icon="@drawable/ic_website" />
+                    app:icon="@drawable/ic_location" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnEmail"
@@ -162,6 +162,20 @@
                 android:textStyle="bold"
                 android:visibility="gone"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/detail"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLocationInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

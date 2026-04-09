@@ -10,7 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItineraryMapper implements BaseMapper<ItineraryResponse, Itinerary> {
-    private final ItineraryItemMapper itemMapper = new ItineraryItemMapper();
+    private final ItineraryItemMapper itemMapper;
+
+    public ItineraryMapper(ItineraryItemMapper itineraryItemMapper){
+        itemMapper = itineraryItemMapper;
+    }
+
     @Override
     public Itinerary mapToDomain(ItineraryResponse dto) {
         if (dto == null) return null;

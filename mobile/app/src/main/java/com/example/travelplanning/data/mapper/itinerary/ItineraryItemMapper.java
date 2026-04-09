@@ -6,7 +6,12 @@ import com.example.travelplanning.data.model.itinerary.ItineraryItem;
 import com.example.travelplanning.data.remote.itinerary.dto.response.ItineraryItemResponse;
 
 public class ItineraryItemMapper  implements BaseMapper<ItineraryItemResponse, ItineraryItem> {
-    private final LocationMapper locationMapper = new LocationMapper();
+    private final LocationMapper locationMapper;
+
+    // Yêu cầu LocationMapper từ bên ngoài truyền vào
+    public ItineraryItemMapper(LocationMapper locationMapper) {
+        this.locationMapper = locationMapper;
+    }
     @Override
     public ItineraryItem mapToDomain(ItineraryItemResponse dto) {
         if (dto == null) return null;
