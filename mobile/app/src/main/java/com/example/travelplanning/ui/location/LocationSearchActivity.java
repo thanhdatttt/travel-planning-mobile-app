@@ -27,6 +27,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import android.content.Intent;
+import com.example.travelplanning.data.model.category.Category;
 import com.example.travelplanning.ui.location_detail.LocationDetailFragment;
 public class LocationSearchActivity extends AppCompatActivity {
     private LocationViewModel locationViewModel;
@@ -167,7 +168,7 @@ public class LocationSearchActivity extends AppCompatActivity {
             if (categories == null) return;
             
             chipGroupCategory.removeAllViews();
-            for (com.example.travelplanning.data.model.category.Category cat : categories) {
+            for (Category cat : categories) {
                 Chip chip = new Chip(this);
                 chip.setText(cat.getNameVi()); 
                 chip.setCheckable(true);

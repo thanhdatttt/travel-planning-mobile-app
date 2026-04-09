@@ -56,7 +56,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
                     android:background="@android:color/transparent"
-                    android:hint="Tìm kiếm địa điểm..."
+                    android:hint="Search locations..."
                     android:inputType="text"
                     android:imeOptions="actionSearch"
                     android:textSize="15sp"

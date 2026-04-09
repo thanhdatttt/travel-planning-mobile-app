@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { createResponse } from "../utils/response";
 import { prisma } from "../libs/prisma";
-import ApiError from "../utils/apiError";
 
 export const locationController = {
   async getById(req: Request, res: Response) {
@@ -103,7 +102,7 @@ export const locationController = {
     });
 
     return res.status(200).json({
-      message: "Lấy danh sách địa điểm thành công",
+      message: "Get nearby locations successfully.",
       data: formattedLocations,
     });
   },
@@ -115,6 +114,9 @@ export const locationController = {
     const priceLevel = req.query.priceLevel
       ? Number(req.query.priceLevel)
       : undefined;
+
+    const sortBy = req.query.sortBy as string;
+    const sortOrder = req.query.sortOrder as string;
 
     const page = Math.max(1, Number(req.query.page) || 1);
     const limit = Math.max(1, Number(req.query.limit) || 10);
@@ -139,12 +141,20 @@ export const locationController = {
       where.priceLevel = priceLevel;
     }
 
+    let orderByCondition: any = { avgRating: "desc" };
+
+    if (sortBy === "priceLevel") {
+      orderByCondition = { priceLevel: sortOrder === "asc" ? "asc" : "desc" };
+    } else if (sortBy === "avgRating") {
+      orderByCondition = { avgRating: sortOrder === "asc" ? "asc" : "desc" };
+    }
+
     const [locations, total] = await prisma.$transaction([
       prisma.location.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { avgRating: "desc" },
+        orderBy: orderByCondition,
         include: {
           category: true,
           locationPhotos: {
@@ -193,6 +203,7 @@ export const locationController = {
             : null,
       };
     });
+
     return res.status(200).json(
       createResponse({
         data: {
