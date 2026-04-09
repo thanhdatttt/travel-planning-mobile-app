@@ -72,7 +72,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
         Glide.with(holder.itemView.getContext())
             .load(loc.getImageUrl())
-            .transform(new CenterCrop(), new RoundedCorners(16))
+            .centerCrop()
             .placeholder(R.drawable.ic_placeholder) 
             .into(holder.imgPlace);
 

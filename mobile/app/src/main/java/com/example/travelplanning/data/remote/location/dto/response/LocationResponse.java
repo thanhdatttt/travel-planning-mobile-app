@@ -25,8 +25,11 @@ public class LocationResponse {
 
     private CategoryResponse category;
 
-    // Đổi tên Class con cho khớp với khai báo List
+    @SerializedName("photos")
     private List<LocationPhotoResponse> photos;
+
+    @SerializedName("imageUrl")
+    private String imageUrl;
 
     private Double avgRating;
     private Integer ratingCount;
