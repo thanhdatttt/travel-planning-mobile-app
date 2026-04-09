@@ -10,10 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.databinding.FragmentTripDetailBinding;
 import com.example.travelplanning.viewmodel.itinerary.ItineraryViewModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.io.Serializable;
 
@@ -59,6 +61,7 @@ public class TripDetailFragment extends Fragment {
             viewModel.fetchItineraryById(mItinerary.getId());
         }
 
+        setupTabUI();
         setupObservers();
         setupListeners();
     }
@@ -87,6 +90,22 @@ public class TripDetailFragment extends Fragment {
         binding.btnBack.setOnClickListener(v -> {
             ((TripActivity) requireActivity()).navigateTo(new TripFragment(), true);
         });
+    }
+
+    // setup UI for 2 tab fragments
+    private void setupTabUI() {
+        TripPagerAdapter adapter = new TripPagerAdapter(this);
+        binding.viewPager.setAdapter(adapter);
+
+        // Link TabLayout and ViewPager2
+        new TabLayoutMediator(binding.tabLayout, binding.viewPager,
+                (tab, position) -> {
+                    if (position == 0) {
+                        tab.setText(R.string.saved_locations);
+                    } else {
+                        tab.setText(R.string.itinerary);
+                    }
+                }).attach();
     }
 
     private void displayTripDetail(Itinerary itinerary) {

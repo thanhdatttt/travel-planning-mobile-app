@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.databinding.FragmentTripsBinding;
@@ -31,7 +33,10 @@ public class TripFragment extends Fragment {
     private final TripAdapter tripAdapter = new TripAdapter(this::navigateToDetail, this::showTripBottomOptionsMenu);
 
     private boolean isFabExpanded = false;
-    private static final int PAGE = 1;
+    // page control
+    private int currentPage = 1;
+    private boolean isLoadingMore = false;
+    private boolean isLastPage = false;
     private static final int LIMIT = 10;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
@@ -52,8 +57,13 @@ public class TripFragment extends Fragment {
         setupListeners();
 
         // fetch init data
-        if (viewModel.getUserItineraries().getValue() == null) {
-            viewModel.fetchUserItineraries(PAGE, LIMIT);
+        if (viewModel.getUserItineraries().getValue() == null || viewModel.getUserItineraries().getValue().isEmpty()) {
+            currentPage = 1;
+            isLastPage = false;
+            viewModel.fetchUserItineraries(currentPage, LIMIT);
+        } else {
+            // Reset current page based on fetched data
+            currentPage = (int) Math.ceil((double) viewModel.getUserItineraries().getValue().size() / LIMIT);
         }
     }
 
@@ -66,6 +76,28 @@ public class TripFragment extends Fragment {
     private void setupRecyclerView() {
         binding.includeTripList.rvCreatedTrips.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.includeTripList.rvCreatedTrips.setAdapter(tripAdapter);
+        binding.includeTripList.rvCreatedTrips.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // scroll down to load more
+                if (dy > 0) {
+                    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                    if (layoutManager != null && !isLoadingMore && !isLastPage) {
+                        int visibleItemCount = layoutManager.getChildCount();
+                        int totalItemCount = layoutManager.getItemCount();
+                        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                        // check if scrolled to the end of list to load more
+                        if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                                && firstVisibleItemPosition >= 0) {
+                            loadMoreData();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void setupObservers() {
@@ -132,6 +164,12 @@ public class TripFragment extends Fragment {
         List<Itinerary> otherTrips = itineraries.size() > 1
                 ? itineraries.subList(1, itineraries.size()) : java.util.Collections.emptyList();
         tripAdapter.submitList(otherTrips);
+
+        // handle page control
+        isLoadingMore = false;
+        if (itineraries.size() < (currentPage * LIMIT)) {
+            isLastPage = true;
+        }
     }
 
     // show and handle click of trip bottom options menu
@@ -181,6 +219,17 @@ public class TripFragment extends Fragment {
         dialog.show();
     }
 
+    // load more data
+    private void loadMoreData() {
+        isLoadingMore = true;
+        if (!isLastPage) {
+            currentPage++;
+            viewModel.fetchUserItineraries(currentPage, LIMIT);
+        }
+
+    }
+
+    // fab menu
     private void toggleFabMenu() {
         if (isFabExpanded) collapseFabMenu();
         else expandFabMenu();
@@ -221,7 +270,7 @@ public class TripFragment extends Fragment {
         set.start();
     }
 
-    // navigate helpers
+    // navigate
     private void navigateToCreate() {
         ((TripActivity) requireActivity()).navigateTo(new CreateTripFragment(), true);
     }
