@@ -250,6 +250,7 @@ model ChatMessage {
   sessionId String
   role      String
   content   String      @db.Text
+  createdAt DateTime    @default(now())
   session   ChatSession @relation(fields: [sessionId], references: [id])
 }
 

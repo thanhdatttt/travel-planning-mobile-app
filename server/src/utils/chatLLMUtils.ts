@@ -1,9 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_CHAT || "");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 const chatModel = genAI.getGenerativeModel({
-  model: "gemini-3-flash-preview",
+  model: "gemini-3.1-flash-lite-preview",
   systemInstruction: `
     Bạn là một trợ lý du lịch ảo thông minh và thân thiện của ứng dụng du lịch "TourGuide".
     Nhiệm vụ của bạn là:
