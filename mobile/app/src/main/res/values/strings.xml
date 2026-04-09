@@ -87,6 +87,7 @@
     <string name="start_your_first_trip">Start your first trip</string>
     <string name="new_trip">New trip</string>
     <string name="_10_5_2026_15_5_2026">10/5/2026 - 15/5/2026</string>
+    <string name="back_button">back button</string>
     <string name="config_button">config button</string>
     <string name="description_to_trip">Description to trip</string>
     <string name="add_button">add button</string>
@@ -105,7 +106,7 @@
     <string name="location_name">Location Name</string>
     <string name="call">Call</string>
     <string name="see_more">See more</string>
-    <string name="loading_description">Loading description...</string>
+    <string name="loading_description">Loading description…</string>
     <string name="email">Email</string>
     <string name="website">Website</string>
     <string name="back">Back</string>
@@ -132,7 +133,6 @@
     <string name="error_cannot_open_link">Can\'t open this link</string>
     <string name="manage_location">Manage Location</string>
     <string name="manage_user">Manage User</string>
-    <string name="back_button">back button</string>
     <string name="admin_chart">admin chart</string>
     <string name="min_price">Min Price</string>
     <string name="price">Price:</string>
@@ -148,4 +148,13 @@
     <string name="shopping">Shopping</string>
     <string name="filter">FILTER</string>
     <string name="menu_admin">Enter admin dashboard</string>
+    <string name="save_change">Save change</string>
+    <string name="detail">Detail</string>
+
+    //category
+    <string name="cat_food_and_drink">Food &amp; Drink</string>
+    <string name="cat_accommodation">Accommodation</string>
+    <string name="cat_attractions">Attractions</string>
+    <string name="cat_shopping">Shopping</string>
+    <string name="cat_services">Services</string>
 </resources>

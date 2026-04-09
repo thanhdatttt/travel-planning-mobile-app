@@ -51,6 +51,8 @@ public class OTPVerificationFragment extends Fragment {
                 } else {
                     ((AuthActivity) requireActivity()).navigateTo(new ResetPasswordFragment(), true);
                 }
+
+                viewModel.getOtpVerifySuccess().setValue(false);
             }
         });
     }
@@ -58,6 +60,10 @@ public class OTPVerificationFragment extends Fragment {
     private void setupListeners() {
         binding.btnVerifyOtp.setOnClickListener(v -> {
             String otp = binding.edtOtpCode.getText().toString().trim();
+            if (otp.isEmpty()) {
+                binding.edtOtpCode.setError("OTP is required");
+                return;
+            }
 
             // get state
             String email = viewModel.getCurrentEmail();

@@ -4,6 +4,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.example.travelplanning.core.network.ApiServiceFactory;
+import com.example.travelplanning.core.util.AndroidStringProvider;
+import com.example.travelplanning.core.util.StringProvider;
 import com.example.travelplanning.data.mapper.location.LocationMapper;
 import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.data.remote.core.ApiResponse;
@@ -24,8 +26,10 @@ public class LocationRepository {
     private final LocationMapper locationMapper;
 
     public LocationRepository(Context context) {
-        this.locationApi = ApiServiceFactory.create(context, LocationApi.class);
+        StringProvider stringProvider = new AndroidStringProvider(context);
         this.locationMapper = new LocationMapper();
+
+        this.locationApi = ApiServiceFactory.create(context, LocationApi.class);
     }
 
     public interface LocationListCallback {

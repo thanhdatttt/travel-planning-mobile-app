@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/bg_bottom_sheet">
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:background="@color/text_secondary" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/trip_setting"
+        android:layout_gravity="center"
+        android:layout_marginBottom="4dp"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/text" />
+
+    <!--  privacy mode  -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+       >
+
+        <TextView
+            android:id="@+id/tvPrivacyStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/public_your_trip"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swPrivacy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false" />
+    </LinearLayout>
+
+    <!-- clone button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCopyTrip"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/clone_trip"
+        android:textSize="20sp"
+        android:textAllCaps="false"
+        app:icon="@drawable/ic_copy"
+        app:iconSize="24dp"
+        app:iconGravity="textStart"
+        />
+    <!--  delete button  -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDeleteTrip"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/delete_trip"
+        android:textSize="20sp"
+        android:textAllCaps="false"
+        android:textColor="@android:color/holo_red_light"
+        app:icon="@drawable/ic_delete"
+        app:iconSize="24dp"
+        app:iconGravity="textStart"
+        app:iconTint="@android:color/holo_red_dark" />
+</LinearLayout>

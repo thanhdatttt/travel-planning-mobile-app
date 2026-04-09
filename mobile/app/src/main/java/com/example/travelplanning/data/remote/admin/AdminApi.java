@@ -7,7 +7,7 @@ import com.example.travelplanning.data.remote.admin.dto.request.EditUserProfileR
 import com.example.travelplanning.data.remote.admin.dto.response.AdminStatResponse;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.remote.admin.dto.response.UserProfileResponse;
-import com.example.travelplanning.data.remote.location.dto.response.LocationResponse;
+import com.example.travelplanning.data.remote.admin.dto.response.AdminLocationResponse;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public interface AdminApi{
     );
 
     @GET("api/admin/location/list")
-    Call<ApiResponse<List<LocationResponse>>> getAllLocations(@Query("name") String name,
+    Call<ApiResponse<List<AdminLocationResponse>>> getAllLocations(@Query("name") String name,
                                                             @Query("sortBy") String sortBy,
                                                             @Query("sortOrder") String sortOrder,
                                                             @Query("minPrice") int minPrice,

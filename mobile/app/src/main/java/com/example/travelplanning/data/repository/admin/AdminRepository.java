@@ -12,9 +12,9 @@ import com.example.travelplanning.data.remote.admin.dto.response.AdminStatRespon
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.data.mapper.admin.AdminUserProfileMapper;
-import com.example.travelplanning.data.mapper.location.LocationMapper;
+import com.example.travelplanning.data.mapper.admin.AdminLocationMapper;
 import com.example.travelplanning.data.remote.admin.dto.response.UserProfileResponse;
-import com.example.travelplanning.data.remote.location.dto.response.LocationResponse;
+import com.example.travelplanning.data.remote.admin.dto.response.AdminLocationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,13 +26,13 @@ public class AdminRepository {
 
     private final AdminApi adminApi;
     private final AdminUserProfileMapper userMapper;
-    private final LocationMapper locationMapper;
+    private final AdminLocationMapper locationMapper;
 
 
     public AdminRepository(Context context) {
         this.adminApi = ApiServiceFactory.create(context, AdminApi.class);
         this.userMapper = new AdminUserProfileMapper();
-        this.locationMapper = new LocationMapper();
+        this.locationMapper = new AdminLocationMapper();
     }
 
     public interface AdminCallback<T> {
@@ -127,9 +127,9 @@ public class AdminRepository {
 
     public void getAllLocations(String name, String sortBy, String sortOrder, int minPrice, int maxPrice, int minRating, int maxRating, List<String> categoryId, int skip, int take, AdminCallback<List<Location>> callback){
         String categoryParam = (categoryId.isEmpty()) ? null : String.join(",", categoryId);
-        adminApi.getAllLocations(name, sortBy, sortOrder, minPrice, maxPrice, minRating, maxRating, categoryParam, skip, take).enqueue(new Callback<ApiResponse<List<LocationResponse>>>(){
+        adminApi.getAllLocations(name, sortBy, sortOrder, minPrice, maxPrice, minRating, maxRating, categoryParam, skip, take).enqueue(new Callback<ApiResponse<List<AdminLocationResponse>>>(){
             @Override
-            public void onResponse(Call<ApiResponse<List<LocationResponse>>> call, Response<ApiResponse<List<LocationResponse>>> response) {
+            public void onResponse(Call<ApiResponse<List<AdminLocationResponse>>> call, Response<ApiResponse<List<AdminLocationResponse>>> response) {
                 if(response.isSuccessful() && response.body() != null){
                     List<Location> domainLocations = response.body().getData().stream()
                             .map(locationMapper::mapToDomain)
@@ -142,7 +142,7 @@ public class AdminRepository {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<List<LocationResponse>>> call, Throwable t) {
+            public void onFailure(Call<ApiResponse<List<AdminLocationResponse>>> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

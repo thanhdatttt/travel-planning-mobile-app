@@ -144,4 +144,11 @@
     <string name="saved_locations">Địa điểm đã lưu</string>
     <string name="itinerary">Lịch trình</string>
     <string name="default_support_email">mailto:support@travel.com</string>
+    <string name="cat_food_and_drink">Ăn uống</string>
+    <string name="cat_accommodation">Chỗ ở</string>
+    <string name="cat_attractions">Tham quan</string>
+    <string name="cat_shopping">Mua sắm</string>
+    <string name="cat_services">Dịch vụ khác</string>
+    <string name="save_change">Lưu thay đổi</string>
+    <string name="detail">Chi tiết</string>
 </resources>

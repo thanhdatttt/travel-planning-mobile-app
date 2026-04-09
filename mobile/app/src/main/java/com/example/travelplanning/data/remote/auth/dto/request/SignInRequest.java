@@ -12,8 +12,6 @@ import lombok.Value;
 @AllArgsConstructor
 @Builder
 public class SignInRequest {
-
     private String usernameOrEmail;
     private String password;
-
 }
