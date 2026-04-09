@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.databinding.FragmentTripDetailBinding;
@@ -84,6 +85,7 @@ public class TripDetailFragment extends Fragment {
     }
 
     private void setupListeners() {
+        Glide.with(this).load(mItinerary.getItineraryItems().get(0).getLocation().getImageUrl()).into(binding.ivTripCover);
         binding.btnSettings.setOnClickListener(v -> {
             ((TripActivity) requireActivity()).navigateTo(TripSettingFragment.newInstance(viewModel.getSelectedItinerary().getValue()), true);
         });

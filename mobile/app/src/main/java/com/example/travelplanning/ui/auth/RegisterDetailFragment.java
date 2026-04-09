@@ -4,14 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.FragmentRegisterDetailBinding;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 public class RegisterDetailFragment extends Fragment {
     private FragmentRegisterDetailBinding binding;
@@ -36,11 +35,12 @@ public class RegisterDetailFragment extends Fragment {
     private void setupObservers() {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
             binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+            binding.registerLayout.setVisibility(loading ? View.GONE : View.VISIBLE);
             binding.btnCreateAccount.setEnabled(!loading);
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            if (msg != null) Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
         });
 
         viewModel.getRegisterSuccess().observe(getViewLifecycleOwner(), success -> {
@@ -59,6 +59,23 @@ public class RegisterDetailFragment extends Fragment {
             String username = binding.edtRegisterUser.getText().toString().trim();
             String pass = binding.edtRegisterPass.getText().toString().trim();
             String confirmPass = binding.edtRegisterConfirm.getText().toString().trim();
+
+            if (username.isEmpty()) {
+                binding.edtRegisterUser.setError("Username is required");
+                return;
+            }
+            if (pass.isEmpty()) {
+                binding.edtRegisterPass.setError("Password is required");
+                return;
+            }
+            if (confirmPass.isEmpty()) {
+                binding.edtRegisterConfirm.setError("Please confirm your password");
+                return;
+            }
+            if (!pass.equals(confirmPass)) {
+                binding.edtRegisterConfirm.setError("Password does not match");
+                return;
+            }
 
             // get state
             String email = viewModel.getCurrentEmail();

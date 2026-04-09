@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.FragmentLoginBinding;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
@@ -37,12 +37,13 @@ public class LoginFragment extends Fragment {
     private void setupObservers() {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
             binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+            binding.loginLayout.setVisibility(loading ? View.GONE : View.VISIBLE);
             binding.btnLogin.setEnabled(!loading);
         });
 
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            if (msg != null) Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
         });
 
 
@@ -65,6 +66,12 @@ public class LoginFragment extends Fragment {
         binding.btnLogin.setOnClickListener(v -> {
             String email = binding.edtLoginUsername.getText().toString().trim();
             String pass = binding.edtLoginPassword.getText().toString().trim();
+            if (email.isEmpty()) {
+                binding.edtLoginUsername.setError("Email or Username is required");
+            }
+            if (pass.isEmpty()) {
+                binding.edtLoginPassword.setError("Password is required");
+            }
             viewModel.login(email, pass);
         });
 
