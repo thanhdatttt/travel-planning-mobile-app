@@ -54,7 +54,6 @@
     <string name="setting">Cài đặt</string>
     <string name="my_reviews">Đánh giá của tôi</string>
     <string name="my_fav_location">Địa điểm yêu thích</string>
-    <string name="admin_board">Bảng điều trị</string>
     <string name="version">Phiên bản 1.0.0</string>
 
     <string name="settings_title">Tùy chọn</string>
@@ -120,4 +119,29 @@
     <string name="save">Lưu</string>
     <string name="show_less">Hiện bớt</string>
     <string name="error_cannot_open_link">Không thể mở liên kết này</string>
+
+    <string name="admin_board">Bảng điều khiển Admin</string>
+    <string name="menu_admin">Vào bảng quản trị Admin</string>
+    <string name="manage_location">Quản lý địa điểm</string>
+    <string name="manage_user">Quản lý người dùng</string>
+    <string name="admin_chart">Biểu đồ thống kê</string>
+
+    <string name="min_price">Giá thấp nhất</string>
+    <string name="max_price">Giá cao nhất</string>
+    <string name="price">Giá:</string>
+    <string name="ratings">Đánh giá:</string>
+    <string name="min_rating">Đánh giá tối thiểu</string>
+    <string name="max_rating">Đánh giá tối đa</string>
+    <string name="sort_by">Sắp xếp theo</string>
+    <string name="sort_order">Thứ tự sắp xếp</string>
+    <string name="filter">BỘ LỌC</string>
+
+    <string name="restaurant">Nhà hàng</string>
+    <string name="hotel">Khách sạn</string>
+    <string name="attraction">Điểm tham quan</string>
+    <string name="shopping">Mua sắm</string>
+
+    <string name="saved_locations">Địa điểm đã lưu</string>
+    <string name="itinerary">Lịch trình</string>
+    <string name="default_support_email">mailto:support@travel.com</string>
 </resources>

@@ -35,6 +35,8 @@ export const getList = async (req: Request, res: Response) => {
             [String(sortBy)]: sortOrder as 'asc' | 'desc'
         }
     });
+
+    console.log(typeof(users[0]?.role));
     return res.status(200).json(
         createResponse({
             message: "Users retrieved successfully",

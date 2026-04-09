@@ -147,4 +147,5 @@
     <string name="attraction">Attraction</string>
     <string name="shopping">Shopping</string>
     <string name="filter">FILTER</string>
+    <string name="menu_admin">Enter admin dashboard</string>
 </resources>

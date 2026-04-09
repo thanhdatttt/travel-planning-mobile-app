@@ -30,13 +30,6 @@ public class MainScreenActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
 
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
-
-
-//        TEMPORARY!!!
-        binding.btnAdmin.setOnClickListener(v -> {
-            // R.id.adminFragment là ID bạn đã đặt trong nav_graph.xml
-            navController.navigate(R.id.nav_admin);
-        });
     }
 
     @Override
