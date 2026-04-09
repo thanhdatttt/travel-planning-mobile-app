@@ -48,16 +48,14 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         holder.tvRating.setText(String.format(java.util.Locale.US, "⭐ %.1f (%d)%s", avgRating, ratingCount, priceStr));
 
         holder.tvDistanceAddress.setText(location.getAddress());
+        
+        String imageUrlToLoad = location.getImageUrl();
 
         Glide.with(holder.itemView.getContext())
-                .load(location.getImageUrl())
+                .load(imageUrlToLoad)
                 .centerCrop()
                 .placeholder(R.drawable.ic_placeholder)
                 .into(holder.ivImage);
-
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onLocationClick(location);
-        });
     }
 
     @Override

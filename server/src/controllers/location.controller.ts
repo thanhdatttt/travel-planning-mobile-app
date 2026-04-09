@@ -9,7 +9,7 @@ export const locationController = {
     const locations: any[] = await prisma.$queryRawUnsafe(
       `
       SELECT 
-        id, "osmId", name, slug, description, address, phone, website, email, 
+        id, "osmId", name, slug, description, address, phone, website, 
         "avgRating", "ratingCount", "priceLevel", metadata, "categoryId",
         "createdAt", "updatedAt",
         ST_X(location::geometry) as longitude, 
@@ -33,14 +33,9 @@ export const locationController = {
       where: { locationId: id as string },
     });
 
-    const opening_hours = await prisma.locationHour.findMany({
-      where: { locationId: id as string },
-      orderBy: { dayOfWeek: "asc" }, //keeps them in order (Mon-Sun)
-    });
-
     return res
       .status(200)
-      .json(createResponse({ data: { ...location, photos, opening_hours } }));
+      .json(createResponse({ data: { ...location, photos } }));
   },
   async getMapLocations(req: Request, res: Response) {
     const { lat, lng, radius, categoryId } = req.query as any;

@@ -15,28 +15,26 @@ public class LocationMapper implements BaseMapper<LocationResponse, Location> {
     @Override
     public Location mapToDomain(LocationResponse dto) {
         if (dto == null) return null;
+
         List<Photo> domainPhotos = new ArrayList<>();
-        String primaryImage = null;
+        
+        String primaryImage = dto.getImageUrl();
 
         if (dto.getPhotos() != null) {
             for (LocationResponse.LocationPhotoResponse p : dto.getPhotos()) {
-                Photo domainPhoto = Photo.builder()
+                domainPhotos.add(Photo.builder()
                         .id(p.getId())
                         .url(p.getUrl())
                         .isFeature(p.getIsFeature())
-                        .build();
-
-                domainPhotos.add(domainPhoto);
-
-                if (p.getIsFeature() != null && p.getIsFeature()) {
-                    primaryImage = p.getUrl();
-                }
+                        .build());
             }
         }
 
         if (primaryImage == null && !domainPhotos.isEmpty()) {
             primaryImage = domainPhotos.get(0).getUrl();
         }
+
+        Log.d("DEBUG_MAPPER", "Quán: " + dto.getName() + " | URL: " + primaryImage);
 
         List<LocationHour> domainHours = new ArrayList<>();
         if (dto.getOpeningHours() != null) {
@@ -50,9 +48,6 @@ public class LocationMapper implements BaseMapper<LocationResponse, Location> {
             }
         }
 
-//        Log.d("DEBUG_MAPPER", "Image_url: " + domainPhotos.get(0).getUrl());
-//        Log.d("DEBUG_MAPPER", "Hours: " + domainHours.get(0).getOpenTime());
-
         return Location.builder()
                 .id(dto.getId())
                 .name(dto.getName())
@@ -65,12 +60,11 @@ public class LocationMapper implements BaseMapper<LocationResponse, Location> {
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
                 .distance(dto.getDistance())
-                .categoryName(dto.getCategory() != null ? dto.getCategory().getNameVi() : "Chưa phân loại")
+                .categoryName(dto.getCategory() != null ? dto.getCategory().getNameVi() : null)
                 .categoryIcon(dto.getCategory() != null ? dto.getCategory().getIcon() : null)
-                .categorySlug(dto.getCategory().getSlug())
-                .imageUrl(primaryImage)
+                .categorySlug(dto.getCategory() != null ? dto.getCategory().getSlug() : null)
+                .imageUrl(primaryImage) 
                 .photos(domainPhotos)
-                .avgRating(dto.getAvgRating())
                 .ratingCount(dto.getRatingCount() != null ? dto.getRatingCount() : 0)
                 .openingHours(domainHours)
                 .build();

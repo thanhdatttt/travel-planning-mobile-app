@@ -32,7 +32,7 @@ model User {
   reports            Report[]
   locationReviews    Review[]
   sessions           Session[]
-  chatSession ChatSession[]
+  chatSessions ChatSession[]
 }
 
 model AuthProvider {
@@ -242,6 +242,7 @@ model ChatSession {
   userId    String
   title     String        
   messages  ChatMessage[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ChatMessage {
