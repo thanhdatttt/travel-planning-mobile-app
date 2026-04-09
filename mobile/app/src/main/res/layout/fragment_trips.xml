@@ -4,8 +4,10 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background">
+
     <!--  have trips  -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible">
@@ -73,6 +75,7 @@
                 android:textColor="@color/text"
                 android:layout_marginBottom="12dp"/>
             <include
+                android:id="@+id/includeActiveTrip"
                 layout="@layout/item_active_trip" />
 
             <!--      other trips      -->
@@ -85,12 +88,16 @@
                 android:textColor="@color/text"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="12dp"/>
-           <include layout="@layout/item_list_trip"/>
+           <include
+               android:id="@+id/includeTripList"
+               layout="@layout/item_list_trip"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
     <!--  Empty trip  -->
-    <include layout="@layout/layout_empty_trip" />
+    <include
+        android:id="@+id/includeLayoutEmpty"
+        layout="@layout/layout_empty_trip" />
 
     <!--  FAB buttons  -->
     <View
@@ -139,4 +146,26 @@
         app:rippleColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <!--  progress bar  -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:indeterminateTint="@color/primary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

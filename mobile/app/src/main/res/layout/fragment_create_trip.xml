@@ -95,12 +95,15 @@
                 android:paddingEnd="10dp"
                 android:textColor="@color/black"
                 android:autofillHints=""
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
                 android:drawableStart="@drawable/ic_calendar"
                 android:drawablePadding="10dp"
                 android:background="@drawable/edit_textbox"
                 android:hint="@string/yyyy_mm_dd"
                 android:textColorHint="@color/text_secondary"
-                android:inputType="date" />
+                android:inputType="none|date" />
 
             <!--      end date      -->
             <TextView
@@ -120,12 +123,14 @@
                 android:paddingEnd="10dp"
                 android:textColor="@color/black"
                 android:autofillHints=""
+                android:focusable="false"
+                android:clickable="true"
                 android:drawableStart="@drawable/ic_calendar"
                 android:drawablePadding="10dp"
                 android:background="@drawable/edit_textbox"
                 android:hint="@string/yyyy_mm_dd"
                 android:textColorHint="@color/text_secondary"
-                android:inputType="date" />
+                android:inputType="none|date" />
         </LinearLayout>
     </ScrollView>
 

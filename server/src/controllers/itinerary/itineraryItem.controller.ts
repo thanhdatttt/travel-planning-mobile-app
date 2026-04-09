@@ -24,23 +24,22 @@ export const addItineraryItem = async (req: Request, res: Response) => {
         .json(createResponse({ message: "Forbbiden", error: "Itinerary not yours" }));
     }
 
-    const itineraryItem = await prisma.$transaction(async (tx) => {
-      // check existing
-      const existing = await tx.itineraryItem.findFirst({
-        where: { itineraryId: String(id), locationId: data.locationId },
-      });
-      if (existing) {
-        return res.status(409).json(
-          createResponse({ message: "Conflict", error: "Location already in itinerary" })
-        );
-      }
-      return tx.itineraryItem.create({
-        data: {
-          itineraryId: String(id),
-          locationId: data.locationId,
-          note: data.note ?? null,
-        },
-      });
+    // check existing
+    const existing = await prisma.itineraryItem.findFirst({
+      where: { itineraryId: String(id), locationId: data.locationId },
+    });
+    if (existing) {
+      return res.status(409).json(
+        createResponse({ message: "Conflict", error: "Location already in itinerary" })
+      );
+    }
+ 
+    const itineraryItem = await prisma.itineraryItem.create({
+      data: {
+        itineraryId: String(id),
+        locationId: data.locationId,
+        note: data.note ?? null,
+      },
     });
 
     return res.status(201).json(

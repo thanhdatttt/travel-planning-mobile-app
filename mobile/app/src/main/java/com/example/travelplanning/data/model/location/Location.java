@@ -6,6 +6,7 @@ import android.os.Parcelable.Creator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -32,12 +33,17 @@ public class Location implements Parcelable{
     Double longitude;
     Double distance;
 
+    String category;
     String categoryName;
     String categoryIcon;
+    String categorySlug;
     String imageUrl;
     @Builder.Default
     List<Photo> photos = new ArrayList<>();
     Integer ratingCount;
+
+    List<LocationHour> openingHours;
+    String email;
 
     protected Location(Parcel in) {
         id = in.readString();
@@ -51,11 +57,16 @@ public class Location implements Parcelable{
         if (in.readByte() == 0) latitude = null; else latitude = in.readDouble();
         if (in.readByte() == 0) longitude = null; else longitude = in.readDouble();
         if (in.readByte() == 0) distance = null; else distance = in.readDouble();
+        category = in.readString();
         categoryName = in.readString();
         categoryIcon = in.readString();
+        categorySlug = in.readString();
         imageUrl = in.readString();
         photos = in.createTypedArrayList(Photo.CREATOR);
         if (in.readByte() == 0) ratingCount = null; else ratingCount = in.readInt();
+
+        openingHours = in.createTypedArrayList(LocationHour.CREATOR);
+        email = in.readString();
     }
 
     @Override
@@ -71,11 +82,16 @@ public class Location implements Parcelable{
         if (latitude == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeDouble(latitude); }
         if (longitude == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeDouble(longitude); }
         if (distance == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeDouble(distance); }
+        dest.writeString(category);
         dest.writeString(categoryName);
         dest.writeString(categoryIcon);
+        dest.writeString(categorySlug);
         dest.writeString(imageUrl);
         dest.writeTypedList(photos);
         if (ratingCount == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeInt(ratingCount); }
+
+        dest.writeTypedList(openingHours);
+        dest.writeString(email);
     }
 
     @Override
@@ -87,4 +103,13 @@ public class Location implements Parcelable{
         @Override
         public Location[] newArray(int size) { return new Location[size]; }
     };
+
+    public LocationHour getTodayHours() {
+        if (openingHours == null || openingHours.isEmpty()) return null;
+        int today = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK) - 1; // 0: Sunday
+        for (LocationHour h : openingHours) {
+            if (h.getDayOfWeek() == today) return h;
+        }
+        return null;
+    }
 }

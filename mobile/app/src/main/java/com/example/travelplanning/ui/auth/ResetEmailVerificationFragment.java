@@ -4,15 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.travelplanning.databinding.FragmentResetEmailVerificationBinding;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 public class ResetEmailVerificationFragment extends Fragment {
     private FragmentResetEmailVerificationBinding binding;
@@ -41,7 +39,7 @@ public class ResetEmailVerificationFragment extends Fragment {
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            if (msg != null) Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
         });
 
         viewModel.getOtpSentSuccess().observe(getViewLifecycleOwner(), sent -> {
@@ -56,6 +54,11 @@ public class ResetEmailVerificationFragment extends Fragment {
     private void setupListeners() {
         binding.btnEmailResetContinue.setOnClickListener(v -> {
             String email = binding.edtResetEmail.getText().toString().trim();
+
+            if (email.isEmpty()) {
+                binding.edtResetEmail.setError("Email is required");
+                return;
+            }
 
             // set state
             viewModel.setCurrentEmail(email);

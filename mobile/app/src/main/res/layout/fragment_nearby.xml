@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -93,7 +94,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/bg_bottom_sheet" 
+        android:background="@color/background"
         android:elevation="8dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_peekHeight="88dp" 
@@ -105,14 +106,15 @@
             android:id="@+id/layoutSearchList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@null">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/bg_search_outline_teal"
+                android:background="@null"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16dp">
 
@@ -136,6 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
+                    android:textColor="@color/text"
                     android:background="@null"
                     android:hint="Tìm kiếm địa điểm..."
                     android:textSize="15sp"
@@ -176,7 +179,8 @@
         android:background="#33000000" android:visibility="gone"
         android:clickable="true" 
         android:focusable="true" 
-        android:elevation="100dp"> <ProgressBar
+        android:elevation="100dp">
+        <ProgressBar
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
