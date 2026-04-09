@@ -131,4 +131,12 @@
 
     <string name="default_support_email">mailto:support@travel.com</string>
     <string name="error_cannot_open_link">Can\'t open this link</string>
+    <string name="detail">Detail</string>
+
+    //category
+    <string name="cat_food_and_drink">Food &amp; Drink</string>
+    <string name="cat_accommodation">Accommodation</string>
+    <string name="cat_attractions">Attractions</string>
+    <string name="cat_shopping">Shopping</string>
+    <string name="cat_services">Services</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.travelplanning.ui.location;
+package com.example.travelplanning.ui.location_detail;
 
 import lombok.Getter;
 

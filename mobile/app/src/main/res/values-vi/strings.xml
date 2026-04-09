@@ -120,4 +120,9 @@
     <string name="save">Lưu</string>
     <string name="show_less">Hiện bớt</string>
     <string name="error_cannot_open_link">Không thể mở liên kết này</string>
+    <string name="cat_food_and_drink">Ăn uống</string>
+    <string name="cat_accommodation">Chỗ ở</string>
+    <string name="cat_attractions">Tham quan</string>
+    <string name="cat_shopping">Mua sắm</string>
+    <string name="cat_services">Dịch vụ khác</string>
 </resources>

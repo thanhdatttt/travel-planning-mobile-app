@@ -39,7 +39,7 @@ android {
     buildTypes {
 
         debug {
-            buildConfigField "String", "BASE_URL", "\"${properties.getProperty('BASE_URL', 'http://192.168.1.209:5000/')}\""
+            buildConfigField "String", "BASE_URL", "\"${properties.getProperty('BASE_URL', 'http://10.123.0.238:5000/')}\""
         }
         release {
             minifyEnabled false
