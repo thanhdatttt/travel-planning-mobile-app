@@ -92,6 +92,7 @@
                 app:cornerRadius="100dp"
                 app:elevation="0dp"
                 app:icon="@drawable/ic_admin_chart"
+                app:iconTint="@color/white"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
                 app:iconSize="35dp"

@@ -51,7 +51,7 @@ export const locationListQuerySchema = {
         maxPrice: z.coerce.number().min(0).max(Number.MAX_VALUE).default(Number.MAX_VALUE),
         minRating: z.coerce.number().min(0).default(0),
         maxRating: z.coerce.number().min(0).max(10).default(10),
-        sortBy: z.enum(["name", "price", "distance", "avgRating"]).default("name"),
+        sortBy: z.enum(["name", "priceLevel", "distance", "avgRating"]).default("name"),
         sortOrder: z.enum(["asc", "desc"]).default("asc"),
         type: z.string().default("")
     }),

@@ -108,28 +108,23 @@ public class AdminStatFragment extends Fragment {
     }
 
     private void showUserListDialog(UserRole role) {
-        // Tạo RecyclerView cho Dialog
         RecyclerView recyclerView = new RecyclerView(requireContext());
         recyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800));
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // Sử dụng Adapter mới
         AdminRoleUserAdapter adapter = new AdminRoleUserAdapter();
         recyclerView.setAdapter(adapter);
 
-        // Hiển thị Dialog
         new MaterialAlertDialogBuilder(requireContext(), R.style.WhiteDialog)
                 .setTitle("List of " + role.name())
                 .setView(recyclerView)
                 .setPositiveButton("Close", null)
                 .show();
 
-        // Observe dữ liệu người dùng
         userViewModel.getUsers().observe(getViewLifecycleOwner(), users -> {
             if (users != null) adapter.setData(users);
         });
 
-        // Gọi API lọc theo Role
         userViewModel.applyFilters(false, false, false, "username", "asc", Collections.singletonList(role));
     }
 }

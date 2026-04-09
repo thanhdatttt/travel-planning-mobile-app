@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //hard code token for testing
-        String manualAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjODIyOGZkYi0wNDNmLTQyY2ItOGE0Yy1mZDE1MDQ1ZDUxNjAiLCJpYXQiOjE3NzU0NjQ0OTgsImV4cCI6MTc3NTU1MDg5OH0.xZIhsMkPT96DUgF_n1uXwoQh2cHOCnh4e8-mu7zoUjU";
+        String manualAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjODIyOGZkYi0wNDNmLTQyY2ItOGE0Yy1mZDE1MDQ1ZDUxNjAiLCJpYXQiOjE3NzU2MzE1OTksImV4cCI6MTc3NTcxNzk5OX0.QOWLY8W8PF05AoxKmTp7gTDJSDPmhnzxk0rwsG2a5xY";
         String manualRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNzAxYTk2Ny0zMTYyLTQ4ZjctOWIyYS1kODc5MmRmYzY2OTciLCJpYXQiOjE3NzQxMzg0NzUsImV4cCI6MjM3ODkzODQ3NX0.PDEAHbhlHWr8v6ZsLR_p1BMV6JOxjc-nXpPdJjisxuc";
         TokenManager.saveTokens(this, manualAccessToken, manualRefreshToken);
 

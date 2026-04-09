@@ -63,6 +63,7 @@ public class AdminLocationFilterDialog extends BottomSheetDialogFragment {
             if (((Chip) view.findViewById(R.id.chipHotel)).isChecked()) categoryId.add("2");
             if (((Chip) view.findViewById(R.id.chipAttraction)).isChecked()) categoryId.add("3");
             if (((Chip) view.findViewById(R.id.chipShopping)).isChecked()) categoryId.add("4");
+            if (((Chip) view.findViewById(R.id.chipService)).isChecked()) categoryId.add("5");
 
             viewModel.applyFilters(currentMinPrice, currentMaxPrice, currentMinRating, currentMaxRating, categoryId, currentSortBy, currentSortOrder);
             dismiss();
@@ -77,6 +78,7 @@ public class AdminLocationFilterDialog extends BottomSheetDialogFragment {
         ((Chip) v.findViewById(R.id.chipHotel)).setChecked(categoryId.contains("2"));
         (((Chip) v.findViewById(R.id.chipAttraction))).setChecked(categoryId.contains("3"));
         ((Chip) v.findViewById(R.id.chipShopping)).setChecked(categoryId.contains("4"));
+        ((Chip) v.findViewById(R.id.chipService)).setChecked(categoryId.contains("5"));
     }
 
     private void setupDropdowns(View v) {
@@ -101,17 +103,19 @@ public class AdminLocationFilterDialog extends BottomSheetDialogFragment {
         actvMinRating.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, ratingOptions));
         actvMaxRating.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, ratingOptions));
 
+        if(currentSortBy.equals("avgRating"))   currentSortBy = "rating";
+        if(currentSortBy.equals("priceLevel"))  currentSortBy = "price";
         actvBy.setText(currentSortBy, false);
         actvOrder.setText(currentSortOrder, false);
-        actvMinPrice.setText("$".repeat(currentMinPrice));
-        actvMaxPrice.setText("$".repeat(currentMaxPrice));
+        actvMinPrice.setText("$".repeat(currentMinPrice), false);
+        actvMaxPrice.setText("$".repeat(currentMaxPrice), false);
         actvMinRating.setText(String.valueOf(currentMinRating), false);
         actvMaxRating.setText(String.valueOf(currentMaxRating), false);
 
         actvBy.setOnItemClickListener((p, view1, pos, id) -> currentSortBy = byOptionsDB[pos]);
         actvOrder.setOnItemClickListener((p, view1, pos, id) -> currentSortOrder = orderOptions[pos]);
-        actvMinPrice.setOnItemClickListener((p, view1, pos, id) -> currentMinPrice = pos);
-        actvMaxPrice.setOnItemClickListener((p, view1, pos, id) -> currentMaxPrice = pos);
+        actvMinPrice.setOnItemClickListener((p, view1, pos, id) -> currentMinPrice = pos+1);
+        actvMaxPrice.setOnItemClickListener((p, view1, pos, id) -> currentMaxPrice = pos+1);
         actvMinRating.setOnItemClickListener((p, view1, pos, id) -> currentMinRating = pos);
         actvMaxRating.setOnItemClickListener((p, view1, pos, id) -> currentMaxRating = pos);
 

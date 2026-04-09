@@ -20,11 +20,8 @@ export const getList = async (req: Request, res: Response) => {
     skip = 0, 
     take = 20
   } = req.query;
-
   const categoryParam = req.query.categoryId as string;
   const categoryId = categoryParam ? categoryParam.split(",").map((c) => Number(c.trim())).filter(val => !isNaN(val)) : [1, 2, 3, 4];
-
-  console.log(req.query);
 
   const locations = await prisma.location.findMany({
     where: {
@@ -40,9 +37,14 @@ export const getList = async (req: Request, res: Response) => {
     orderBy: {
       [String(sortBy)]: sortOrder,
     },
+    include: {
+      locationPhotos: true,
+    },
     skip: Number(skip),
-    take: Number(take),
+    take: Number(take)
   });
+
+  console.log(locations[0]);
 
   return res.status(200).json(
     createResponse({
