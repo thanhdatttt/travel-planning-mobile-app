@@ -3,8 +3,11 @@ package com.example.travelplanning.data.repository.itinerary;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import com.example.travelplanning.core.network.ApiServiceFactory;
+import com.example.travelplanning.core.util.AndroidStringProvider;
+import com.example.travelplanning.core.util.StringProvider;
 import com.example.travelplanning.data.mapper.itinerary.ItineraryItemMapper;
 import com.example.travelplanning.data.mapper.itinerary.ItineraryMapper;
+import com.example.travelplanning.data.mapper.location.LocationMapper;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.data.model.itinerary.ItineraryItem;
 import com.example.travelplanning.data.remote.core.ApiResponse;
@@ -31,8 +34,13 @@ public class ItineraryRepository {
 
     public ItineraryRepository(Context context) {
         this.itineraryApi = ApiServiceFactory.create(context, ItineraryApi.class);
-        this.itineraryMapper = new ItineraryMapper();
-        this.itineraryItemMapper = new ItineraryItemMapper();
+
+        StringProvider stringProvider = new AndroidStringProvider(context);
+        LocationMapper locationMapper = new LocationMapper(stringProvider);
+
+        // Gán vào biến instance của Repository
+        this.itineraryItemMapper = new ItineraryItemMapper(locationMapper);
+        this.itineraryMapper = new ItineraryMapper(this.itineraryItemMapper);
     }
 
     // callbacks

@@ -102,6 +102,8 @@ model Location {
   metadata       Json?
   categoryId     Int
   location       Unsupported("geography")
+
+  email          String?
   createdAt      DateTime                 @default(now())
   updatedAt      DateTime                 @updatedAt
   deletedAt      DateTime?
@@ -125,7 +127,6 @@ model LocationHour {
   dayOfWeek  Int      @db.SmallInt
   openTime   Int
   closeTime  Int
-  note       String?
   location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
 
   @@index([locationId])
