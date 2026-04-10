@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:hint="Hỏi TourGuide..."
+                android:hint="@string/ask_tourguide"
                 android:maxLines="4"
                 android:inputType="textMultiLine"
                 android:textColor="@color/text"

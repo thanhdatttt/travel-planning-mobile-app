@@ -1,4 +1,4 @@
-package com.example.travelplanning.ui.map;
+package com.example.travelplanning.viewmodel.location;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +67,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             distanceStr += " • ";
         }
         
-        String address = loc.getAddress() != null ? loc.getAddress() : "Chưa có địa chỉ";
+        String address = loc.getAddress() != null ? loc.getAddress() : "No address";
         holder.tvDistanceAddress.setText(distanceStr + address);
 
         Glide.with(holder.itemView.getContext())

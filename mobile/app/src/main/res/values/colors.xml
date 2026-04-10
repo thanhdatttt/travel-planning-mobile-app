@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#999999</color>
+    <color name="light_gray">#DDDDDD</color>
 
     <color name="primary">#34D399</color> <color name="primary_variant">#059669</color>
     <color name="text">#000000</color>
@@ -15,4 +16,8 @@
     <color name="text_hint">#757575</color>
     <color name="chat_input_bg">#F2F2F7</color> 
     <color name="chat_input_stroke">#E5E5EA</color>
+    <color name="admin_header_color">#15000000</color>
+    <color name="admin_dark_green">#3E814D</color>
+    <color name="dark_green">#219D0E</color>
+    <color name="rating_balls">#F4C23A</color>
 </resources>

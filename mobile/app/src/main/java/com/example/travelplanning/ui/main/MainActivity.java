@@ -17,6 +17,7 @@ import com.example.travelplanning.databinding.ActivityMainBinding;
 import com.example.travelplanning.ui.auth.AuthActivity;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
 import com.example.travelplanning.ui.util.LocaleHelper;
+import com.example.travelplanning.ui.splash.SplashActivity;
 
 import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;

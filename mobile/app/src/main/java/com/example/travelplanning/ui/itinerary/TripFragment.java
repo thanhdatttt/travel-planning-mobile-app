@@ -280,11 +280,11 @@ public class TripFragment extends Fragment {
     }
 
     private void navigateToAi() {
-    try {
-        Navigation.findNavController(requireView()).navigate(R.id.nav_chatbot);
-    } catch (Exception e) {
-        e.printStackTrace();
-        Toast.makeText(requireContext(), "Không thể mở Chatbot lúc này", Toast.LENGTH_SHORT).show();
-    }
+        try {
+            Navigation.findNavController(requireView()).navigate(R.id.nav_chatbot);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(requireContext(), "Không thể mở Chatbot lúc này", Toast.LENGTH_SHORT).show();
+        }
     }
 }

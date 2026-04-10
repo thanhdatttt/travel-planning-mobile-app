@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp">
+
+        <!-- Title Row -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <ImageButton
+                android:id="@+id/btnClose"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_locations"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#1A1A1A" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#CCCCCC"
+                    android:layout_margin="-10dp"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- Price Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <!-- Price Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/price"
+                android:drawableLeft="@drawable/ic_price"
+                android:drawablePadding="5dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textColor="#1A1A1A" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <!-- Rating Spinner -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilMinPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvMinPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:hint="@string/min_price"
+                        style="@style/CustomDropdownLayoutInner" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Divider -->
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="2dp"
+                    android:background="#1A1A1A"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Sort Order Spinner -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilMaxPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvMaxPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:hint="@string/max_price"
+                        style="@style/CustomDropdownLayoutInner" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <!-- Rating Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <!-- Rating Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ratings"
+                android:drawableLeft="@drawable/ic_star_black"
+                android:drawablePadding="5dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textColor="#1A1A1A" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <!-- Rating Spinner -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilMinRating"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvMinRating"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:hint="@string/min_rating"
+                        style="@style/CustomDropdownLayoutInner" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Divider -->
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="2dp"
+                    android:background="#1A1A1A"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Sort Order Spinner -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilMaxRating"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvMaxRating"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:hint="@string/max_rating"
+                        style="@style/CustomDropdownLayoutInner" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Sort Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <!-- Sort Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sort_order"
+                android:drawableStart="@drawable/ic_sort"
+                android:drawablePadding="5dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textColor="#1A1A1A" />
+
+            <!-- Sort Dropdowns Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Sort By Spinner -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilSortBy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvSortBy"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:hint="@string/sort_by"
+                        style="@style/CustomDropdownLayoutInner" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="2dp"
+                    android:background="#1A1A1A"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Sort Order Spinner -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilSortOrder"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/CustomDropdownLayout">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvSortOrder"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:hint="@string/sort_order"
+                        style="@style/CustomDropdownLayoutInner" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Status Chips Row -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            app:singleSelection="false"
+            android:gravity="center"
+            android:layout_gravity="center"
+            app:chipSpacingHorizontal="5dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipRestaurant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/restaurant"
+                app:chipIcon="@drawable/ic_restaurant"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipHotel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hotel"
+                app:chipIcon="@drawable/ic_hotel"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAttraction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/attraction"
+                app:chipIcon="@drawable/ic_entertainment"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipShopping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shopping"
+                app:chipIcon="@drawable/ic_coffee"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/service"
+                app:chipIcon="@drawable/ic_service"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipDeletedLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/deleted"
+                app:chipIcon="@drawable/ic_deleted"
+                app:chipIconSize="@dimen/base_margin"
+                style="@style/ChipStyle" />
+
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#CCCCCC"
+            android:layout_marginBottom="15dp"/>
+
+        <!-- Action Buttons Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <!-- Reset Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReset"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="2"
+                android:layout_marginEnd="10dp"
+                android:text="@string/reset"
+                android:textSize="15sp"
+                android:textColor="#2E7D32"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="#2E7D32"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="8dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <!-- Filter Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFilter"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="3"
+                android:text="@string/filter"
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                style="@style/Widget.MaterialComponents.Button"
+                android:backgroundTint="#2E7D32"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
