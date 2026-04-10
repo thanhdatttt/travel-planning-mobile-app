@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemReportedReview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/no_avatar"
+            android:contentDescription="User avatar" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/tvReviewerUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/username"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvPlaceName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Place Name"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" · "
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4/5"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnMoreOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_option"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="More options" />
+
+    </LinearLayout>
+
+    <!-- Review Text -->
+    <TextView
+        android:id="@+id/tvReviewText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="150dp"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="10dp"
+        android:text="Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes hereReview text goes hereReview text goes here Review text goes hereReview text goes here Review text goes hereReview text goes here Review text goes here Review text goes here Review text goes here"
+        android:textSize="13sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="8dp"
+        android:paddingHorizontal="-16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Reported By -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reported by: "
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/tvReportedBy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="reporter_username"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Report Reason -->
+        <LinearLayout
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reason: "
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/tvReportReason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="reason goes here"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="25dp"
+        android:paddingHorizontal="-16dp"
+        android:background="@android:color/darker_gray" />
+</LinearLayout>

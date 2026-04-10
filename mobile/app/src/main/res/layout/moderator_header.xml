@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingVertical="16dp">
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/ivBack"
@@ -27,8 +27,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/back_button"
-            android:padding="5dp"
-            android:layout_marginLeft="16dp"
+            android:padding="4dp"
             android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"
             app:tint="#000000" />
@@ -43,58 +42,43 @@
             app:layout_constraintTop_toBottomOf="@id/ivBack">
 
             <Button
-                android:id="@+id/btnUser"
+                android:id="@+id/btnReview"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_weight="3"
                 android:background="@animator/admin_header_tab_bg"
-                android:text="@string/manage_user"
-                android:textStyle="bold"
+                android:text="@string/reviews"
                 android:textColor="@animator/admin_header_text_color"
+                android:textStyle="bold"
                 android:textSize="14sp"
                 android:paddingHorizontal="15dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
                 app:backgroundTint="@null"/>
 
             <Button
-                android:id="@+id/btnLocation"
+                android:id="@+id/btnLocations"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_weight="3"
                 android:background="@animator/admin_header_tab_bg"
-                android:text="@string/manage_location"
+                android:text="@string/locations"
                 android:textColor="@animator/admin_header_text_color"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:paddingHorizontal="15dp"
                 app:backgroundTint="@null"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnChart"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:layout_width="50dp"
+            <Button
+                android:id="@+id/btnTrip"
+                android:layout_width="0dp"
                 android:layout_height="45dp"
-                android:layout_gravity="center"
-                android:paddingRight="3dp"
-
-                android:background="@animator/admin_tab_icon_bg"
-                app:backgroundTint="@null"
-                app:iconTint="@animator/admin_tab_icon_tint"
-
-                android:insetLeft="0dp"
-                android:insetTop="0dp"
-                android:insetRight="0dp"
-                android:insetBottom="0dp"
-                android:padding="0dp"
-                app:cornerRadius="0dp"
-                app:elevation="0dp"
-
-                app:icon="@drawable/ic_admin_chart"
-                app:iconGravity="end"
-                app:iconPadding="0dp"
-                app:iconSize="45dp"
-                android:stateListAnimator="@null" />
+                android:layout_weight="3"
+                android:background="@animator/admin_header_tab_bg"
+                android:text="@string/trips"
+                android:textColor="@animator/admin_header_text_color"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:paddingHorizontal="15dp"
+                app:backgroundTint="@null"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

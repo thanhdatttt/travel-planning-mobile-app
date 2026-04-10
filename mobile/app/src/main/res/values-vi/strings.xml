@@ -134,7 +134,7 @@
     <string name="max_rating">Đánh giá tối đa</string>
     <string name="sort_by">Sắp xếp theo</string>
     <string name="sort_order">Thứ tự sắp xếp</string>
-    <string name="filter">BỘ LỌC</string>
+    <string name="filter">LỌC</string>
 
     <string name="restaurant">Nhà hàng</string>
     <string name="hotel">Khách sạn</string>
