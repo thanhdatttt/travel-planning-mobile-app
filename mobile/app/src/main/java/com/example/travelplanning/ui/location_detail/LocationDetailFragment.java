@@ -16,6 +16,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -47,6 +50,8 @@ import java.util.Locale;
 public class LocationDetailFragment extends Fragment {
     private FragmentLocationDetailBinding binding;
     private LocationDetailViewModel viewModel;
+    private PhotoAdapter photoAdapter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +71,9 @@ public class LocationDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(LocationDetailViewModel.class);
+
+        setupRecyclerViews();
+        setupPhotoAreaLogic();
         setupObservers();
 
         if (getArguments() != null) {
@@ -74,6 +82,36 @@ public class LocationDetailFragment extends Fragment {
                 viewModel.fetchDetail(locationId);
             }
         }
+    }
+
+    private void setupRecyclerViews() {
+        // Khởi tạo Info Adapter (code cũ của bạn)
+        binding.rvLocationInfo.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvLocationInfo.setNestedScrollingEnabled(false);
+
+        // Khởi tạo Photo Adapter
+        photoAdapter = new PhotoAdapter();
+        // Dùng LinearLayoutManager Ngang cho vùng ảnh
+        binding.layoutPhotos.rvPhotos.setLayoutManager(
+                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.layoutPhotos.rvPhotos.setHasFixedSize(true);
+        binding.layoutPhotos.rvPhotos.setAdapter(photoAdapter);
+
+        // Chặn cuộn tay nếu bạn muốn người dùng CHỈ bấm nút (tùy chọn)
+        // binding.layoutPhotos.rvPhotos.setOnTouchListener((v, event) -> true);
+    }
+
+    private void setupPhotoAreaLogic() {
+        var photoBinding = binding.layoutPhotos;
+
+        photoBinding.btnAddPhotos.setOnClickListener(v -> {
+            pickLocationPhoto.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+        });
+
+        photoBinding.btnNext.setOnClickListener(v -> viewModel.nextPage());
+        photoBinding.btnPrev.setOnClickListener(v -> viewModel.prevPage());
     }
 
     @SuppressLint("SetTextI18n")
@@ -139,6 +177,13 @@ public class LocationDetailFragment extends Fragment {
                     binding.tvSeeMore.setText(getString(R.string.see_more));
                 }
             });
+            updatePhotoList(location.getPhotos(), viewModel.getCurrentPage().getValue());
+        });
+
+        // Quan sát riêng trang hiện tại để chuyển ảnh
+        viewModel.getCurrentPage().observe(getViewLifecycleOwner(), page -> {
+            Location loc = viewModel.getLocationDetail().getValue();
+            if (loc != null) updatePhotoList(loc.getPhotos(), page);
         });
     }
 
@@ -265,6 +310,40 @@ public class LocationDetailFragment extends Fragment {
         });
 
         mapBinding.mapDetail.invalidate(); // Vẽ lại bản đồ
+    }
+
+
+    // LOCATION PHOTOS------------------
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickLocationPhoto =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null && viewModel.getLocationDetail().getValue() != null) {
+                    viewModel.uploadPhoto(viewModel.getLocationDetail().getValue().getId(), uri);
+                }
+            });
+
+    private void updatePhotoList(List<Photo> allPhotos, int page) {
+        if (allPhotos == null || allPhotos.isEmpty()) {
+            binding.layoutPhotos.getRoot().setVisibility(View.GONE);
+            return;
+        }
+        binding.layoutPhotos.getRoot().setVisibility(View.VISIBLE);
+
+        // Logic phân trang: mỗi lần hiện 2 ảnh (vì ta muốn 2 ảnh full màn hình)
+        int ITEMS_PER_PAGE = 2;
+        int fromIndex = page * ITEMS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, allPhotos.size());
+
+        if (fromIndex < allPhotos.size()) {
+            List<Photo> pagedList = new ArrayList<>(allPhotos.subList(fromIndex, toIndex));
+            photoAdapter.setList(pagedList);
+        }
+
+        int totalPages = (int) Math.ceil((double) allPhotos.size() / ITEMS_PER_PAGE);
+        binding.layoutPhotos.tvPageIndicator.setText((page + 1) + "/" + totalPages);
+
+        // Cập nhật trạng thái nút
+        binding.layoutPhotos.btnPrev.setAlpha(page > 0 ? 1.0f : 0.3f);
+        binding.layoutPhotos.btnNext.setAlpha(page < totalPages - 1 ? 1.0f : 0.3f);
     }
 
     @Override
