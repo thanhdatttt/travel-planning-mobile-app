@@ -28,6 +28,9 @@ public class UserProfile {
     String avatarUrl;
     String bio;
 
+    Boolean isBanned;
+    Boolean isDeleted;
+
     private Map<String, Object> preference;
 
     private UserRole role;

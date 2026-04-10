@@ -4,27 +4,32 @@ import { prisma } from "../../libs/prisma";
 import bcrypt from "bcrypt";
 import { createResponse } from "../../utils/response";
 import { userRole } from "../../generated/prisma/browser";
-import { toLowerCase } from "zod";
+import { is } from "zod/v4/locales";
 
 //MISSING IS INACTIVE LOGIC
 export const getList = async (req: Request, res: Response) => {
-    const {username = "", email = "", isBanned = false, isInactive = false, sortBy = "username", sortOrder = "asc", isDeleted = false} = req.query;
-    const role = req.query.role as string;
+    const {usernameOrEmail = "", sortBy = "username", sortOrder = "asc"} = req.query;
+    const roleParam = req.query.role as string;
+    const isBanned = req.query.isBanned === 'true'; 
+    const isDeleted = req.query.isDeleted === 'true';
+    const isInactive = req.query.isInactive === 'true';
 
-    console.log("Query params: ", req.query);
+    const roles = roleParam 
+        ? roleParam.split(",").map(r => r.trim().toLowerCase())
+        : ['user', 'moderator', 'admin'];
     const users = await prisma.user.findMany({
         where: {
             AND: [
                 {
                     OR: [
-                        { username: { contains: String(username), mode: 'insensitive' } },
-                        { email: { contains: String(email), mode: 'insensitive' } },
+                        { username: { contains: String(usernameOrEmail), mode: 'insensitive' } },
+                        { email: { contains: String(usernameOrEmail), mode: 'insensitive' } },
                     ]
                 },
-                {isDeleted: isDeleted === 'true' || Boolean(isDeleted) === true},
-                {isBanned: isBanned === 'true' || Boolean(isBanned) === true},
-                {role: role?.toLowerCase() === "user" ? userRole.user : role?.toLowerCase() === "moderator" ? userRole.moderator : userRole.admin}
-            ]
+                {isDeleted: isDeleted},
+                {isBanned: isBanned},
+                {role: { in: roles as userRole[] }}
+                ]
         },
         orderBy: {
             [String(sortBy)]: sortOrder as 'asc' | 'desc'
@@ -148,5 +153,29 @@ export const demoteFromModerator = async (req: Request, res: Response) => {
             data: demotedUser
         })
     );
+}
 
+export const updateProfile = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { fullName, email, phone, address, dob, role } = req.body;
+
+    const updateData: any = {};
+    if (fullName) updateData.fullName = fullName;
+    if (email) updateData.email = email;
+    if (phone) updateData.phone = phone;
+    if (address) updateData.address = address;
+    if (dob) updateData.dob = new Date(dob);
+    if (role) updateData.role = role as userRole;
+
+    const updatedUser = await prisma.user.update({
+        where: { id: String(id) },
+        data: updateData
+    });
+
+    return res.status(200).json(
+        createResponse({
+            message: "User updated successfully",
+            data: updatedUser
+        })
+    );
 }

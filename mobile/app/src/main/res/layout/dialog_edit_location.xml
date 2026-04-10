@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <LinearLayout style="@style/AdminInfoRow">
+            <TextView style="@style/AdminInfoLabel" android:text="ID" />
+            <View android:layout_height="0dp" android:layout_width="0dp" android:layout_weight="1"/>
+            <TextView android:id="@+id/tvEditId" style="@style/AdminInfoValue" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" android:layout_marginVertical="8dp"/>
+
+        <LinearLayout style="@style/AdminInfoRow" android:orientation="vertical">
+            <TextView style="@style/AdminInfoLabel" android:text="Location Name" />
+            <EditText android:id="@+id/etEditName"
+                style="@style/AdminEditInfoValue"
+                android:inputType="text"
+                android:hint="Enter name"
+                android:layout_width="match_parent"/>
+        </LinearLayout>
+
+        <LinearLayout style="@style/AdminInfoRow" android:orientation="vertical">
+            <TextView style="@style/AdminInfoLabel" android:text="Address" />
+            <EditText android:id="@+id/etEditAddress"
+                style="@style/AdminEditInfoValue"
+                android:inputType="textPostalAddress"
+                android:hint="Enter address"
+                android:layout_width="match_parent"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <LinearLayout style="@style/AdminInfoRow" android:orientation="vertical" android:layout_weight="1" android:layout_marginEnd="10dp">
+                <TextView style="@style/AdminInfoLabel" android:text="Phone" />
+                <EditText android:id="@+id/etEditPhone"
+                    style="@style/AdminEditInfoValue"
+                    android:inputType="phone"
+                    android:hint="Phone number"
+                    android:layout_width="match_parent"/>
+            </LinearLayout>
+
+            <LinearLayout style="@style/AdminInfoRow" android:orientation="vertical" android:layout_weight="1">
+                <TextView style="@style/AdminInfoLabel" android:text="Price Level" />
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    app:boxStrokeColor="#999999"
+                    app:boxBackgroundColor="@color/light_gray"
+                    app:hintEnabled="false">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompletePriceLevel"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:inputType="none"
+                        android:padding="12dp"
+                        android:hint="Select Price"
+                        android:background="@null"/>
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout style="@style/AdminInfoRow" android:orientation="vertical">
+            <TextView style="@style/AdminInfoLabel" android:text="Average Rating (0-5)" />
+            <EditText android:id="@+id/etEditRating"
+                style="@style/AdminEditInfoValue"
+                android:inputType="numberDecimal"
+                android:hint="e.g. 4.5"
+                android:layout_width="match_parent"/>
+        </LinearLayout>
+
+        <LinearLayout style="@style/AdminInfoRow" android:orientation="vertical">
+            <TextView style="@style/AdminInfoLabel" android:text="Category" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundColor="@color/light_gray"
+                app:boxStrokeColor="#999999"
+                app:hintEnabled="false">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:padding="12dp"
+                    android:hint="Select Category"
+                    android:background="@null"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" android:layout_marginVertical="15dp"/>
+
+        <TextView style="@style/AdminInfoLabel" android:text="Thumbnail Selector" android:layout_marginBottom="10dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#DDDDDD">
+            <ImageView
+                android:id="@+id/ivCurrentThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/suprised_car"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Choose from available photos:"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"
+            android:textColor="#666666"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPhotoSelector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    </LinearLayout>
+</ScrollView>

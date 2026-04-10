@@ -1,0 +1,107 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="20dp"
+        android:paddingHorizontal="16dp"
+        android:background="?attr/selectableItemBackground"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:clickable="true">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivImage"
+            android:layout_width="80dp"
+            android:layout_height="65dp"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop"
+            android:elevation="3dp"
+            app:strokeColor="@color/primary"
+            app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+            android:src="@drawable/suprised_car" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:text="Jolli bee Jolli bee Jolli bee Jolli Bee Jolli Bee Jolli Bee Jolli Bee Jolli Bee"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/tvRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="5dp"
+                    android:text="4.9" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_rating_full"
+                    android:layout_marginEnd="3dp"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_rating_full"
+                    android:layout_marginEnd="3dp"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_rating_full"
+                    android:layout_marginEnd="3dp"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_rating_half"
+                    android:layout_marginEnd="3dp"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_rating_empty"
+                    android:layout_marginEnd="3dp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/btnOptions"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_option"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#20000000"/>
+</LinearLayout>
