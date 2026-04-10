@@ -27,6 +27,7 @@ public class AdminLocationFilterDialog extends BottomSheetDialogFragment {
     private int currentMaxPrice;
     private int currentMinRating;
     private int currentMaxRating;
+    private boolean isDeleted = false;
 
     @Nullable
     @Override
@@ -45,7 +46,7 @@ public class AdminLocationFilterDialog extends BottomSheetDialogFragment {
         currentMaxPrice = viewModel.getMaxPrice();
         currentMinRating = viewModel.getMinRating();
         currentMaxRating = viewModel.getMaxRating();
-
+        isDeleted = viewModel.isDeleted();
 
         setupDropdowns(view);
         syncChipWithViewmodel(view);
@@ -64,8 +65,9 @@ public class AdminLocationFilterDialog extends BottomSheetDialogFragment {
             if (((Chip) view.findViewById(R.id.chipAttraction)).isChecked()) categoryId.add("3");
             if (((Chip) view.findViewById(R.id.chipShopping)).isChecked()) categoryId.add("4");
             if (((Chip) view.findViewById(R.id.chipService)).isChecked()) categoryId.add("5");
+            if (((Chip) view.findViewById(R.id.chipDeletedLocation)).isChecked()) isDeleted = true;
 
-            viewModel.applyFilters(currentMinPrice, currentMaxPrice, currentMinRating, currentMaxRating, categoryId, currentSortBy, currentSortOrder);
+            viewModel.applyFilters(currentMinPrice, currentMaxPrice, currentMinRating, currentMaxRating, categoryId, currentSortBy, currentSortOrder, isDeleted);
             dismiss();
         });
 
@@ -79,6 +81,7 @@ public class AdminLocationFilterDialog extends BottomSheetDialogFragment {
         (((Chip) v.findViewById(R.id.chipAttraction))).setChecked(categoryId.contains("3"));
         ((Chip) v.findViewById(R.id.chipShopping)).setChecked(categoryId.contains("4"));
         ((Chip) v.findViewById(R.id.chipService)).setChecked(categoryId.contains("5"));
+        ((Chip) v.findViewById(R.id.chipDeletedLocation)).setChecked(isDeleted);
     }
 
     private void setupDropdowns(View v) {

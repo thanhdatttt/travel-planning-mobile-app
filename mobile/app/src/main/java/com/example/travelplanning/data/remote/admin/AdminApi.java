@@ -1,6 +1,8 @@
 package com.example.travelplanning.data.remote.admin;
 
 import com.example.travelplanning.data.remote.admin.dto.request.BanUserRequest;
+import com.example.travelplanning.data.remote.admin.dto.request.EditLocationRequest;
+import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteLocationRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.EditUserProfileRequest;
 
@@ -20,7 +22,7 @@ import retrofit2.http.Query;
 import retrofit2.http.POST;
 
 public interface AdminApi{
-    @GET("/api/admin/user/list")
+    @GET("api/admin/user/list")
     Call<ApiResponse<List<UserProfileResponse>>> GetAllUsers(@Query("usernameOrEmail") String usernameOrEmail,
                                                              @Query("isBanned") Boolean isBanned,
                                                              @Query("isInactive") Boolean isInactive,
@@ -56,8 +58,21 @@ public interface AdminApi{
                                                             @Query("minRating") int minRating,
                                                             @Query("maxRating") int maxRating,
                                                             @Query("categoryId") String categoryId,
+                                                            @Query("isDeleted") Boolean isDeleted,
                                                             @Query("skip") int skip,
                                                             @Query("take") int take);
+
+    @POST("api/admin/location/{id}")
+    Call<ApiResponse<AdminLocationResponse>> updateLocation(
+            @Path("id") String id,
+            @Body EditLocationRequest request
+    );
+
+    @POST("api/admin/location/soft-delete/{id}")
+    Call<ApiResponse<AdminLocationResponse>> softDeleteLocation(
+            @Path("id") String id,
+            @Body SoftDeleteLocationRequest request
+    );
 
     @GET("api/admin/stat/all")
     Call<ApiResponse<AdminStatResponse>> getAdminStats(

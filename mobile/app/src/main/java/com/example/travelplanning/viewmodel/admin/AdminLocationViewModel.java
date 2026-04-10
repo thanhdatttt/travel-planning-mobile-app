@@ -15,7 +15,6 @@ import lombok.Getter;
 @Getter
 public class AdminLocationViewModel extends AndroidViewModel {
     private final AdminRepository adminRepository;
-
     private final MutableLiveData<List<Location>> locations = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> error = new MutableLiveData<>();
@@ -28,6 +27,7 @@ public class AdminLocationViewModel extends AndroidViewModel {
     private int minRating = 0;
     private int maxRating = 5;
     private List<String> categoryId;
+    private boolean isDeleted;
     private int currentOffset = 0;
     private final int LIMIT = 20;
     private boolean isLastPage = false;
@@ -70,6 +70,7 @@ public class AdminLocationViewModel extends AndroidViewModel {
                 minRating,
                 maxRating,
                 categoryId,
+                isDeleted,
                 currentOffset,
                 LIMIT,
                 new AdminRepository.AdminCallback<List<Location>>() {
@@ -95,7 +96,7 @@ public class AdminLocationViewModel extends AndroidViewModel {
         );
     }
 
-    public void applyFilters(int minP, int maxP, int minR, int maxR, List<String> catId, String sort, String order) {
+    public void applyFilters(int minP, int maxP, int minR, int maxR, List<String> catId, String sort, String order, boolean isDeleted) {
         this.minPrice = Math.max(1, minP);
         this.maxPrice = Math.min(4, maxP);
         this.minRating = minR;
@@ -103,6 +104,7 @@ public class AdminLocationViewModel extends AndroidViewModel {
         this.categoryId = catId;
         this.sortBy = sort;
         this.sortOrder = order;
+        this.isDeleted = isDeleted;
         fetchLocations(false);
     }
 
@@ -116,5 +118,63 @@ public class AdminLocationViewModel extends AndroidViewModel {
         this.sortBy = "name";
         this.sortOrder = "asc";
         fetchLocations(false);
+    }
+
+    public void updateLocation(Location location) {
+        isLoading.setValue(true);
+        adminRepository.updateLocation(
+                location.getId(),
+                location.getName(),
+                location.getAddress(),
+                location.getPhone(),
+                location.getPriceLevel(),
+                location.getAvgRating(),
+                location.getImageUrl(),
+                location.getCategoryName(),
+                new AdminRepository.AdminCallback<Location>() {
+                    @Override
+                    public void onSuccess(Location updatedLocation) {
+                        isLoading.setValue(false);
+                        // Cập nhật item trong list hiện tại
+                        List<Location> currentList = locations.getValue();
+                        if (currentList != null) {
+                            for (int i = 0; i < currentList.size(); i++) {
+                                if (currentList.get(i).getId().equals(updatedLocation.getId())) {
+                                    currentList.set(i, updatedLocation);
+                                    break;
+                                }
+                            }
+                            locations.setValue(currentList); // Kích hoạt Observer cập nhật UI
+                        }
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        isLoading.setValue(false);
+                        error.setValue(err);
+                    }
+                }
+        );
+    }
+
+    public void deleteLocation(Location location) {
+        isLoading.setValue(true);
+        adminRepository.softDeleteLocation(location.getId(), true, new AdminRepository.AdminCallback<Location>() {
+            @Override
+            public void onSuccess(Location data) {
+                isLoading.setValue(false);
+                List<Location> currentList = locations.getValue();
+                if (currentList != null) {
+                    currentList.remove(location);
+                    locations.setValue(currentList);
+                }
+            }
+
+            @Override
+            public void onError(String err) {
+                isLoading.setValue(false);
+                error.setValue(err);
+            }
+        });
     }
 }

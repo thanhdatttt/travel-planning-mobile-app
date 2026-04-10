@@ -28,6 +28,7 @@ export const getList = async (req: Request, res: Response) => {
   const categoryIds = Array.isArray(categoryId) ? categoryId : [categoryId];
   const sortByStr = String(sortBy || "name");
   const sortOrderStr = String(sortOrder || "asc").toUpperCase();
+  const isDeleted = req.query.isDeleted === 'true';
 
   const locations = await prisma.$queryRaw`
   SELECT 
@@ -36,6 +37,8 @@ export const getList = async (req: Request, res: Response) => {
     l."avgRating", 
     l."priceLevel",
     l."address",
+    l."isDeleted",
+    l."categoryId",
     (
       SELECT json_agg(json_build_object(
         'url', lp.url,
@@ -44,9 +47,8 @@ export const getList = async (req: Request, res: Response) => {
       ))
       FROM "LocationPhoto" lp 
       WHERE lp."locationId" = l.id 
-      LIMIT 1
-    ) AS "photos" 
-  FROM "Location" l
+    ) AS "photos"
+    FROM "Location" l
   WHERE 
     l.name ILIKE ${searchName}
     AND l."priceLevel" >= ${Number(minPrice)}
@@ -54,12 +56,12 @@ export const getList = async (req: Request, res: Response) => {
     AND l."avgRating" >= ${Number(minRating)}
     AND l."avgRating" <= ${Number(maxRating)}
     AND l."categoryId" IN (${Prisma.join(categoryIds)})
+    AND l."isDeleted" = ${isDeleted}
   ORDER BY 
     l.${Prisma.raw(sortByStr)} ${Prisma.raw(sortOrderStr)}
   LIMIT ${Number(take)} 
   OFFSET ${Number(skip)}
 `;
-  console.log(locations);
 
   return res.status(200).json(
     createResponse({
@@ -68,3 +70,46 @@ export const getList = async (req: Request, res: Response) => {
     }),
   );
 };
+
+export const updateLocation = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, address, priceLevel, phone, avgRating, categoryId, imgUrl } = req.body;
+
+  const updateData: any = {};
+  if (name) updateData.name = name;
+  if (address) updateData.address = address;
+  if (priceLevel) updateData.priceLevel = priceLevel;
+  if (phone) updateData.phone = phone;
+  if (avgRating) updateData.avgRating = avgRating;
+  if (categoryId) updateData.categoryId = categoryId;
+  if (imgUrl) updateData.imgUrl = imgUrl;
+
+  const location = await prisma.location.update({
+    where: { id: String(id) },
+    data: updateData,
+  });
+
+  return res.status(200).json(
+    createResponse({
+      message: "Location updated successfully",
+      data: location,
+    }),
+  );
+
+}
+export const toggleSoftDelete = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { delete: isDeleted } = req.body;
+
+  const updatedLocation = await prisma.location.update({
+        where: { id: String(id)},
+        data: {isDeleted: Boolean(isDeleted)}
+    });
+
+    return res.status(200).json(
+        createResponse({
+            message: isDeleted ? "Location soft-deleted successfully" : "Location un-soft-deleted successfully",
+            data: updatedLocation
+        })
+    );
+}

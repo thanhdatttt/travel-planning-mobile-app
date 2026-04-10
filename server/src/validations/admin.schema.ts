@@ -1,4 +1,5 @@
 import z from "zod"
+import { ca, is } from "zod/locales";
 
 export const userListQuerySchema = {
     query: z.object({
@@ -53,7 +54,10 @@ export const locationListQuerySchema = {
         maxRating: z.coerce.number().min(0).max(10).default(10),
         sortBy: z.enum(["name", "priceLevel", "distance", "avgRating"]).default("name"),
         sortOrder: z.enum(["asc", "desc"]).default("asc"),
-        type: z.string().default("")
+        categoryId: z.coerce.number().optional(),
+        isDeleted: z.preprocess((val) => val === 'true', z.boolean()).default(false),
+        skip: z.coerce.number().min(0).default(0),
+        take: z.coerce.number().min(1).max(100).default(20),
     }),
 }
 
@@ -76,4 +80,19 @@ export const statQuerySchema = {
         month: z.coerce.number().min(1).max(12).optional(),
         year: z.coerce.number().optional(),
     }),
+};
+
+export const updateLocationSchema = {
+  params: z.object({
+    id: z.uuid("Invalid id"),
+  }),
+  body: z.object({
+    name: z.string().optional(),
+    address: z.string().optional(),
+    priceLevel: z.coerce.number().min(1).max(4).optional(),
+    phone: z.string().optional(),
+    avgRating: z.coerce.number().min(1).max(5).optional(),
+    categoryId: z.coerce.number().optional(),
+    imgUrls: z.string().optional(),
+  }),
 };

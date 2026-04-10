@@ -6,7 +6,9 @@ import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.data.model.profile.UserRole;
 import com.example.travelplanning.data.remote.admin.AdminApi;
 import com.example.travelplanning.data.remote.admin.dto.request.BanUserRequest;
+import com.example.travelplanning.data.remote.admin.dto.request.EditLocationRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.EditUserProfileRequest;
+import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteLocationRequest;
 import com.example.travelplanning.data.remote.admin.dto.request.SoftDeleteUserRequest;
 import com.example.travelplanning.data.remote.admin.dto.response.AdminStatResponse;
 import com.example.travelplanning.data.remote.core.ApiResponse;
@@ -15,6 +17,7 @@ import com.example.travelplanning.data.mapper.admin.AdminUserProfileMapper;
 import com.example.travelplanning.data.mapper.admin.AdminLocationMapper;
 import com.example.travelplanning.data.remote.admin.dto.response.UserProfileResponse;
 import com.example.travelplanning.data.remote.admin.dto.response.AdminLocationResponse;
+import com.example.travelplanning.data.remote.location.dto.response.LocationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -125,9 +128,9 @@ public class AdminRepository {
         });
     }
 
-    public void getAllLocations(String name, String sortBy, String sortOrder, int minPrice, int maxPrice, int minRating, int maxRating, List<String> categoryId, int skip, int take, AdminCallback<List<Location>> callback){
+    public void getAllLocations(String name, String sortBy, String sortOrder, int minPrice, int maxPrice, int minRating, int maxRating, List<String> categoryId, Boolean isDeleted, int skip, int take, AdminCallback<List<Location>> callback){
         String categoryParam = (categoryId.isEmpty()) ? null : String.join(",", categoryId);
-        adminApi.getAllLocations(name, sortBy, sortOrder, minPrice, maxPrice, minRating, maxRating, categoryParam, skip, take).enqueue(new Callback<ApiResponse<List<AdminLocationResponse>>>(){
+        adminApi.getAllLocations(name, sortBy, sortOrder, minPrice, maxPrice, minRating, maxRating, categoryParam, isDeleted, skip, take).enqueue(new Callback<ApiResponse<List<AdminLocationResponse>>>(){
             @Override
             public void onResponse(Call<ApiResponse<List<AdminLocationResponse>>> call, Response<ApiResponse<List<AdminLocationResponse>>> response) {
                 if(response.isSuccessful() && response.body() != null){
@@ -143,6 +146,45 @@ public class AdminRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<AdminLocationResponse>>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void updateLocation(String id, String name, String address, String phone, int priceLevel, double avgRating, String imageUrl, String categoryName, AdminCallback<Location> callback){
+        EditLocationRequest request = new EditLocationRequest(name, address, phone, priceLevel, avgRating, imageUrl, categoryName);
+
+        adminApi.updateLocation(id, request).enqueue(new Callback<ApiResponse<AdminLocationResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<AdminLocationResponse>> call, Response<ApiResponse<AdminLocationResponse>> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    callback.onSuccess(locationMapper.mapToDomain(response.body().getData()));
+                } else {
+                    callback.onError("Failed to update user!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<AdminLocationResponse>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void softDeleteLocation(String id, boolean delete, AdminCallback<Location> callback){
+        SoftDeleteLocationRequest request = new SoftDeleteLocationRequest(delete);
+        adminApi.softDeleteLocation(id, request).enqueue(new Callback<ApiResponse<AdminLocationResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<AdminLocationResponse>> call, Response<ApiResponse<AdminLocationResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(locationMapper.mapToDomain(response.body().getData()));
+                } else {
+                    callback.onError("Failed to delete user!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<AdminLocationResponse>> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

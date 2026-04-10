@@ -21,19 +21,13 @@ public class AdminLocationResponse {
     private Double longitude;
     private Double distance;
 
-    private CategoryResponse category;
+    private Integer categoryId;
 
     // Đổi tên Class con cho khớp với khai báo List
     private List<LocationPhotoResponse> photos;
 
     private Double avgRating;
     private Integer ratingCount;
-
-    @Data
-    public static class CategoryResponse {
-        private String nameVi;
-        private String icon;
-    }
 
     @Data
     public static class LocationPhotoResponse {
