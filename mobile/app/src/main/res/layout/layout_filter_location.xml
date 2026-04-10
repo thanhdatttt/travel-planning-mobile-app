@@ -41,8 +41,7 @@
                     android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="Filter locations"
+                    android:text="@string/filter_locations"
                     android:textSize="17sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="10dp"
@@ -122,90 +121,6 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
-
-        <!-- Distance Section -->
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            android:layout_marginBottom="20dp">-->
-
-            <!-- Distance Label -->
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:gravity="center_vertical"-->
-<!--                android:layout_marginBottom="10dp">-->
-
-<!--                <ImageView-->
-<!--                    android:layout_width="18dp"-->
-<!--                    android:layout_height="18dp"-->
-<!--                    android:src="@drawable/ic_distance"-->
-<!--                    android:layout_marginEnd="6dp"-->
-<!--                    android:contentDescription="Vai trò icon" />-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Distance:"-->
-<!--                    android:textSize="14sp"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:textColor="#1A1A1A" />-->
-<!--            </LinearLayout>-->
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:gravity="center">-->
-
-<!--                &lt;!&ndash; MinPrice &ndash;&gt;-->
-<!--                <com.google.android.material.textfield.TextInputLayout-->
-<!--                    android:id="@+id/tlMinDist"-->
-<!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--                    android:layout_width="135dp"-->
-<!--                    android:layout_height="35dp"-->
-<!--                    android:hint="Min Distance"-->
-<!--                    app:endIconMode="clear_text">-->
-
-<!--                    <com.google.android.material.textfield.TextInputEditText-->
-<!--                        android:id="@+id/etMinDist"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:inputType="number"-->
-<!--                        android:gravity="center"-->
-<!--                        android:maxLines="1" />-->
-<!--                </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--                &lt;!&ndash; Divider &ndash;&gt;-->
-<!--                <View-->
-<!--                    android:layout_width="24dp"-->
-<!--                    android:layout_height="2dp"-->
-<!--                    android:background="#1A1A1A"-->
-<!--                    android:layout_marginStart="8dp"-->
-<!--                    android:layout_marginEnd="8dp" />-->
-
-<!--                &lt;!&ndash; MaxPrice &ndash;&gt;-->
-<!--                <com.google.android.material.textfield.TextInputLayout-->
-<!--                    android:id="@+id/tlMaxDist"-->
-<!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--                    android:layout_width="135dp"-->
-<!--                    android:layout_height="35dp"-->
-<!--                    android:hint="Max Distance"-->
-<!--                    app:endIconMode="clear_text">-->
-
-<!--                    <com.google.android.material.textfield.TextInputEditText-->
-<!--                        android:id="@+id/etMaxDist"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:inputType="number"-->
-<!--                        android:gravity="center"-->
-<!--                        android:maxLines="1" />-->
-<!--                </com.google.android.material.textfield.TextInputLayout>-->
-<!--            </LinearLayout>-->
-<!--        </LinearLayout>-->
-
         <!-- Rating Section -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -392,7 +307,7 @@
                 android:id="@+id/chipService"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Service"
+                android:text="@string/service"
                 app:chipIcon="@drawable/ic_service"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
@@ -401,7 +316,7 @@
                 android:id="@+id/chipDeletedLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Deleted"
+                android:text="@string/deleted"
                 app:chipIcon="@drawable/ic_deleted"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />

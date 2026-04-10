@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Monthly Sign-ins"
+            android:text="@string/monthly_sign_ins"
             android:textStyle="bold"
             android:textSize="18sp"
             android:layout_marginBottom="8dp"
@@ -39,7 +39,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Month: "
+                android:text="@string/month2Dot"
                 android:textStyle="bold"
                 android:textColor="@color/text"
                 android:layout_marginEnd="8dp"/>
@@ -57,7 +57,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Year: "
+                android:text="@string/year2Dot"
                 android:textStyle="bold"
                 android:textColor="@color/text"
                 android:layout_marginEnd="8dp"/>
@@ -117,7 +117,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="User"
+                        android:text="@string/user"
                         android:textSize="13sp"
                         android:textColor="@color/text"
                         android:textStyle="bold"/>
@@ -147,7 +147,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Moderator"
+                        android:text="@string/moderator"
                         android:textSize="13sp"
                         android:textColor="@color/text"
                         android:textStyle="bold"/>
@@ -177,7 +177,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Admin"
+                        android:text="@string/admin"
                         android:textSize="13sp"
                         android:textColor="@color/text"
                         android:textStyle="bold"/>
@@ -210,7 +210,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Review Activity"
+                    android:text="@string/review_activity"
                     android:textStyle="bold"
                     android:textColor="@color/text"
                     android:layout_marginBottom="8dp"/>

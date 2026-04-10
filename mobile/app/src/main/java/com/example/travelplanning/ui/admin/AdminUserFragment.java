@@ -123,9 +123,9 @@ public class AdminUserFragment extends Fragment {
     private void showPopupMenu(View anchor, UserProfile user) {
         PopupMenu popup = new PopupMenu(requireContext(), anchor);
 
-        popup.getMenu().add(0, 1, 0, Boolean.TRUE.equals(user.getIsBanned()) ? "Unban user" : "Ban user");
-        popup.getMenu().add(0, 2, 1, Boolean.TRUE.equals(user.getIsDeleted()) ? "Restore user" : "Delete user");
-        popup.getMenu().add(0, 3, 2, "Edit user");
+        popup.getMenu().add(0, 1, 0, Boolean.TRUE.equals(user.getIsBanned()) ? R.string.unban_user : R.string.ban_user);
+        popup.getMenu().add(0, 2, 1, Boolean.TRUE.equals(user.getIsDeleted()) ? R.string.restore_user : R.string.delete_user);
+        popup.getMenu().add(0, 3, 2, R.string.edit_user);
 
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();

@@ -29,8 +29,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_close"
-                android:contentDescription="Đóng" />
+                android:src="@drawable/ic_close"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,8 +41,7 @@
                     android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="Filter users"
+                    android:text="@string/filter_users"
                     android:textSize="17sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="10dp"
@@ -69,7 +67,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Role:"
+                android:text="@string/role2Dot"
                 android:drawableLeft="@drawable/ic_role"
                 android:drawablePadding="5dp"
                 android:layout_marginBottom="5dp"
@@ -89,21 +87,21 @@
                     android:id="@+id/chipNormalUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="User"
+                    android:text="@string/user"
                     style="@style/ChipStyle" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipAdmin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Admin"
+                    android:text="@string/admin"
                     style="@style/ChipStyle" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipModerator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Moderator"
+                    android:text="@string/moderator"
                     style="@style/ChipStyle" />
 
             </com.google.android.material.chip.ChipGroup>
@@ -146,7 +144,7 @@
                         android:id="@+id/actvSortBy"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Sort by"
+                        android:hint="@string/sort_by"
                         style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -170,7 +168,7 @@
                         android:id="@+id/actvSortOrder"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:hint="Sort Order"
+                        android:hint="@string/sort_order"
                         style="@style/CustomDropdownLayoutInner" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -191,7 +189,7 @@
                 android:id="@+id/chipBanned"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Banned"
+                android:text="@string/banned"
                 app:chipIcon="@drawable/ic_banned"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
@@ -200,7 +198,7 @@
                 android:id="@+id/chipDeleted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Deleted"
+                android:text="@string/deleted"
                 app:chipIcon="@drawable/ic_deleted"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
@@ -209,7 +207,7 @@
                 android:id="@+id/chipInactive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Inactive"
+                android:text="@string/inactive"
                 app:chipIcon="@drawable/ic_inactive"
                 app:chipIconSize="@dimen/base_margin"
                 style="@style/ChipStyle" />
@@ -236,7 +234,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="2"
                 android:layout_marginEnd="10dp"
-                android:text="Reset"
+                android:text="@string/reset"
                 android:textSize="15sp"
                 android:textColor="#2E7D32"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -255,7 +253,7 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="3"
-                android:text="Filter"
+                android:text="@string/filter"
                 android:textSize="15sp"
                 android:textColor="@android:color/white"
                 style="@style/Widget.MaterialComponents.Button"

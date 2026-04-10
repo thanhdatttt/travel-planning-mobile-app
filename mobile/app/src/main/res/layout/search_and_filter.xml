@@ -39,7 +39,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:background="@android:color/transparent"
-                android:hint="Search with username / email"
+                android:hint="@string/search"
                 android:inputType="text"
                 android:textColorHint="#9E9E9E"
                 android:textColor="@color/text"
@@ -69,7 +69,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Filter"
+                android:text="@string/filter"
                 android:textColor="@color/dark_green"
                 android:textSize="14sp"/>
         </LinearLayout>

@@ -133,8 +133,8 @@ public class AdminLocationFragment extends Fragment {
 
     private void showPopupMenu(View anchor, Location location) {
         PopupMenu popup = new PopupMenu(requireContext(), anchor);
-        popup.getMenu().add(0, 1, 0, "Edit Location");
-        popup.getMenu().add(0, 2, 1, "Delete Location");
+        popup.getMenu().add(0, 1, 0, R.string.edit_location);
+        popup.getMenu().add(0, 2, 1, R.string.delete_location);
 
         popup.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == 1) {
