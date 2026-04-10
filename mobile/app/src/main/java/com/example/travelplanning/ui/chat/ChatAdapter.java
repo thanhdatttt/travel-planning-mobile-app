@@ -11,7 +11,7 @@ import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.chat.ChatMessage;
 
 import java.util.List;
-import io.noties.markwon.Markwon; // Đảm bảo đã thêm thư viện Markwon vào build.gradle
+import io.noties.markwon.Markwon; 
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Markwon markwon;
@@ -23,6 +23,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.messageList = messageList;
     }
 
+    public void updateData(List<ChatMessage> newMessages) {
+        this.messageList = newMessages;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
         ChatMessage message = messageList.get(position);
@@ -32,7 +37,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Khởi tạo Markwon một lần duy nhất
         if (markwon == null) {
             markwon = Markwon.create(parent.getContext());
         }
@@ -54,7 +58,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (holder instanceof UserViewHolder) {
             ((UserViewHolder) holder).tvMessage.setText(message.getContent());
         } else if (holder instanceof BotViewHolder) {
-            // Render Markdown cho tin nhắn từ AI
             markwon.setMarkdown(((BotViewHolder) holder).tvMessage, message.getContent());
         }
     }
