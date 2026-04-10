@@ -178,7 +178,7 @@
                     android:layout_weight="1"
                     android:text="@string/public_your_trip"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="22sp" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/swPrivacy"
@@ -203,7 +203,11 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/clone_trip"
+                android:textSize="20sp"
                 android:textAllCaps="false"
+                app:icon="@drawable/ic_copy"
+                app:iconSize="24dp"
+                app:iconGravity="textStart"
                  />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDeleteTrip"
@@ -213,7 +217,11 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:text="@string/delete_trip"
+                android:textSize="20sp"
                 android:textAllCaps="false"
+                app:icon="@drawable/ic_delete"
+                app:iconSize="24dp"
+                app:iconGravity="textStart"
                 android:textColor="@android:color/holo_red_light"
                 app:iconTint="@android:color/holo_red_dark" />
         </LinearLayout>
@@ -231,8 +239,8 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnChangeSetting"
-            android:text="Save change"
+            android:id="@+id/btnSaveChange"
+            android:text="@string/save_change"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:textStyle="bold"

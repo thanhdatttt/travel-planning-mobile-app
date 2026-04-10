@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.travelplanning.databinding.FragmentHomeBinding;
-import com.example.travelplanning.ui.location.LocationSearchActivity; // Đảm bảo import đúng package của bạn
+import com.example.travelplanning.ui.location.LocationSearchActivity; 
 
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
@@ -25,13 +25,10 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Bắt sự kiện click vào thanh tìm kiếm giả
         binding.tvDummySearch.setOnClickListener(v -> {
-            // Chuyển sang màn hình tìm kiếm thực sự
             Intent intent = new Intent(requireActivity(), LocationSearchActivity.class);
             startActivity(intent);
             
-            // Thêm hiệu ứng chuyển màn hình mượt mà (Fade in)
             requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }

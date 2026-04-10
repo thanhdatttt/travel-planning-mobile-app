@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.travelplanning.databinding.FragmentResetPasswordBinding;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 public class ResetPasswordFragment extends Fragment {
     private FragmentResetPasswordBinding binding;
@@ -38,6 +39,19 @@ public class ResetPasswordFragment extends Fragment {
             String newPassword = binding.edtResetPass.getText().toString().trim();
             String confirmPassword = binding.edtResetConfirm.getText().toString().trim();
 
+            if (newPassword.isEmpty()) {
+                binding.edtResetPass.setError("Password is required");
+                return;
+            }
+            if (confirmPassword.isEmpty()) {
+                binding.edtResetConfirm.setError("Please confirm your password");
+                return;
+            }
+            if (!newPassword.equals(confirmPassword)) {
+                binding.edtResetConfirm.setError("Password does not match");
+                return;
+            }
+
             // Lấy email từ ViewModel
             String email = viewModel.getCurrentEmail();
 
@@ -48,11 +62,12 @@ public class ResetPasswordFragment extends Fragment {
     private void setupObservers() {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
             binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+            binding.resetPassLayout.setVisibility(loading ? View.GONE : View.VISIBLE);
             binding.btnReset.setEnabled(!loading);
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            if (msg != null) Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
         });
 
         viewModel.getResetPasswordSuccess().observe(getViewLifecycleOwner(), success -> {
@@ -61,6 +76,7 @@ public class ResetPasswordFragment extends Fragment {
                 requireActivity().getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 ((AuthActivity) requireActivity()).navigateTo(new LoginFragment(), false);
 
+                Snackbar.make(binding.getRoot(), "Password reset successfully", Snackbar.LENGTH_SHORT).show();
                 viewModel.getResetPasswordSuccess().setValue(false);
             }
         });

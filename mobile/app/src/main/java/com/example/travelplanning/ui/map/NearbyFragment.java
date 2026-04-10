@@ -191,19 +191,8 @@ public class NearbyFragment extends Fragment {
         myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(requireContext()), mapView);
         myLocationOverlay.enableMyLocation();
 
-        Drawable locationDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_current_location);
-        if (locationDrawable != null) {
-            int width = locationDrawable.getIntrinsicWidth();
-            int height = locationDrawable.getIntrinsicHeight();
-            android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888);
-            android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
-            locationDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            locationDrawable.draw(canvas);
+        myLocationOverlay.setDrawAccuracyEnabled(false);
 
-            myLocationOverlay.setPersonIcon(bitmap);
-            myLocationOverlay.setDirectionIcon(bitmap);
-            myLocationOverlay.setPersonAnchor(0.5f, 0.5f);
-        }
         mapView.getOverlays().add(myLocationOverlay);
 
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {

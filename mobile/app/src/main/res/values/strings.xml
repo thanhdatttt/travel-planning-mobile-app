@@ -131,6 +131,7 @@
 
     <string name="default_support_email">mailto:support@travel.com</string>
     <string name="error_cannot_open_link">Can\'t open this link</string>
+    <string name="save_change">Save change</string>
     <string name="detail">Detail</string>
 
     //category
