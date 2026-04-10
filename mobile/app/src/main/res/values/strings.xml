@@ -140,4 +140,15 @@
     <string name="cat_attractions">Attractions</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_services">Services</string>
+
+    // chatbot
+    <string name="new_conversation">New Conversation</string>
+    <string name="welcome_to_tourguide">Welcome to TourGuide!</string>
+    <string name="ask_tourguide">Ask TourGuide...</string>
+    <string name="answering">Answering...</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+
+    <string name="dialog_delete_session_title">Delete Conversation</string>
+    <string name="dialog_delete_session_message">Are you sure you want to permanently delete this conversation?</string>
 </resources>

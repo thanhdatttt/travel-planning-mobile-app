@@ -20,7 +20,7 @@ import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import org.osmdroid.util.GeoPoint;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -347,8 +347,6 @@ public class NearbyFragment extends Fragment {
             if (isLoading && isSilentFetch) {
                 return; 
             }
-
-            binding.layoutLoadingOverlay.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             
             if (!isLoading) {
                 isSilentFetch = false;
@@ -544,7 +542,7 @@ public class NearbyFragment extends Fragment {
                 hideKeyboard();
                 
                 if (selectedLocation.getLatitude() != null && selectedLocation.getLongitude() != null) {
-                    org.osmdroid.util.GeoPoint point = new org.osmdroid.util.GeoPoint(
+                    GeoPoint point = new GeoPoint(
                             selectedLocation.getLatitude(), 
                             selectedLocation.getLongitude()
                     );

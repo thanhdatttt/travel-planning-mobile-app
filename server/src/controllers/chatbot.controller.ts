@@ -94,17 +94,18 @@ export const chatbotController = {
 
     return res.json(
       createResponse({
-        data: sessions,
-        metadata: {
-          total,
-          page,
-          totalPages: Math.ceil(total / limit),
-          limit: limit,
+        data: {
+          items: sessions,
+          meta: {
+            total,
+            page,
+            totalPages: Math.ceil(total / limit),
+            limit: limit,
+          },
         },
       }),
     );
   },
-
   async getSessionMessages(req: Request, res: Response) {
     const { sessionId } = req.params as { sessionId: string };
     const userId = req.user.id;

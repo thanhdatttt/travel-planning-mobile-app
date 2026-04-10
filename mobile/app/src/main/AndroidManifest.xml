@@ -43,13 +43,14 @@
         <activity
             android:name=".ui.mainscreen.MainScreenActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize" 
             android:theme="@style/Theme.TravelPlanning" />
 
         <activity 
             android:name=".ui.location.LocationSearchActivity"
             android:windowSoftInputMode="adjustResize" 
             android:exported="false" />
+
     </application>
 
 </manifest>

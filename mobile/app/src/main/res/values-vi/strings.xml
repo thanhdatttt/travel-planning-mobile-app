@@ -125,4 +125,15 @@
     <string name="cat_attractions">Tham quan</string>
     <string name="cat_shopping">Mua sắm</string>
     <string name="cat_services">Dịch vụ khác</string>
+
+    // chatbot
+    <string name="new_conversation">Cuộc trò chuyện mới</string>
+    <string name="welcome_to_tourguide">Chào mừng đến với TourGuide</string>
+    <string name="ask_tourguide">Hỏi TourGuide...</string>
+    <string name="answering">Đang trả lời...</string>
+    <string name="action_delete">Xóa</string>
+    <string name="action_cancel">Hủy</string>
+    
+    <string name="dialog_delete_session_title">Xóa cuộc trò chuyện</string>
+    <string name="dialog_delete_session_message">Bạn có chắc muốn xóa vĩnh viễn cuộc trò chuyện này không?</string>
 </resources>

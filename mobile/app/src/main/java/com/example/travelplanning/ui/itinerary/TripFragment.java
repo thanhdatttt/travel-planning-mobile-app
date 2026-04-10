@@ -1,5 +1,5 @@
 package com.example.travelplanning.ui.itinerary;
-
+import androidx.navigation.Navigation;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.example.travelplanning.ui.chat.ChatbotFragment;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.databinding.FragmentTripsBinding;
@@ -280,7 +280,11 @@ public class TripFragment extends Fragment {
     }
 
     private void navigateToAi() {
-        // TODO: wire to your AI screen when ready
-        Snackbar.make(requireView(), "AI assistant coming soon", Snackbar.LENGTH_LONG).show();
+    try {
+        Navigation.findNavController(requireView()).navigate(R.id.nav_chatbot);
+    } catch (Exception e) {
+        e.printStackTrace();
+        Toast.makeText(requireContext(), "Không thể mở Chatbot lúc này", Toast.LENGTH_SHORT).show();
+    }
     }
 }

@@ -4,10 +4,12 @@
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_search"
         android:title="@string/discover" />
+    
     <item
-        android:id="@+id/nav_ai"
-        android:icon="@drawable/ic_ai"
-        android:title="@string/ai" />
+        android:id="@+id/nav_trips" 
+        android:icon="@drawable/ic_ai" 
+        android:title="@string/trips" />
+
     <item
         android:id="@+id/nav_nearby"
         android:icon="@drawable/ic_nearby"
