@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bộ lọc tìm kiếm"
+        android:text="Filter search results"
         android:textColor="#333333"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Danh mục"
+        android:text="Category"
         android:textColor="#555555"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -37,7 +37,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mức giá"
+        android:text="Price Level"
         android:textColor="#555555"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -55,7 +55,7 @@
         style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$ (Rẻ)"
+        android:text="$ (Cheap)"
         android:tag="1"/>
 
     <com.google.android.material.chip.Chip
@@ -63,7 +63,7 @@
         style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$$ (Vừa túi tiền)"
+        android:text="$$ (Moderate)"
         android:tag="2"/>
 
     <com.google.android.material.chip.Chip
@@ -71,7 +71,7 @@
         style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$$$ (Cao cấp)"
+        android:text="$$$ (Expensive)"
         android:tag="3"/>
 
     <com.google.android.material.chip.Chip
@@ -79,7 +79,7 @@
         style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$$$$ (Xa hoa)"
+        android:text="$$$$ (Very Expensive)"
         android:tag="4"/> </com.google.android.material.chip.ChipGroup>
 
     <LinearLayout
@@ -94,7 +94,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đặt lại"
+            android:text="Reset"
             android:textColor="#888888"
             android:layout_marginEnd="12dp"/>
 
@@ -102,7 +102,7 @@
             android:id="@+id/btnApplyFilter"
             android:layout_width="wrap_content"
             android:layout_height="52dp"
-            android:text="Áp dụng"
+            android:text="Apply"
             app:cornerRadius="26dp"
             android:backgroundTint="@color/primary"
             android:paddingStart="24dp"
