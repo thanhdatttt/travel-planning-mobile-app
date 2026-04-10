@@ -1,6 +1,7 @@
 package com.example.travelplanning.ui.location_detail;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
@@ -18,8 +20,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
+import androidx.preference.PreferenceManager;
 
 import com.example.travelplanning.R;
 import com.example.travelplanning.core.util.AndroidStringProvider;
@@ -29,6 +33,11 @@ import com.example.travelplanning.data.model.location.Photo;
 import com.example.travelplanning.databinding.FragmentLocationDetailBinding;
 import com.example.travelplanning.viewmodel.location_detail.LocationDetailViewModel;
 import com.google.android.material.button.MaterialButton;
+
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +50,8 @@ public class LocationDetailFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Context ctx = requireContext().getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
     }
 
     @Nullable
@@ -82,6 +93,8 @@ public class LocationDetailFragment extends Fragment {
 //            } else {
 //                Log.e("DEBUG_DETAIL", "Photos list is NULL");
 //            }
+
+            setupMiniMap(location);
 
             // Mapping dữ liệu cơ bản qua binding
             binding.tvDetailName.setText(location.getName());
@@ -202,6 +215,68 @@ public class LocationDetailFragment extends Fragment {
             Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
             startActivity(intent);
         });
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupMiniMap(Location location) {
+        if (location.getLatitude() == null || location.getLongitude() == null) return;
+
+        var mapBinding = binding.layoutMiniMap;
+
+        mapBinding.mapDetail.setTileSource(TileSourceFactory.MAPNIK);
+        mapBinding.mapDetail.setMultiTouchControls(false); // Vô hiệu hóa để ưu tiên cuộn trang Detail
+
+        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+        mapBinding.mapDetail.getController().setZoom(17.5);
+        mapBinding.mapDetail.getController().setCenter(startPoint);
+
+        // Marker
+        mapBinding.mapDetail.getOverlays().clear();
+        Marker marker = new Marker(mapBinding.mapDetail);
+        marker.setPosition(startPoint);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        // Bạn có thể set icon tùy chỉnh theo category tại đây
+        mapBinding.mapDetail.getOverlays().add(marker);
+
+        mapBinding.touchOverlay.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    // Ngăn ScrollView cha chặn sự kiện
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
+            // Để MapView bên dưới vẫn nhận được sự kiện chạm
+            mapBinding.mapDetail.dispatchTouchEvent(event);
+            return true;
+        });
+
+        // Sự kiện khi bấm vào mũi tên để qua bản đồ lớn
+        binding.layoutMiniMap.layoutHeaderMap.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            // Truyền ID để NearbyFragment xử lý
+            bundle.putString("location_id", location.getId());
+
+            // Điều hướng sang màn hình Nearby
+            androidx.navigation.Navigation.findNavController(requireView())
+                    .navigate(R.id.nav_nearby, bundle);
+        });
+
+        mapBinding.mapDetail.invalidate(); // Vẽ lại bản đồ
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (binding != null) binding.layoutMiniMap.mapDetail.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (binding != null) binding.layoutMiniMap.mapDetail.onPause();
     }
 
     @Override

@@ -140,4 +140,8 @@
     <string name="cat_attractions">Attractions</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_services">Services</string>
+
+    //location detail
+    <string name="location_on_map">Location on map</string>
+    <string name="view_on_map">View on map</string>
 </resources>

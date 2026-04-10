@@ -26,7 +26,7 @@ public class LocationViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> hasMoreData = new MutableLiveData<>(false);  
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-
+    private final MutableLiveData<Location> locationDetail = new MutableLiveData<>();
     public LocationViewModel(@NonNull Application application) {
         super(application);
         this.locationRepository = new LocationRepository(application);
@@ -78,6 +78,23 @@ public class LocationViewModel extends AndroidViewModel {
                 }
                 if (meta != null) hasMoreData.setValue(meta.getPage() < meta.getTotalPages());
             }
+            @Override
+            public void onError(String error) {
+                isLoading.setValue(false);
+                errorMessage.setValue(error);
+            }
+        });
+    }
+
+    public void fetchDetail(String id) {
+        isLoading.setValue(true);
+        locationRepository.getLocationById(id, new LocationRepository.LocationDetailCallback() {
+            @Override
+            public void onSuccess(Location data) {
+                isLoading.setValue(false);
+                locationDetail.setValue(data);
+            }
+
             @Override
             public void onError(String error) {
                 isLoading.setValue(false);
