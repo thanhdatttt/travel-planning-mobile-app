@@ -10,19 +10,21 @@ export const locationController = {
     const locations: any[] = await prisma.$queryRawUnsafe(
       `
       SELECT 
-        id, "osmId", name, slug, description, address, phone, website, email, 
-        "avgRating", "ratingCount", "priceLevel", metadata, "categoryId",
-        "createdAt", "updatedAt",
-        ST_X(location::geometry) as longitude, 
-        ST_Y(location::geometry) as latitude
-      FROM "Location"
-      WHERE id = $1
+        l.id, l."osmId", l.name, l.slug, l.description, l.address, l.phone, 
+        l.website, l.email, l."avgRating", l."ratingCount", l."priceLevel",
+        l.metadata, c.id as "catId", c.slug as "catSlug", l."createdAt", l."updatedAt",
+        ST_X(l.location::geometry) as longitude, 
+        ST_Y(l.location::geometry) as latitude
+      FROM "Location" l
+      INNER JOIN "LocationCategory" c ON l."categoryId" = c.id
+      WHERE l.id = $1
       LIMIT 1
     `,
       id,
     );
 
     const location = locations[0];
+    const { catId, catSlug, ...locationData } = location;
 
     if (!location) {
       return res
@@ -39,10 +41,21 @@ export const locationController = {
       orderBy: { dayOfWeek: "asc" }, //keeps them in order (Mon-Sun)
     });
 
-    return res
-      .status(200)
-      .json(createResponse({ data: { ...location, photos, opening_hours } }));
+    return res.status(200).json(
+      createResponse({
+        data: {
+          ...locationData,
+          category: {
+            id: catId,
+            slug: catSlug,
+          },
+          photos,
+          opening_hours,
+        },
+      }),
+    );
   },
+
   async getMapLocations(req: Request, res: Response) {
     const { lat, lng, radius, categoryId } = req.query as any;
 
@@ -107,6 +120,7 @@ export const locationController = {
       data: locations,
     });
   },
+
   async search(req: Request, res: Response) {
     const q = req.query.q as string;
     const categoryId = req.query.categoryId
