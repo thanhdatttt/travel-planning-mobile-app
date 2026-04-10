@@ -139,35 +139,29 @@ public class ChatRepository {
     }
 
     public void getAllSessions(int page, int limit, GetAllSessionsCallback callback) {
-        Log.d("API_DEBUG_SESSION", "--> Gọi API lấy danh sách Session (Page: " + page + ")");
         chatApi.getAllSessions(page, limit).enqueue(new Callback<ApiResponse<PaginatedData<ChatDTO.ChatSessionResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<PaginatedData<ChatDTO.ChatSessionResponse>>> call,
                                    @NonNull Response<ApiResponse<PaginatedData<ChatDTO.ChatSessionResponse>>> response) {
-                Log.d("API_DEBUG_SESSION", "<-- Nhận phản hồi Session: Code = " + response.code());                    
                 if (response.isSuccessful() && response.body() != null) {
                     var paginatedData = response.body().getData();
                     if (paginatedData != null && paginatedData.getItems() != null) {
-                        Log.d("API_DEBUG_SESSION", "    Data trả về có " + paginatedData.getItems().size() + " items");
                         List<ChatSession> domainList = new ArrayList<>();
                         for (ChatDTO.ChatSessionResponse dto : paginatedData.getItems()) {
                             domainList.add(chatSessionMapper.mapToDomain(dto));
                         }
                         callback.onSuccess(domainList, paginatedData.getMeta());
                     } else {
-                        Log.w("API_DEBUG_SESSION", "    Data trả về null hoặc rỗng");
                         
                         callback.onSuccess(new ArrayList<>(), null);
                     }
                 } else {
-                    Log.e("API_DEBUG_SESSION", "    Lỗi Server: " + response.message());
                     callback.onError("Lỗi máy chủ (" + response.code() + ").");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<PaginatedData<ChatDTO.ChatSessionResponse>>> call, @NonNull Throwable t) {
-                Log.e("API_DEBUG_SESSION", "<-- LỖI MẠNG GỌI SESSION: " + t.getMessage(), t);
                 callback.onError("Lỗi kết nối: " + t.getLocalizedMessage());
             }
         });
