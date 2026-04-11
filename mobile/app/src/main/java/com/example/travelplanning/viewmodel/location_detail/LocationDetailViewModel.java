@@ -54,6 +54,9 @@ public class LocationDetailViewModel extends AndroidViewModel {
     public LiveData<String> getError() { return error; }
     public LiveData<Integer> getCurrentPage() { return currentPage; }
 
+    private final MutableLiveData<List<Location>> nearbyLocations = new MutableLiveData<>();
+    public LiveData<List<Location>> getNearbyLocations() { return nearbyLocations; }
+
     public void fetchDetail(String id) {
         isLoading.setValue(true);
         repository.getLocationById(id, new LocationRepository.LocationDetailCallback() {
@@ -62,6 +65,10 @@ public class LocationDetailViewModel extends AndroidViewModel {
                 locationDetail.setValue(data);
                 fetchReviews(id, false);
                 fetchReviewStats(id);
+
+                if (data.getLatitude() != null && data.getLongitude() != null) {
+                    fetchNearbyLocations(data.getLatitude(), data.getLongitude(), 5000, null);
+                }
 
                 isLoading.setValue(false);
             }
@@ -142,7 +149,6 @@ public class LocationDetailViewModel extends AndroidViewModel {
                 }
 
                 reviews.setValue(currentList);
-                // Không còn lỗi getMetadata() vì ta đã lấy lastPage từ Repository
                 isLastPage = (currentReviewPage >= data.getLastPage());
                 isLoading.setValue(false);
             }
@@ -164,6 +170,29 @@ public class LocationDetailViewModel extends AndroidViewModel {
             @Override
             public void onError(String msg) {
                 error.setValue(msg);
+            }
+        });
+    }
+
+    public void fetchNearbyLocations(double lat, double lng, Integer radius, Integer categoryId) {
+        isLoading.setValue(true);
+        repository.getNearbyLocations(lat, lng, radius, categoryId, new LocationRepository.LocationListCallback() {
+            @Override
+            public void onSuccess(List<Location> data) {
+                isLoading.setValue(false);
+                if (data != null) {
+                    //lấy 8 địa điểm đầu tiên
+                    List<Location> limitedData = data.size() > 8
+                            ? new ArrayList<>(data.subList(0, 8))
+                            : data;
+
+                    nearbyLocations.setValue(limitedData);
+                }
+            }
+            @Override
+            public void onError(String errorMessage) {
+                isLoading.setValue(false);
+                error.setValue(errorMessage);
             }
         });
     }

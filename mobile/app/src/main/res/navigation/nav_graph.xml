@@ -44,4 +44,10 @@
         android:label="App settings"
         tools:layout="@layout/fragment_profile"/>
 
+    <fragment
+        android:id="@+id/dest_location_detail"
+        android:name="com.example.travelplanning.ui.location_detail.LocationDetailFragment"
+        android:label="Location Detail"
+        tools:layout="@layout/fragment_location_detail"/>
+
 </navigation>

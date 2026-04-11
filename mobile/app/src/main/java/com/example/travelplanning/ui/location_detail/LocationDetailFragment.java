@@ -31,6 +31,7 @@ import com.example.travelplanning.data.model.location.Photo;
 import com.example.travelplanning.data.model.review.RatingStat;
 import com.example.travelplanning.databinding.FragmentLocationDetailBinding;
 import com.example.travelplanning.databinding.LayoutReviewListBinding;
+import com.example.travelplanning.ui.map.LocationAdapter;
 import com.example.travelplanning.ui.review.ReviewAdapter;
 import com.example.travelplanning.viewmodel.location_detail.LocationDetailViewModel;
 
@@ -50,6 +51,7 @@ public class LocationDetailFragment extends Fragment {
     private LocationDetailViewModel viewModel;
     private PhotoAdapter photoAdapter;
     private ReviewAdapter reviewAdapter;
+    private LocationAdapter nearbyAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +105,19 @@ public class LocationDetailFragment extends Fragment {
         reviewListBinding.rvReviews.setLayoutManager(new LinearLayoutManager(getContext()));
         reviewListBinding.rvReviews.setNestedScrollingEnabled(false); // Quan trọng để cuộn mượt trong ScrollView
         reviewListBinding.rvReviews.setAdapter(reviewAdapter);
+
+        //Nearby
+        nearbyAdapter = new LocationAdapter(location -> {
+            // Chuyển sang Detail của địa điểm lân cận
+            Bundle bundle = new Bundle();
+            bundle.putString("location_id", location.getId());
+            androidx.navigation.Navigation.findNavController(requireView())
+                    .navigate(R.id.dest_location_detail, bundle);
+        });
+
+        binding.rvNearbyPlaces.setLayoutManager(
+                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.rvNearbyPlaces.setAdapter(nearbyAdapter);
     }
 
     private void setupPhotoAreaLogic() {
@@ -184,6 +199,12 @@ public class LocationDetailFragment extends Fragment {
             updatePhotoList(location.getPhotos(), viewModel.getCurrentPage().getValue());
         });
 
+        // Quan sát riêng trang hiện tại để chuyển ảnh
+        viewModel.getCurrentPage().observe(getViewLifecycleOwner(), page -> {
+            Location loc = viewModel.getLocationDetail().getValue();
+            if (loc != null) updatePhotoList(loc.getPhotos(), page);
+        });
+
         // Quan sát danh sách Review chi tiết
         viewModel.getReviews().observe(getViewLifecycleOwner(), reviews -> {
             if (reviews != null) {
@@ -206,10 +227,17 @@ public class LocationDetailFragment extends Fragment {
             }
         });
 
-        // Quan sát riêng trang hiện tại để chuyển ảnh
-        viewModel.getCurrentPage().observe(getViewLifecycleOwner(), page -> {
-            Location loc = viewModel.getLocationDetail().getValue();
-            if (loc != null) updatePhotoList(loc.getPhotos(), page);
+        viewModel.getNearbyLocations().observe(getViewLifecycleOwner(), locations -> {
+            if (locations != null) {
+                Location currentDetail = viewModel.getLocationDetail().getValue();
+                GeoPoint referencePoint = null;
+
+                if (currentDetail != null && currentDetail.getLatitude() != null) {
+                    referencePoint = new GeoPoint(currentDetail.getLatitude(), currentDetail.getLongitude());
+                }
+
+                nearbyAdapter.updateData(locations, referencePoint);
+            }
         });
     }
 
