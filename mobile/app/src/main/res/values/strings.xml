@@ -140,4 +140,6 @@
     <string name="cat_attractions">Attractions</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_services">Services</string>
+    <string name="trip">Trip</string>
+    <string name="review">Review</string>
 </resources>

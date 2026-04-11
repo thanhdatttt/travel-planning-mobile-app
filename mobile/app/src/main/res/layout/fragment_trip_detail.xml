@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/white">
 
     <!--  header bar  -->
@@ -108,7 +109,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="4dp"
-                android:text="@string/ha_noi_viet_nam"
                 android:textColor="@color/text"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -122,7 +122,6 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="4dp"
-                android:text="@string/description_to_trip"
                 android:textColor="#4D4D4D"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -176,12 +175,7 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:indeterminateTint="@color/primary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/primary" />
     </FrameLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

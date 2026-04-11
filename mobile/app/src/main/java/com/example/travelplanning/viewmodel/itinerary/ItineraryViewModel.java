@@ -15,10 +15,12 @@ import com.example.travelplanning.data.remote.itinerary.dto.request.UpdateItiner
 import com.example.travelplanning.data.remote.itinerary.dto.request.UpdateItineraryRequest;
 import com.example.travelplanning.data.repository.itinerary.ItineraryRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +29,9 @@ import lombok.Setter;
 @Setter
 public class ItineraryViewModel extends AndroidViewModel {
     private final ItineraryRepository itineraryRepository;
+
+    // format date
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     //  general states
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
@@ -129,8 +134,8 @@ public class ItineraryViewModel extends AndroidViewModel {
         isLoading.setValue(true);
         CreateItineraryRequest request = CreateItineraryRequest.builder()
                 .title(title)
-                .startDate(startDate)
-                .endDate(endDate)
+                .startDate(dateFormat.format(startDate))
+                .endDate(dateFormat.format(endDate))
                 .build();
 
         itineraryRepository.createItinerary(request,
@@ -158,8 +163,8 @@ public class ItineraryViewModel extends AndroidViewModel {
                 .title(title)
                 .description(description)
                 .privacy(privacy)
-                .startDate(startDate)
-                .endDate(endDate)
+                .startDate(startDate != null ? dateFormat.format(startDate) : null)
+                .endDate(endDate != null ? dateFormat.format(endDate) : null)
                 .build();
 
         itineraryRepository.updateItinerary(id, request,
@@ -271,7 +276,7 @@ public class ItineraryViewModel extends AndroidViewModel {
     public void scheduleItineraryItem(String itineraryId, String itemId, Date targetDate) {
         isLoading.setValue(true);
         ScheduleItineraryItemRequest request = ScheduleItineraryItemRequest.builder()
-                .targetDate(targetDate)
+                .targetDate(dateFormat.format(targetDate))
                 .build();
 
         itineraryRepository.scheduleItineraryItem(itineraryId, itemId, request,

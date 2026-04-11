@@ -139,7 +139,7 @@ export const getPublicItineraries = async (req: Request, res: Response) => {
 
     const [itineraries, total] = await Promise.all([
       prisma.itinerary.findMany({
-        where: { privacy: "public" },
+        where: { privacy: "public", ownerId: { not: req.user.id } },
         skip: skip,
         take: limit,
         orderBy: { createdAt: 'desc' },

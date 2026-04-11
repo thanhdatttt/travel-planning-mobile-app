@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.FragmentCreateTripBinding;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.itinerary.ItineraryViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.snackbar.Snackbar;
@@ -50,18 +51,22 @@ public class CreateTripFragment extends Fragment {
 
     private void setupObservers() {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), loading -> {
+            binding.loadingOverlay.setVisibility(loading ? View.VISIBLE : View.GONE);
+            binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
             binding.btnCreateTrip.setEnabled(!loading);
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Snackbar.make(requireView(), msg, Snackbar.LENGTH_LONG).show();
+            if (msg != null && !msg.isEmpty())
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), msg, SnackBarHelper.SnackBarType.ERROR);
         });
 
         viewModel.getCreateSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success) {
-                Snackbar.make(requireView(), "Trip created", Snackbar.LENGTH_LONG).show();
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Trip created", SnackBarHelper.SnackBarType.ERROR);
                 viewModel.getCreateSuccess().setValue(false);
-                ((TripActivity) requireActivity()).navigateTo(new TripFragment(), true);
+                assert getParentFragment() != null;
+                ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), true);
             }
         });
     }
@@ -71,10 +76,12 @@ public class CreateTripFragment extends Fragment {
         binding.edtEndDate.setOnClickListener(v -> showDatePicker("Choose end date", false));
 
         binding.btnBack.setOnClickListener(v -> {
-            ((TripActivity) requireActivity()).navigateTo(new TripFragment(), true);
+            assert getParentFragment() != null;
+            ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), false);
         });
         binding.btnCancel.setOnClickListener(v -> {
-            ((TripActivity) requireActivity()).navigateTo(new TripFragment(), true);
+            assert getParentFragment() != null;
+            ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), true);
         });
 
         binding.btnCreateTrip.setOnClickListener(view -> createTrip());

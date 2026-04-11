@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ScheduleItineraryItemRequest {
-    private Date targetDate;
+    private String targetDate;
 }

@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CreateItineraryRequest {
     private String title;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
 }
