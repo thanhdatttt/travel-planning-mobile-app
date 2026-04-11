@@ -131,6 +131,22 @@
 
     <string name="default_support_email">mailto:support@travel.com</string>
     <string name="error_cannot_open_link">Can\'t open this link</string>
+    <string name="manage_location">Manage Location</string>
+    <string name="manage_user">Manage User</string>
+    <string name="admin_chart">admin chart</string>
+    <string name="min_price">Min Price</string>
+    <string name="max_price">Max Price</string>
+    <string name="ratings">Ratings:</string>
+    <string name="min_rating">Min Rating</string>
+    <string name="max_rating">Max Rating</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_order">Sort Order</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="hotel">Hotel</string>
+    <string name="attraction">Attraction</string>
+    <string name="shopping">Shopping</string>
+    <string name="filter">FILTER</string>
+    <string name="menu_admin">Enter admin dashboard</string>
     <string name="save_change">Save change</string>
     <string name="detail">Detail</string>
 
@@ -147,4 +163,45 @@
     <string name="images">Location Photos</string>
     <string name="add_photos">Add Photos</string>
     <string name="reviews">reviews</string>
+
+    // admin
+    <string name="enter_name">Enter name</string>
+    <string name="full_name">Full Name</string>
+    <string name="enter_email">Enter email</string>
+    <string name="address">Address</string>
+    <string name="enter_address">Enter address</string>
+    <string name="phone">Phone</string>
+    <string name="enter_phone">Enter phone</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="select_date">Select Date</string>
+    <string name="role">Role</string>
+    <string name="deleted">Deleted</string>
+    <string name="banned">Banned</string>
+    <string name="inactive">Inactive</string>
+    <string name="user">User</string>
+    <string name="admin">Admin</string>
+    <string name="moderator">Moderator</string>
+    <string name="filter_users">Filter users</string>
+    <string name="role2Dot">Role:</string>
+    <string name="filter_locations">Filter locations</string>
+    <string name="monthly_sign_ins">Monthly Sign-ins</string>
+    <string name="month2Dot">Month:</string>
+    <string name="year2Dot">Year:</string>
+    <string name="review_activity">Review Activity</string>
+    <string name="asc">asc</string>
+    <string name="desc">desc</string>
+    <string name="name">name</string>
+    <string name="rating">rating</string>
+
+    <string name="created_at">created at</string>
+    <string name="service">Service</string>
+    <string name="ban_user">Ban user</string>
+    <string name="unban_user">Unban user</string>
+    <string name="restore_user">Restore user"</string>
+    <string name="delete_user">Delete user</string>
+    <string name="edit_user">Edit user</string>
+    <string name="edit_location">Edit location</string>
+    <string name="delete_location">Delete location</string>
+    <string name="restore_location">Restore location</string>
+
 </resources>
