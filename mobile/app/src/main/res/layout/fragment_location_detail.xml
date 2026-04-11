@@ -182,6 +182,12 @@
 
             <include android:id="@+id/layoutPhotos"
                 layout="@layout/layout_location_photos"/>
+
+            <include android:id="@+id/layoutReviewSummary"
+                layout="@layout/layout_review_summary"/>
+
+            <include android:id="@+id/layoutReviewList"
+                layout="@layout/layout_review_list" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

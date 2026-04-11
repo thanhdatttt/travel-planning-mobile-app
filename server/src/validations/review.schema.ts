@@ -27,6 +27,7 @@ export const ReviewUpdateSchema = {
 
 export const ReviewQuerySchema = {
   query: z.object({
+    locationId: z.uuid("Invalid locationId ID"),
     page: z.coerce
       .number()
       .int("Page must be an integer")
