@@ -228,7 +228,6 @@ public class TripFragment extends Fragment {
             currentPage++;
             viewModel.fetchUserItineraries(currentPage, LIMIT);
         }
-
     }
 
     // fab menu

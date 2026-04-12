@@ -49,7 +49,7 @@ export const getItinerary = async (req: Request, res: Response) => {
             { orderIdx: 'asc' }
           ],
           include: { location: true }
-        }
+        },
       }
     });
     if (!itinerary) {
@@ -142,7 +142,7 @@ export const getPublicItineraries = async (req: Request, res: Response) => {
         where: { privacy: "public", ownerId: { not: req.user.id } },
         skip: skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { updatedAt: 'desc' },
         include: {
           itineraryItems: {
             orderBy: [

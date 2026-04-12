@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/background">
     <!--  list of dates  -->
-    <!-- locations of each date -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvDateBar"
         android:layout_width="match_parent"
@@ -20,6 +19,7 @@
         tools:layout_editor_absoluteX="-187dp"
         tools:listitem="@layout/item_date_pill" />
 
+    <!-- locations of each date -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItinerary"
         android:layout_width="match_parent"
