@@ -203,5 +203,6 @@
     <string name="edit_location">Edit location</string>
     <string name="delete_location">Delete location</string>
     <string name="restore_location">Restore location</string>
+    <string name="price">Price:</string>
 
 </resources>

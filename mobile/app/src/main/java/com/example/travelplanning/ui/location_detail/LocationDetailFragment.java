@@ -18,6 +18,7 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -77,6 +78,7 @@ public class LocationDetailFragment extends Fragment {
         setupRecyclerViews();
         setupPhotoAreaLogic();
         setupObservers();
+        setupBookmarkActions();
 
         if (getArguments() != null) {
             String locationId = getArguments().getString("location_id");
@@ -436,7 +438,6 @@ public class LocationDetailFragment extends Fragment {
         }
 
 
-
         // Gán tổng số lượng vào TextView trong summary
         summaryBinding.tvTotalReviews.setText("(" + totalReviews + ")");
 
@@ -451,6 +452,26 @@ public class LocationDetailFragment extends Fragment {
                 case 1: summaryBinding.pbStar1.setProgress(progress); break;
             }
         }
+    }
+
+    private void setupBookmarkActions() {
+        String locationId = getArguments() != null ? getArguments().getString("location_id") : null;
+
+        if (locationId == null) return;
+
+        binding.btnBookmark.setOnClickListener(v -> {
+            viewModel.toggleBookmark(locationId);
+        });
+
+        viewModel.getIsBookmarked().observe(getViewLifecycleOwner(), bookmarked -> {
+            if (bookmarked) {
+                binding.btnBookmark.setImageResource(R.drawable.ic_heart);
+                binding.btnBookmark.setColorFilter(Color.GRAY);
+            } else {
+                binding.btnBookmark.setImageResource(R.drawable.ic_heart_outline);
+                binding.btnBookmark.setColorFilter(Color.GRAY);
+            }
+        });
     }
 
     @Override

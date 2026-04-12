@@ -13,6 +13,7 @@ import com.example.travelplanning.data.model.location.Photo;
 import com.example.travelplanning.data.model.review.RatingStat;
 import com.example.travelplanning.data.model.review.Review;
 import com.example.travelplanning.data.model.review.ReviewPagination;
+import com.example.travelplanning.data.repository.bookmark.BookmarkRepository;
 import com.example.travelplanning.data.repository.location.LocationRepository;
 import com.example.travelplanning.data.repository.review.ReviewRepository;
 
@@ -27,6 +28,7 @@ import lombok.Getter;
 public class LocationDetailViewModel extends AndroidViewModel {
     private final LocationRepository repository;
     private final ReviewRepository reviewRepo;
+    private final BookmarkRepository bookmarkRepo;
     private final MutableLiveData<Location> locationDetail = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
@@ -43,10 +45,13 @@ public class LocationDetailViewModel extends AndroidViewModel {
     public LiveData<List<Review>> getReviews() { return reviews; }
     public LiveData<List<RatingStat>> getReviewStats() { return reviewStats; }
 
+    //bookmark
+    private final MutableLiveData<Boolean> isBookmarked = new MutableLiveData<>(false);
     public LocationDetailViewModel(@NotNull Application application) {
         super(application);
         this.repository = new LocationRepository(application);
         this.reviewRepo = new ReviewRepository(application);
+        this.bookmarkRepo = new BookmarkRepository(application);
     }
 
     public LiveData<Location> getLocationDetail() { return locationDetail; }
@@ -192,6 +197,20 @@ public class LocationDetailViewModel extends AndroidViewModel {
             @Override
             public void onError(String errorMessage) {
                 isLoading.setValue(false);
+                error.setValue(errorMessage);
+            }
+        });
+    }
+
+    public void toggleBookmark(String locationId) {
+        bookmarkRepo.toggleBookmark(locationId, new BookmarkRepository.BookmarkCallback<String>() {
+            @Override
+            public void onSuccess(String message, int lp) {
+                isBookmarked.setValue(message.contains("successfully"));
+            }
+
+            @Override
+            public void onError(String errorMessage) {
                 error.setValue(errorMessage);
             }
         });
