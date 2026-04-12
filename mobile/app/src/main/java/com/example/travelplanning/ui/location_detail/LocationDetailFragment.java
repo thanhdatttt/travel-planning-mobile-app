@@ -87,13 +87,10 @@ public class LocationDetailFragment extends Fragment {
     }
 
     private void setupRecyclerViews() {
-        // Khởi tạo Info Adapter (code cũ của bạn)
         binding.rvLocationInfo.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvLocationInfo.setNestedScrollingEnabled(false);
 
-        // Khởi tạo Photo Adapter
         photoAdapter = new PhotoAdapter();
-        // Dùng LinearLayoutManager Ngang cho vùng ảnh
         binding.layoutPhotos.rvPhotos.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.layoutPhotos.rvPhotos.setHasFixedSize(true);
@@ -103,7 +100,7 @@ public class LocationDetailFragment extends Fragment {
 
         reviewAdapter = new ReviewAdapter();
         reviewListBinding.rvReviews.setLayoutManager(new LinearLayoutManager(getContext()));
-        reviewListBinding.rvReviews.setNestedScrollingEnabled(false); // Quan trọng để cuộn mượt trong ScrollView
+        reviewListBinding.rvReviews.setNestedScrollingEnabled(false); //để cuộn mượt trong ScrollView
         reviewListBinding.rvReviews.setAdapter(reviewAdapter);
 
         //Nearby
@@ -112,7 +109,7 @@ public class LocationDetailFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString("location_id", location.getId());
             androidx.navigation.Navigation.findNavController(requireView())
-                    .navigate(R.id.dest_location_detail, bundle);
+                    .navigate(R.id.nav_location_detail, bundle);
         });
 
         binding.rvNearbyPlaces.setLayoutManager(
@@ -183,10 +180,8 @@ public class LocationDetailFragment extends Fragment {
             // RecyclerView Thông tin chi tiết
             setupInfoRecyclerView(location);
 
-            // Action Buttons
             setupActionButtons(location);
 
-            // See More toggle
             binding.tvSeeMore.setOnClickListener(v -> {
                 if (binding.tvDescription.getMaxLines() == 4) {
                     binding.tvDescription.setMaxLines(Integer.MAX_VALUE);
@@ -220,7 +215,6 @@ public class LocationDetailFragment extends Fragment {
             reviewListBinding.pbLoadMore.setVisibility(View.GONE);
         });
 
-        // Quan sát Thống kê sao để cập nhật ProgressBars
         viewModel.getReviewStats().observe(getViewLifecycleOwner(), stats -> {
             if (stats != null) {
                 updateReviewStatsUI(stats);
@@ -247,7 +241,7 @@ public class LocationDetailFragment extends Fragment {
         int greenColor = Color.parseColor("#00B14F");
         int redColor = Color.RED;
 
-        // 1. Giờ mở cửa: [Open/Closed] + Time
+        // Giờ mở cửa: [Open/Closed] + Time
         LocationHour today = location.getTodayHours();
         if (today != null) {
             Calendar now = Calendar.getInstance();
@@ -263,24 +257,24 @@ public class LocationDetailFragment extends Fragment {
             infoList.add(new LocationInfoItem(R.drawable.ic_clock, "Open hours", timeText, statusColor));
         }
 
-        // 2. Địa chỉ
+        // Địa chỉ
         infoList.add(new LocationInfoItem(R.drawable.ic_location, "Address", location.getAddress(), textColor));
 
-        // 3. Điện thoại
+        // Điện thoại
         if (location.getPhone() != null) {
             infoList.add(new LocationInfoItem(R.drawable.ic_phone, "Phone number", location.getPhone(), textColor));
         }
 
-        // 4. Mức giá
+        // Mức giá
         if (location.getPriceLevel() != null){
             infoList.add(new LocationInfoItem(R.drawable.ic_money, "Price range", location.getPriceLevel().toString(), textColor));
         }
 
-        // 5. Loại hình (Category)
+        // Loại hình (Category)
         AndroidStringProvider stringProvider = new AndroidStringProvider(requireContext());
         infoList.add(new LocationInfoItem(R.drawable.ic_category, "Loại hình", stringProvider.getString(location.getCategorySlug()), textColor));
 
-        // 6. Website
+        // Website
         if (location.getWebsite() != null) {
             infoList.add(new LocationInfoItem(R.drawable.ic_link, "Website", location.getWebsite(), greenColor));
         }

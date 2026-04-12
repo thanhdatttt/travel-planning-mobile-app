@@ -35,7 +35,7 @@ import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.data.remote.map.dto.response.PhotonResponse;
 import com.example.travelplanning.databinding.FragmentNearbyBinding;
-import com.example.travelplanning.viewmodel.location.LocationAdapter;
+import com.example.travelplanning.ui.map.LocationAdapter;
 import com.example.travelplanning.viewmodel.location.LocationViewModel;
 import com.example.travelplanning.viewmodel.map.MapViewModel;
 import com.example.travelplanning.viewmodel.map.NearbyViewModel;

@@ -1,4 +1,4 @@
-package com.example.travelplanning.viewmodel.location;
+package com.example.travelplanning.ui.map;
 
 import android.view.LayoutInflater;
 import android.view.View;
