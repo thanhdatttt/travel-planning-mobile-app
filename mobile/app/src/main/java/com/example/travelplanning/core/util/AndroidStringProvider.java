@@ -1,10 +1,13 @@
 package com.example.travelplanning.core.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 
 import com.example.travelplanning.R;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class AndroidStringProvider implements StringProvider {
@@ -20,9 +23,8 @@ public class AndroidStringProvider implements StringProvider {
     }
 
     public AndroidStringProvider(Context context) {
-        this.context = context.getApplicationContext();
+        this.context = context;
     }
-
     @Override
     public String getString(String slug) {
         Integer resId = categoryMap.get(slug);

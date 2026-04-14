@@ -33,9 +33,10 @@ public class Location implements Parcelable{
     Double longitude;
     Double distance;
 
-    String category;
+    Integer categoryId;
     String categoryName;
     String categoryIcon;
+    String categorySlug;
     String imageUrl;
     @Builder.Default
     List<Photo> photos = new ArrayList<>();
@@ -56,9 +57,10 @@ public class Location implements Parcelable{
         if (in.readByte() == 0) latitude = null; else latitude = in.readDouble();
         if (in.readByte() == 0) longitude = null; else longitude = in.readDouble();
         if (in.readByte() == 0) distance = null; else distance = in.readDouble();
-        category = in.readString();
+        categoryId = in.readInt();
         categoryName = in.readString();
         categoryIcon = in.readString();
+        categorySlug = in.readString();
         imageUrl = in.readString();
         photos = in.createTypedArrayList(Photo.CREATOR);
         if (in.readByte() == 0) ratingCount = null; else ratingCount = in.readInt();
@@ -80,9 +82,10 @@ public class Location implements Parcelable{
         if (latitude == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeDouble(latitude); }
         if (longitude == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeDouble(longitude); }
         if (distance == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeDouble(distance); }
-        dest.writeString(category);
+        dest.writeInt(categoryId);
         dest.writeString(categoryName);
         dest.writeString(categoryIcon);
+        dest.writeString(categorySlug);
         dest.writeString(imageUrl);
         dest.writeTypedList(photos);
         if (ratingCount == null) dest.writeByte((byte) 0); else { dest.writeByte((byte) 1); dest.writeInt(ratingCount); }

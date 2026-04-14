@@ -35,6 +35,7 @@ import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.data.remote.map.dto.response.PhotonResponse;
 import com.example.travelplanning.databinding.FragmentNearbyBinding;
+import com.example.travelplanning.ui.map.LocationAdapter;
 import com.example.travelplanning.viewmodel.location.LocationViewModel;
 import com.example.travelplanning.viewmodel.map.MapViewModel;
 import com.example.travelplanning.viewmodel.map.NearbyViewModel;
@@ -131,10 +132,40 @@ public class NearbyFragment extends Fragment {
         setupAutocomplete();
         observeData();
 
-        locationPermissionRequest.launch(new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+        // 1. Quan sát locationDetail từ ViewModel để hiển thị Preview Card
+        locationViewModel.getLocationDetail().observe(getViewLifecycleOwner(), location -> {
+            if (location != null && getArguments() != null) {
+                String targetId = getArguments().getString("location_id");
+
+                // Kiểm tra xem địa điểm trả về có đúng ID đang cần không
+                if (location.getId().equals(targetId)) {
+                    if (location.getLatitude() != null && location.getLongitude() != null) {
+                        // Di chuyển camera bản đồ đến địa điểm đó
+                        GeoPoint targetPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        mapController.setZoom(18.0);
+                        mapController.animateTo(targetPoint);
+
+                        // Gọi hàm hiển thị Card Preview
+                        showLocationPreview(location);
+                    }
+                }
+            }
         });
+
+        // 2. Logic điều hướng từ màn hình Detail sang
+        if (getArguments() != null && getArguments().containsKey("location_id")) {
+            String id = getArguments().getString("location_id");
+            if (id != null) {
+                // Fetch dữ liệu để lấy thông tin (ảnh, rating...) hiển thị lên Preview Card
+                locationViewModel.fetchDetail(id);
+            }
+        } else {
+            // Nếu vào bình thường (không có id truyền sang), mới thực hiện lấy GPS hiện tại
+            locationPermissionRequest.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+        }
 
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -191,19 +222,8 @@ public class NearbyFragment extends Fragment {
         myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(requireContext()), mapView);
         myLocationOverlay.enableMyLocation();
 
-        Drawable locationDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_current_location);
-        if (locationDrawable != null) {
-            int width = locationDrawable.getIntrinsicWidth();
-            int height = locationDrawable.getIntrinsicHeight();
-            android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888);
-            android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
-            locationDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            locationDrawable.draw(canvas);
+        myLocationOverlay.setDrawAccuracyEnabled(false);
 
-            myLocationOverlay.setPersonIcon(bitmap);
-            myLocationOverlay.setDirectionIcon(bitmap);
-            myLocationOverlay.setPersonAnchor(0.5f, 0.5f);
-        }
         mapView.getOverlays().add(myLocationOverlay);
 
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {

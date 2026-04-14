@@ -42,7 +42,7 @@ export const bookmarkController = {
         where: { userId },
         skip,
         take: limit,
-        // include: { location: true }, // might need location details
+        include: { location: true },
         orderBy: { createdAt: "desc" },
       }),
       prisma.bookmark.count({ where: { userId } }),

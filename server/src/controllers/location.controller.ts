@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { createResponse } from "../utils/response";
 import { prisma } from "../libs/prisma";
-import ApiError from "../utils/apiError";
 
 export const locationController = {
   async getById(req: Request, res: Response) {
@@ -10,19 +9,21 @@ export const locationController = {
     const locations: any[] = await prisma.$queryRawUnsafe(
       `
       SELECT 
-        id, "osmId", name, slug, description, address, phone, website, email, 
-        "avgRating", "ratingCount", "priceLevel", metadata, "categoryId",
-        "createdAt", "updatedAt",
-        ST_X(location::geometry) as longitude, 
-        ST_Y(location::geometry) as latitude
-      FROM "Location"
-      WHERE id = $1
+        l.id, l."osmId", l.name, l.slug, l.description, l.address, l.phone, 
+        l.website, l.email, l."avgRating", l."ratingCount", l."priceLevel",
+        l.metadata, c.id as "catId", c.slug as "catSlug", l."createdAt", l."updatedAt",
+        ST_X(l.location::geometry) as longitude, 
+        ST_Y(l.location::geometry) as latitude
+      FROM "Location" l
+      INNER JOIN "LocationCategory" c ON l."categoryId" = c.id
+      WHERE l.id = $1
       LIMIT 1
     `,
       id,
     );
 
     const location = locations[0];
+    const { catId, catSlug, ...locationData } = location;
 
     if (!location) {
       return res
@@ -39,10 +40,21 @@ export const locationController = {
       orderBy: { dayOfWeek: "asc" }, //keeps them in order (Mon-Sun)
     });
 
-    return res
-      .status(200)
-      .json(createResponse({ data: { ...location, photos, opening_hours } }));
+    return res.status(200).json(
+      createResponse({
+        data: {
+          ...locationData,
+          category: {
+            id: catId,
+            slug: catSlug,
+          },
+          photos,
+          opening_hours,
+        },
+      }),
+    );
   },
+
   async getMapLocations(req: Request, res: Response) {
     const { lat, lng, radius, categoryId } = req.query as any;
 
@@ -70,12 +82,11 @@ export const locationController = {
             l.location, 
             ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
           ) as distance,
-          -- JOIN với bảng LocationCategory (viết hoa đúng theo @@map)
           json_build_object(
             'nameVi', c."nameVi", 
             'icon', c.icon
           ) as category,
-          -- Subquery lấy ảnh từ bảng LocationPhoto (bố kiểm tra lại @@map của bảng này nhé)
+          -- SỬA Ở ĐÂY: Đổi alias thành "photos"
           COALESCE(
             (
               SELECT json_agg(json_build_object('url', lp.url))
@@ -83,7 +94,7 @@ export const locationController = {
               WHERE lp."locationId" = l.id
             ), 
             '[]'::json
-          ) as "locationPhotos"
+          ) as photos
         FROM "Location" l
         LEFT JOIN "LocationCategory" c ON l."categoryId" = c.id
         WHERE ST_DWithin(
@@ -100,13 +111,20 @@ export const locationController = {
       rad,
     );
 
-    console.log(locations);
+    const formattedLocations = locations.map((loc: any) => {
+      return {
+        ...loc,
+        imageUrl:
+          loc.photos && loc.photos.length > 0 ? loc.photos[0].url : null,
+      };
+    });
 
     return res.status(200).json({
-      message: "Lấy danh sách địa điểm thành công",
-      data: locations,
+      message: "Get nearby locations successfully.",
+      data: formattedLocations,
     });
   },
+
   async search(req: Request, res: Response) {
     const q = req.query.q as string;
     const categoryId = req.query.categoryId
@@ -115,6 +133,9 @@ export const locationController = {
     const priceLevel = req.query.priceLevel
       ? Number(req.query.priceLevel)
       : undefined;
+
+    const sortBy = req.query.sortBy as string;
+    const sortOrder = req.query.sortOrder as string;
 
     const page = Math.max(1, Number(req.query.page) || 1);
     const limit = Math.max(1, Number(req.query.limit) || 10);
@@ -139,12 +160,20 @@ export const locationController = {
       where.priceLevel = priceLevel;
     }
 
+    let orderByCondition: any = { avgRating: "desc" };
+
+    if (sortBy === "priceLevel") {
+      orderByCondition = { priceLevel: sortOrder === "asc" ? "asc" : "desc" };
+    } else if (sortBy === "avgRating") {
+      orderByCondition = { avgRating: sortOrder === "asc" ? "asc" : "desc" };
+    }
+
     const [locations, total] = await prisma.$transaction([
       prisma.location.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { avgRating: "desc" },
+        orderBy: orderByCondition,
         include: {
           category: true,
           locationPhotos: {
@@ -175,7 +204,7 @@ export const locationController = {
     }
 
     const formattedLocations = locations.map((loc) => {
-      const { _count, ...rest } = loc;
+      const { _count, locationPhotos, ...rest } = loc as any;
 
       const coord = coordinates.find((c: any) => c.id === loc.id);
 
@@ -184,10 +213,15 @@ export const locationController = {
         ratingCount: _count?.reviews || 0,
         latitude: coord ? coord.latitude : null,
         longitude: coord ? coord.longitude : null,
+
+        photos: locationPhotos || [],
+
+        imageUrl:
+          locationPhotos && locationPhotos.length > 0
+            ? locationPhotos[0].url
+            : null,
       };
     });
-
-    console.log(formattedLocations);
 
     return res.status(200).json(
       createResponse({

@@ -105,9 +105,10 @@ dependencies {
     implementation libs.jackson.databind
     implementation libs.material
     implementation libs.glide
+    implementation libs.preference
+
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
     // GPS
     implementation 'com.google.android.gms:play-services-location:21.0.1'
-
 }

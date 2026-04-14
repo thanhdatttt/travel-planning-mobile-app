@@ -2,6 +2,8 @@ package com.example.travelplanning.ui.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import com.example.travelplanning.R;
 import com.example.travelplanning.databinding.FragmentSettingsBinding;
+
+import java.util.Locale;
 
 public class SettingsFragment extends Fragment {
 
@@ -65,6 +69,12 @@ public class SettingsFragment extends Fragment {
             String newLang = currentLang.equals("vi") ? "en" : "vi";
 
             prefs.edit().putString("lang", newLang).apply();
+
+//            Locale locale = new Locale(newLang);
+//            Resources res = getResources();
+//            Configuration config = res.getConfiguration();
+//            config.setLocale(locale);
+//            res.updateConfiguration(config, res.getDisplayMetrics());
 
             // restarts the Activity and applies the attachBaseContext logic
             requireActivity().recreate();

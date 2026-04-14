@@ -67,12 +67,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             distanceStr += " • ";
         }
         
-        String address = loc.getAddress() != null ? loc.getAddress() : "Chưa có địa chỉ";
+        String address = loc.getAddress() != null ? loc.getAddress() : "No address";
         holder.tvDistanceAddress.setText(distanceStr + address);
 
         Glide.with(holder.itemView.getContext())
             .load(loc.getImageUrl())
-            .transform(new CenterCrop(), new RoundedCorners(16))
+            .centerCrop()
             .placeholder(R.drawable.ic_placeholder) 
             .into(holder.imgPlace);
 

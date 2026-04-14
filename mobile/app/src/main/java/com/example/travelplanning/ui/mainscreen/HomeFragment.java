@@ -135,7 +135,6 @@ public class HomeFragment extends Fragment {
     private void setupListeners() {
         // Bắt sự kiện click vào thanh tìm kiếm giả
         binding.tvDummySearch.setOnClickListener(v -> {
-            // Chuyển sang màn hình tìm kiếm thực sự
             Intent intent = new Intent(requireActivity(), LocationSearchActivity.class);
             startActivity(intent);
 

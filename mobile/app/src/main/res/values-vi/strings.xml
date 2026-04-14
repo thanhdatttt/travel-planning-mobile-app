@@ -120,9 +120,78 @@
     <string name="save">Lưu</string>
     <string name="show_less">Hiện bớt</string>
     <string name="error_cannot_open_link">Không thể mở liên kết này</string>
+
+    <string name="menu_admin">Vào bảng quản trị Admin</string>
+    <string name="manage_location">Quản lý địa điểm</string>
+    <string name="manage_user">Quản lý người dùng</string>
+    <string name="admin_chart">Biểu đồ thống kê</string>
+
+    <string name="min_price">Giá thấp nhất</string>
+    <string name="max_price">Giá cao nhất</string>
+    <string name="price">Giá:</string>
+    <string name="ratings">Đánh giá:</string>
+    <string name="min_rating">Đánh giá tối thiểu</string>
+    <string name="max_rating">Đánh giá tối đa</string>
+    <string name="sort_by">Sắp xếp theo</string>
+    <string name="sort_order">Thứ tự sắp xếp</string>
+    <string name="filter">BỘ LỌC</string>
+
+    <string name="restaurant">Nhà hàng</string>
+    <string name="hotel">Khách sạn</string>
+    <string name="attraction">Điểm tham quan</string>
+    <string name="shopping">Mua sắm</string>
+
+    <string name="saved_locations">Địa điểm đã lưu</string>
+    <string name="itinerary">Lịch trình</string>
+    <string name="default_support_email">mailto:support@travel.com</string>
     <string name="cat_food_and_drink">Ăn uống</string>
     <string name="cat_accommodation">Chỗ ở</string>
     <string name="cat_attractions">Tham quan</string>
     <string name="cat_shopping">Mua sắm</string>
     <string name="cat_services">Dịch vụ khác</string>
+
+
+    //thông tin chi tiết địa điểm
+    <string name="location_on_map">Vị trí trên bản đồ</string>
+    <string name="view_on_map">Xem trên bản đồ</string>
+    <string name="save_change">Lưu thay đổi</string>
+    <string name="detail">Chi tiết</string>
+
+    <string name="enter_name">Nhập tên</string>
+    <string name="full_name">Họ và tên</string>
+    <string name="enter_email">Nhập email</string>
+    <string name="address">Địa chỉ</string>
+    <string name="enter_address">Nhập địa chỉ</string>
+    <string name="phone">Số điện thoại</string>
+    <string name="enter_phone">Nhập số điện thoại</string>
+    <string name="date_of_birth">Ngày sinh</string>
+    <string name="select_date">Chọn ngày</string>
+    <string name="role">Vai trò</string>
+    <string name="deleted">Đã xóa</string>
+    <string name="banned">Đã chặn</string>
+    <string name="inactive">Không hoạt động</string>
+    <string name="user">Người dùng</string>
+    <string name="admin">Quản trị viên</string>
+    <string name="moderator">Kiểm duyệt viên</string>
+    <string name="filter_users">Lọc người dùng</string>
+    <string name="role2Dot">Vai trò:</string>
+    <string name="filter_locations">Lọc địa điểm</string>
+    <string name="monthly_sign_ins">Lượt đăng nhập hàng tháng</string>
+    <string name="month2Dot">Tháng:</string>
+    <string name="year2Dot">Năm:</string>
+    <string name="review_activity">Hoạt động đánh giá</string>
+    <string name="asc">Tăng dần</string>
+    <string name="desc">Giảm dần</string>
+    <string name="name">Tên</string>
+    <string name="rating">Đánh giá</string>
+    <string name="created_at">Ngày tạo</string>
+    <string name="service">Dịch vụ</string>
+    <string name="ban_user">Chặn người dùng</string>
+    <string name="unban_user">Bỏ chặn người dùng</string>
+    <string name="restore_user">Khôi phục người dùng</string>
+    <string name="delete_user">Xóa người dùng</string>
+    <string name="edit_user">Chỉnh sửa người dùng</string>
+    <string name="edit_location">Chỉnh sửa địa điểm</string>
+    <string name="delete_location">Xóa địa điểm</string>
+    <string name="restore_location">Khôi phục địa điểm</string>
 </resources>

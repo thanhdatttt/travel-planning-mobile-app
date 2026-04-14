@@ -29,7 +29,7 @@ public class ProfileViewModel extends AndroidViewModel {
     }
 
     public void fetchUserProfile(){
-        Log.d("DEBUG_REPO", "getUserProfile called"); // Thêm dòng này
+        Log.d("DEBUG_REPO", "getUserProfile called-------------------------------");
         isLoading.setValue(true);
         userProfileRepository.getUserProfile(new UserProfileRepository.UserProfileCallback<UserProfile>() {
             @Override
