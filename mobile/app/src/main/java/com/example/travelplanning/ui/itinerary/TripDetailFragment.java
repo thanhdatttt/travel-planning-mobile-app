@@ -96,7 +96,7 @@ public class TripDetailFragment extends Fragment {
     private void setupListeners() {
         binding.btnSettings.setOnClickListener(v -> {
             assert getParentFragment() != null;
-            ((TripContainerFragment) getParentFragment()).navigateTo(TripSettingFragment.newInstance(tripId), true);
+            ((TripContainerFragment) getParentFragment()).navigateTo(TripSettingFragment.newInstance(tripId), false);
         });
         binding.btnBack.setOnClickListener(v -> {
             assert getParentFragment() != null;

@@ -128,6 +128,15 @@ public class TripPublicDetailFragment extends Fragment {
         } else {
             binding.ivTripCover.setImageResource(R.drawable.ic_placeholder);
         }
+
+        // creator info
+        binding.tvCreatorName.setText(itinerary.getUser().getUsername());
+        if (itinerary.getUser().getAvatarUrl() != null) {
+            Glide.with(this).load(itinerary.getUser().getAvatarUrl()).into(binding.ivCreatorAvatar);
+        } else {
+            binding.ivCreatorAvatar.setImageResource(R.drawable.ic_user);
+        }
+
         binding.tvTripTitle.setText(itinerary.getTitle());
         String dates = dateFormat.format(itinerary.getStartDate()) + " – " + dateFormat.format(itinerary.getEndDate());
         binding.tvTripDates.setText(dates);

@@ -43,6 +43,9 @@ export const getItinerary = async (req: Request, res: Response) => {
     const itinerary = await prisma.itinerary.findUnique({
       where: { id: String(id) },
       include: {
+        user: {
+          select: {id: true, username: true, avatarUrl:true}
+        },
         itineraryItems: {
           orderBy: [
             { date: 'asc' },
@@ -95,6 +98,9 @@ export const getUserItineraries = async (req: Request, res: Response) => {
         take: limit,
         orderBy: { createdAt: 'desc' },
         include: {
+          user: {
+            select: {id: true, username: true, avatarUrl:true}
+          },
           itineraryItems: {
             orderBy: [
               { date: 'asc' },
@@ -144,6 +150,9 @@ export const getPublicItineraries = async (req: Request, res: Response) => {
         take: limit,
         orderBy: { updatedAt: 'desc' },
         include: {
+          user: {
+            select: {id: true, username: true, avatarUrl:true}
+          },
           itineraryItems: {
             orderBy: [
               { date: 'asc' },

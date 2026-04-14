@@ -117,6 +117,9 @@
     <string name="user_name">User Name</string>
     <string name="location_here">Location here</string>
     <string name="description_here">Description here</string>
+    <string name="save_to_your_trip">Save to your trip</string>
+    <string name="unschedule">Unscheduled</string>
+    <string name="schedule">Scheduled</string>
 
     //settings
     <string name="settings_title">Settings</string>
@@ -145,5 +148,5 @@
     <string name="cat_services">Services</string>
     <string name="trip">Trip</string>
     <string name="review">Review</string>
-    <string name="save_to_your_trip">Save to your trip</string>
+
 </resources>

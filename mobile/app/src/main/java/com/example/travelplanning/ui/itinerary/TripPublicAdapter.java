@@ -72,8 +72,8 @@ public class TripPublicAdapter extends ListAdapter<Itinerary, TripPublicAdapter.
         void bind(Itinerary itinerary) {
             binding.tvTripName.setText(itinerary.getTitle());
 
-            //
-            binding.tvCreatorName.setText("Username"); // Placeholder
+            // creator info
+            binding.tvCreatorName.setText(itinerary.getUser().getUsername());
 
             // load image cover
             if (itinerary.getItineraryItems() != null && !itinerary.getItineraryItems().isEmpty()) {

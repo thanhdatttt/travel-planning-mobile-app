@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.FragmentResetEmailVerificationBinding;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -39,7 +40,7 @@ public class ResetEmailVerificationFragment extends Fragment {
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
+            if (msg != null) SnackBarHelper.showTopSnackBar(binding.getRoot(), msg, SnackBarHelper.SnackBarType.ERROR);
         });
 
         viewModel.getOtpSentSuccess().observe(getViewLifecycleOwner(), sent -> {

@@ -34,8 +34,6 @@ public class HomeFragment extends Fragment {
     private boolean isLoadingMore = false;
     private boolean isLastPage = false;
     private static final int LIMIT = 10;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-
 
     @Nullable
     @Override
@@ -64,6 +62,20 @@ public class HomeFragment extends Fragment {
             // Reset current page based on fetched data
             currentPage = (int) Math.ceil((double) itineraryViewModel.getPublicItineraries().getValue().size() / LIMIT);
         }
+
+        // Restore nav bar when user presses back from public detail
+        requireActivity().getSupportFragmentManager()
+                .addOnBackStackChangedListener(() -> {
+                    Fragment top = requireActivity().getSupportFragmentManager()
+                            .findFragmentById(R.id.nav_host_fragment);
+                    if (getActivity() instanceof MainScreenActivity) {
+                        if (top instanceof TripPublicDetailFragment) {
+                            ((MainScreenActivity) getActivity()).setBottomNavVisibility(View.GONE);
+                        } else {
+                            ((MainScreenActivity) getActivity()).setBottomNavVisibility(View.VISIBLE);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -141,6 +153,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void navigateToTripDetail(Itinerary itinerary) {
+        // Hide nav bar before navigating
+        if (getActivity() instanceof MainScreenActivity) {
+            ((MainScreenActivity) getActivity()).setBottomNavVisibility(View.GONE);
+        }
+        
         TripPublicDetailFragment detailFragment = TripPublicDetailFragment.newInstance(itinerary.getId());
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.nav_host_fragment, detailFragment)

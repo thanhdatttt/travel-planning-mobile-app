@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.FragmentRegisterEmailBinding;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -41,12 +42,13 @@ public class RegisterEmailFragment extends Fragment {
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
+            if (msg != null) SnackBarHelper.showTopSnackBar(binding.getRoot(), msg, SnackBarHelper.SnackBarType.ERROR);
         });
 
         viewModel.getOtpSentSuccess().observe(getViewLifecycleOwner(), sent -> {
             if (sent != null && sent) {
                 ((AuthActivity) requireActivity()).navigateTo(new OTPVerificationFragment(), true);
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), "OTP sent", SnackBarHelper.SnackBarType.SUCCESS);
                 viewModel.getOtpSentSuccess().setValue(false);
             }
         });
@@ -54,6 +56,7 @@ public class RegisterEmailFragment extends Fragment {
         viewModel.getSocialLoginSuccess().observe(getViewLifecycleOwner(), res -> {
             if (res != null) {
                 startActivity(new Intent(requireActivity(), MainScreenActivity.class));
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Login successful!", SnackBarHelper.SnackBarType.SUCCESS);
                 requireActivity().finish();
             }
         });

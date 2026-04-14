@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.travelplanning.databinding.FragmentResetPasswordBinding;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -74,9 +75,8 @@ public class ResetPasswordFragment extends Fragment {
             if (success != null && success) {
                 // return to login, delete back stack
                 requireActivity().getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Password reset successful!", SnackBarHelper.SnackBarType.SUCCESS);
                 ((AuthActivity) requireActivity()).navigateTo(new LoginFragment(), false);
-
-                Snackbar.make(binding.getRoot(), "Password reset successfully", Snackbar.LENGTH_SHORT).show();
                 viewModel.getResetPasswordSuccess().setValue(false);
             }
         });

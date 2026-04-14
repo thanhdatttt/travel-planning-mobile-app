@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:nestedScrollingEnabled="false"
-            tools:listitem="@layout/item_location"/>
+            tools:listitem="@layout/item_trip_public_location"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

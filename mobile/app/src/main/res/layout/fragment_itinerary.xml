@@ -18,7 +18,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="-187dp"
         tools:listitem="@layout/item_date_pill" />
-
     <!-- locations of each date -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItinerary"
