@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    tools:context=".ui.admin.AdminUserFragment">
+    tools:context=".ui.moderator.ModeratorTripFragment">
 
-    <!--HEADER-->
     <include android:id="@+id/moderatorHeader"
         layout="@layout/moderator_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <!--LIST-->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvUsers"
+        android:id="@+id/rvTrips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="12dp"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
-        tools:listitem="@layout/item_moderator_review" />
+        tools:listitem="@layout/item_moderator_trip" />
 
     <TextView
         android:id="@+id/tvEmptyState"

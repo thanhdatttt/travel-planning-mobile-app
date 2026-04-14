@@ -198,7 +198,13 @@
     <string name="edit_location">Edit location</string>
     <string name="delete_location">Delete location</string>
     <string name="restore_location">Restore location</string>
+
+    // moderator
     <string name="reviews">Reviews</string>
     <string name="locations">Locations</string>
-
+    <string name="moderator_dashboard">Enter moderator dashboard</string>
+    <string name="are_you_sure_you_want_to_ban_the_user_who_created_this">Are you sure you want to ban the user who created this </string>
+    <string name="ban">Ban</string>
+    <string name="read_more">Read more</string>
+    <string name="no_report_found">No report found</string>
 </resources>

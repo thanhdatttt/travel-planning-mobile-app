@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingTop="12dp"
+        android:paddingBottom="14dp">
 
         <ImageView
             android:id="@+id/ivBack"
@@ -28,6 +29,7 @@
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/back_button"
             android:padding="4dp"
+            android:layout_marginLeft="16dp"
             android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"
             app:tint="#000000" />
@@ -68,7 +70,7 @@
                 app:backgroundTint="@null"/>
 
             <Button
-                android:id="@+id/btnTrip"
+                android:id="@+id/btnTrips"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_weight="3"

@@ -189,4 +189,13 @@
     <string name="edit_location">Chỉnh sửa địa điểm</string>
     <string name="delete_location">Xóa địa điểm</string>
     <string name="restore_location">Khôi phục địa điểm</string>
+
+    // moderator
+    <string name="reviews">Đánh giá</string>
+    <string name="locations">Địa điểm</string>
+    <string name="moderator_dashboard">Vào trang kiểm duyệt</string>
+    <string name="are_you_sure_you_want_to_ban_the_user_who_created_this">Bạn có chắc chắn muốn khóa tài khoản người dùng đã tạo </string>
+    <string name="ban">Khóa</string>
+    <string name="read_more">Xem thêm</string>
+    <string name="no_report_found">Không tìm thấy báo cáo</string>
 </resources>

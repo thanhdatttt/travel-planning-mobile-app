@@ -232,7 +232,6 @@ model Report {
   createdAt  DateTime     @default(now())
   handledAt  DateTime?
   handledBy  String
-  user       User         @relation(fields: [handledBy], references: [id])
 
   @@unique([reporterId, targetId])
 }

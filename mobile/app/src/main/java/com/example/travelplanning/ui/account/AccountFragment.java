@@ -71,9 +71,11 @@ public class AccountFragment extends Fragment {
         list.add(new AccountOption(3, R.drawable.ic_star, R.string.my_reviews));
         list.add(new AccountOption(4, R.drawable.ic_heart, R.string.my_fav_location));
         //check role then add admin board
-        profileViewModel.fetchUserProfile();
         if (profile != null && profile.getRole() == UserRole.ADMIN) {
             list.add(new AccountOption(AccountViewModel.ID_ADMIN, R.drawable.ic_admin, R.string.menu_admin));
+        }
+        if (profile != null && profile.getRole() == UserRole.MODERATOR) {
+            list.add(new AccountOption(AccountViewModel.ID_MODERATOR, R.drawable.ic_moderator, R.string.moderator_dashboard));
         }
 
         return list;
@@ -89,6 +91,8 @@ public class AccountFragment extends Fragment {
                     .navigate(R.id.nav_settings);
         } else if (option.getId() == AccountViewModel.ID_ADMIN){
             Navigation.findNavController(requireView()).navigate(R.id.nav_admin);
+        } else if (option.getId() == AccountViewModel.ID_MODERATOR){
+            Navigation.findNavController(requireView()).navigate(R.id.nav_moderator_review);
         }  else if (option.getId() == AccountViewModel.ID_LOGOUT) {
             // Logout
 

@@ -86,6 +86,19 @@
         android:text="Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes hereReview text goes hereReview text goes here Review text goes hereReview text goes here Review text goes hereReview text goes here Review text goes here Review text goes here Review text goes here"
         android:textSize="13sp" />
 
+    <TextView
+        android:id="@+id/tvReadMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="10dp"
+        android:padding="4dp"
+        android:text="@string/read_more"
+        android:textColor="@color/text_secondary"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

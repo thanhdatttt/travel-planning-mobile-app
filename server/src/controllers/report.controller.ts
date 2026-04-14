@@ -5,7 +5,7 @@ import ApiError from "../utils/apiError";
 
 export const reportController = {
   async create(req: Request, res: Response) {
-    const reporterId = req.user.id;
+    const reporterId = "c8228fdb-043f-42cb-8a4c-fd15045d5160";
     const { targetType, targetId, reason } = req.body;
 
     const existingReport = await prisma.report.findUnique({
