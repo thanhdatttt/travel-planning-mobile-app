@@ -107,6 +107,7 @@
     <string name="call">Call</string>
     <string name="see_more">See more</string>
     <string name="loading_description">Loading description…</string>
+    <string name="email">Email</string>
     <string name="website">Website</string>
     <string name="back">Back</string>
     <string name="bookmark">Bookmark</string>
@@ -149,15 +150,19 @@
     <string name="save_change">Save change</string>
     <string name="detail">Detail</string>
 
-    <string name="price">price</string>
-    <string name="email">email</string>
-
     //category
     <string name="cat_food_and_drink">Food &amp; Drink</string>
     <string name="cat_accommodation">Accommodation</string>
     <string name="cat_attractions">Attractions</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_services">Services</string>
+
+    //location detail
+    <string name="location_on_map">Location on map</string>
+    <string name="view_on_map">View on map</string>
+    <string name="images">Location Photos</string>
+    <string name="add_photos">Add Photos</string>
+    <string name="reviews">reviews</string>
 
     // admin
     <string name="enter_name">Enter name</string>
@@ -198,5 +203,6 @@
     <string name="edit_location">Edit location</string>
     <string name="delete_location">Delete location</string>
     <string name="restore_location">Restore location</string>
+    <string name="price">Price:</string>
 
 </resources>
