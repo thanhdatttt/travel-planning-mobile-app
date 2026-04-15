@@ -50,7 +50,8 @@ public class TripAdapter extends ListAdapter<Itinerary, TripAdapter.TripViewHold
                     return Objects.equals(oldItem.getTitle(), newItem.getTitle())
                             && Objects.equals(oldItem.getStartDate(), newItem.getStartDate())
                             && Objects.equals(oldItem.getEndDate(), newItem.getEndDate())
-                            && Objects.equals(oldItem.getItineraryItems().get(0).getLocation().getImageUrl(), newItem.getItineraryItems().get(0).getLocation().getImageUrl());
+                            && Objects.equals(oldItem.getPrivacy(), newItem.getPrivacy())
+                            && Objects.equals(getPreviewImageUrl(oldItem), getPreviewImageUrl(newItem));
                 }
             };
 
@@ -65,6 +66,18 @@ public class TripAdapter extends ListAdapter<Itinerary, TripAdapter.TripViewHold
     @Override
     public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
         holder.bind(getItem(position));
+    }
+
+    // Safe helper — never throws regardless of null chain depth
+    private static String getPreviewImageUrl(Itinerary itinerary) {
+        String imageUrl = null;
+        if (itinerary.getItineraryItems() != null && !itinerary.getItineraryItems().isEmpty()) {
+            var firstItem = itinerary.getItineraryItems().get(0);
+            if (firstItem != null && firstItem.getLocation() != null) {
+                imageUrl = firstItem.getLocation().getImageUrl();
+            }
+        }
+        return imageUrl;
     }
 
     class TripViewHolder extends RecyclerView.ViewHolder {

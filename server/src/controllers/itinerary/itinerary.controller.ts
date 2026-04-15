@@ -118,7 +118,7 @@ export const getUserItineraries = async (req: Request, res: Response) => {
                 include: {
                   locationPhotos: {
                     take: 1,
-                  } // <--- Quan trọng: Thêm dòng này để lấy ảnh
+                  }
                 }
               } 
             }
@@ -280,6 +280,27 @@ export const updateItinerary = async (req: Request, res: Response) => {
     const updatedItinerary = await prisma.itinerary.update({
       where: { id: String(id) },
       data: updateData,
+      include: {
+          user: {
+            select: {id: true, username: true, avatarUrl:true}
+          },
+          itineraryItems: {
+            orderBy: [
+              { date: 'asc' },
+              { orderIdx: 'asc' }
+            ],
+            take: 1, // only take 1 for preview
+            include: { 
+              location: {
+                include: {
+                  locationPhotos: {
+                    take: 1,
+                  }
+                }
+              } 
+            }
+          }
+        }
     });
 
     // unschedule items if start date or end date changed
@@ -365,7 +386,27 @@ export const cloneItinerary = async (req: Request, res: Response) => {
             })),
         },
       },
-      include: { itineraryItems: true }
+      include: {
+        user: {
+          select: {id: true, username: true, avatarUrl:true}
+        },
+        itineraryItems: {
+          orderBy: [
+            { date: 'asc' },
+            { orderIdx: 'asc' }
+          ],
+          take: 1, // only take 1 for preview
+          include: { 
+            location: {
+              include: {
+                locationPhotos: {
+                  take: 1,
+                }
+              }
+            } 
+          }
+        }
+      }
     });
 
     return res.status(200).json(

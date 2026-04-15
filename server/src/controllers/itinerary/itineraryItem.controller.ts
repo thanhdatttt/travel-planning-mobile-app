@@ -40,7 +40,15 @@ export const addItineraryItem = async (req: Request, res: Response) => {
         locationId: data.locationId,
         note: data.note ?? null,
       },
-      include: { location: true },
+      include: { 
+        location: {
+          include: {
+            locationPhotos: {
+              take: 1,
+            }
+          }
+        } 
+      },
     });
 
     return res.status(201).json(

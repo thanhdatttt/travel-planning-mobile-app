@@ -100,9 +100,8 @@ public class TripDetailFragment extends Fragment {
         });
         binding.btnBack.setOnClickListener(v -> {
             viewModel.getSelectedItinerary().setValue(null);
-            requireActivity().getSupportFragmentManager().popBackStack();
-//            assert getParentFragment() != null;
-//            ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), false);
+            assert getParentFragment() != null;
+            ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), false);
         });
     }
 
