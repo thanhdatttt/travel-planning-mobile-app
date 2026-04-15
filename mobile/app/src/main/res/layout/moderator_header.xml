@@ -49,7 +49,7 @@
                 android:layout_height="45dp"
                 android:layout_weight="3"
                 android:background="@animator/admin_header_tab_bg"
-                android:text="@string/reviews"
+                android:text="@string/reviews_Cap"
                 android:textColor="@animator/admin_header_text_color"
                 android:textStyle="bold"
                 android:textSize="14sp"

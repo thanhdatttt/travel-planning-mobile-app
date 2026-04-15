@@ -14,4 +14,5 @@
     <color name="facebook_color">#007BFF</color>
     <color name="card_background">#1E1E1E</color>
     <color name="background">#121212</color>
+    <color name="light_gray">#333333</color>
 </resources>
