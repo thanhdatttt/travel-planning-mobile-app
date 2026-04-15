@@ -60,31 +60,31 @@ public interface ItineraryApi {
     );
 
     // itinerary item api
-    @POST("api/itinerary/{id}/item")
+    @POST("/api/itinerary/{id}/item")
     Call<ApiResponse<ItineraryItemResponse>> addItineraryItem(
             @Path("id") String itineraryId,
             @Body AddItineraryItemRequest request
     );
 
-    @DELETE("api/itinerary/{id}/item/{itemId}")
+    @DELETE("/api/itinerary/{id}/item/{itemId}")
     Call<ApiResponse<Void>> deleteItineraryItem(
             @Path("id") String itineraryId,
             @Path("itemId") String itemId
     );
-    @PATCH("api/itinerary/{id}/item/{itemId}/schedule")
+    @PATCH("/api/itinerary/{id}/item/{itemId}/schedule")
     Call<ApiResponse<ItineraryItemResponse>> scheduleItineraryItem(
             @Path("id") String itineraryId,
             @Path("itemId") String itemId,
             @Body ScheduleItineraryItemRequest request
     );
 
-    @PATCH("api/itinerary/{id}/item/{itemId}/unschedule")
+    @PATCH("/api/itinerary/{id}/item/{itemId}/unschedule")
     Call<ApiResponse<ItineraryItemResponse>> unscheduleItineraryItem(
             @Path("id") String itineraryId,
             @Path("itemId") String itemId
     );
 
-    @PATCH("api/itinerary/{id}/items/{itemId}/note")
+    @PATCH("/api/itinerary/{id}/item/{itemId}/note")
     Call<ApiResponse<ItineraryItemResponse>> updateItineraryItemNote(
             @Path("id") String itineraryId,
             @Path("itemId") String itemId,

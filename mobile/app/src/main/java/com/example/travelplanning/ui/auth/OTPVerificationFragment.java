@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.FragmentEmailOtpVerificationBinding;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 
 public class OTPVerificationFragment extends Fragment {
@@ -41,7 +42,7 @@ public class OTPVerificationFragment extends Fragment {
 
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            if (msg != null) SnackBarHelper.showTopSnackBar(binding.getRoot(), msg, SnackBarHelper.SnackBarType.ERROR);
         });
 
         viewModel.getOtpVerifySuccess().observe(getViewLifecycleOwner(), verified -> {

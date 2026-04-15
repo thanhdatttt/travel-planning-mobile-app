@@ -38,8 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/public_your_trip"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textColor="@color/text"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
 
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swPrivacy"

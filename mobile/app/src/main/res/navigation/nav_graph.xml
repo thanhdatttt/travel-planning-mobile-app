@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_account" />
 
     <fragment
+        android:id="@+id/nav_trip"
+        android:name="com.example.travelplanning.ui.itinerary.TripContainerFragment"
+        android:label="Trip"
+        tools:layout="@layout/activity_trip" />
+
+    <fragment
         android:id="@+id/nav_nearby"
         android:name="com.example.travelplanning.ui.map.NearbyFragment" android:label="Nearby"
         tools:layout="@layout/fragment_nearby" />

@@ -21,6 +21,18 @@ public class ItineraryResponse {
     private Date createdAt;
     private Date updatedAt;
 
+    @SerializedName("user")
+    private UserResponse user;
+
     @SerializedName("itineraryItems")
     private List<ItineraryItemResponse> itineraryItems;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserResponse {
+        private String id;
+        private String username;
+        private String avatarUrl;
+    }
 }

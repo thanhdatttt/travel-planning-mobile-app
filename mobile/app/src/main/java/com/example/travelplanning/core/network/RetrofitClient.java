@@ -1,10 +1,11 @@
 package com.example.travelplanning.core.network;
 
 import com.example.travelplanning.BuildConfig;
-import com.example.travelplanning.core.storage.TokenManager;
-
+import com.example.travelplanning.core.util.DateDeserializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import android.content.Context;
-
+import java.util.Date;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -25,10 +26,14 @@ public class RetrofitClient {
                     .addInterceptor(logging)
                     .build();
 
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Date.class, new DateDeserializer())
+                    .create();
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(BuildConfig.BASE_URL)
                     .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit;

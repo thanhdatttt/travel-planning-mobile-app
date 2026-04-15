@@ -19,7 +19,7 @@ public class ItineraryItem {
     String itineraryId;
     String locationId;
     String note;
-    int orderIdx;
+    Integer orderIdx;
     Date date;
     Location location;
 }

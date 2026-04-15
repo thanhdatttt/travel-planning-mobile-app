@@ -23,5 +23,4 @@ public class TripPagerAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return 2; // number of tabs
     }
-
 }

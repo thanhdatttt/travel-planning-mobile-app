@@ -15,10 +15,12 @@ import com.example.travelplanning.data.remote.itinerary.dto.request.UpdateItiner
 import com.example.travelplanning.data.remote.itinerary.dto.request.UpdateItineraryRequest;
 import com.example.travelplanning.data.repository.itinerary.ItineraryRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +29,9 @@ import lombok.Setter;
 @Setter
 public class ItineraryViewModel extends AndroidViewModel {
     private final ItineraryRepository itineraryRepository;
+
+    // format date
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     //  general states
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
@@ -43,6 +48,8 @@ public class ItineraryViewModel extends AndroidViewModel {
 
     // single itinerary state
     private final MutableLiveData<Itinerary> selectedItinerary = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> addItemSuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> deleteItemSuccess = new MutableLiveData<>(false);
 
     public ItineraryViewModel(@NonNull Application application) {
         super(application);
@@ -129,8 +136,8 @@ public class ItineraryViewModel extends AndroidViewModel {
         isLoading.setValue(true);
         CreateItineraryRequest request = CreateItineraryRequest.builder()
                 .title(title)
-                .startDate(startDate)
-                .endDate(endDate)
+                .startDate(dateFormat.format(startDate))
+                .endDate(dateFormat.format(endDate))
                 .build();
 
         itineraryRepository.createItinerary(request,
@@ -158,8 +165,8 @@ public class ItineraryViewModel extends AndroidViewModel {
                 .title(title)
                 .description(description)
                 .privacy(privacy)
-                .startDate(startDate)
-                .endDate(endDate)
+                .startDate(startDate != null ? dateFormat.format(startDate) : null)
+                .endDate(endDate != null ? dateFormat.format(endDate) : null)
                 .build();
 
         itineraryRepository.updateItinerary(id, request,
@@ -240,11 +247,13 @@ public class ItineraryViewModel extends AndroidViewModel {
                     public void onSuccess(ItineraryItem data) {
                         isLoading.setValue(false);
                         addItemToItinerary(itineraryId, data);
+                        addItemSuccess.setValue(true);
                     }
 
                     @Override
                     public void onError(String errorMsg) {
                         isLoading.setValue(false);
+                        addItemSuccess.setValue(false);
                         errorMessage.setValue(errorMsg);
                     }
                 });
@@ -258,11 +267,13 @@ public class ItineraryViewModel extends AndroidViewModel {
                     public void onSuccess() {
                         isLoading.setValue(false);
                         removeItemFromItinerary(itineraryId, itemId);
+                        deleteItemSuccess.setValue(true);
                     }
 
                     @Override
                     public void onError(String errorMsg) {
                         isLoading.setValue(false);
+                        deleteItemSuccess.setValue(false);
                         errorMessage.setValue(errorMsg);
                     }
                 });
@@ -271,7 +282,7 @@ public class ItineraryViewModel extends AndroidViewModel {
     public void scheduleItineraryItem(String itineraryId, String itemId, Date targetDate) {
         isLoading.setValue(true);
         ScheduleItineraryItemRequest request = ScheduleItineraryItemRequest.builder()
-                .targetDate(targetDate)
+                .targetDate(dateFormat.format(targetDate))
                 .build();
 
         itineraryRepository.scheduleItineraryItem(itineraryId, itemId, request,
@@ -370,18 +381,18 @@ public class ItineraryViewModel extends AndroidViewModel {
         userItineraries.setValue(next);
     }
 
-    // add new item to itinerary in list
+    // add new item to selected itinerary
     private void addItemToItinerary(String itineraryId, ItineraryItem newItem) {
-        updateItineraryItems(itineraryId, items -> {
+        updateItemsInSelected(itineraryId, items -> {
             List<ItineraryItem> next = new ArrayList<>(items);
             next.add(newItem);
             return next;
         });
     }
 
-    // remove item from itinerary in list
+    // remove item from selected itinerary
     private void removeItemFromItinerary(String itineraryId, String itemId) {
-        updateItineraryItems(itineraryId, items -> {
+        updateItemsInSelected(itineraryId, items -> {
             List<ItineraryItem> next = new ArrayList<>(items);
             for (int i = 0; i < next.size(); i++) {
                 if (next.get(i).getId().equals(itemId)) {
@@ -395,7 +406,7 @@ public class ItineraryViewModel extends AndroidViewModel {
 
     // replace item in itinerary in list
     private void replaceItemInItinerary(String itineraryId, ItineraryItem updatedItem) {
-        updateItineraryItems(itineraryId, items -> {
+        updateItemsInSelected(itineraryId, items -> {
             List<ItineraryItem> next = new ArrayList<>(items);
             for (int i = 0; i < next.size(); i++) {
                 if (next.get(i).getId().equals(updatedItem.getId())) {
@@ -407,46 +418,69 @@ public class ItineraryViewModel extends AndroidViewModel {
         });
     }
 
-    // update items in itinerary in list
-    private void updateItineraryItems(String itineraryId, ItemListTransform transform) {
+    // update items in itinerary
+    private void updateItemsInSelected(String itineraryId, ItemListTransform transform) {
+        Itinerary selected = selectedItinerary.getValue();
+
+        if (selected == null || !selected.getId().equals(itineraryId)) return;
+
+        // apply the transform to the full item list
+        List<ItineraryItem> fullItems = selected.getItineraryItems() != null
+                ? selected.getItineraryItems() : new ArrayList<>();
+        List<ItineraryItem> updatedItems = transform.apply(fullItems);
+
+        // rebuild and push to selectedItinerary
+        Itinerary rebuilt = rebuildWithItems(selected, updatedItems);
+        selectedItinerary.setValue(rebuilt);
+
+        // patch the preview in userItineraries (keep only the first item)
+        patchPreviewInUserItineraries(rebuilt);
+    }
+
+    // updates the matching entry in userItineraries to hold only the first item
+    private void patchPreviewInUserItineraries(Itinerary fullItinerary) {
         List<Itinerary> current = userItineraries.getValue();
         if (current == null) return;
 
         List<Itinerary> next = new ArrayList<>(current);
         for (int i = 0; i < next.size(); i++) {
-            Itinerary itinerary = next.get(i);
-            if (itinerary.getId().equals(itineraryId)) {
-                List<ItineraryItem> updatedItems = transform.apply(
-                        itinerary.getItineraryItems() != null
-                                ? itinerary.getItineraryItems()
-                                : new ArrayList<>()
-                );
-                Itinerary rebuilt = Itinerary.builder()
-                        .id(itinerary.getId())
-                        .ownerId(itinerary.getOwnerId())
-                        .title(itinerary.getTitle())
-                        .description(itinerary.getDescription())
-                        .privacy(itinerary.getPrivacy())
-                        .startDate(itinerary.getStartDate())
-                        .endDate(itinerary.getEndDate())
-                        .createdAt(itinerary.getCreatedAt())
-                        .updatedAt(itinerary.getUpdatedAt())
-                        .itineraryItems(updatedItems)
-                        .build();
-                next.set(i, rebuilt);
-                syncSelectedItinerary(rebuilt);
+            if (next.get(i).getId().equals(fullItinerary.getId())) {
+                List<ItineraryItem> previewItems =
+                        fullItinerary.getItineraryItems() != null
+                                && !fullItinerary.getItineraryItems().isEmpty()
+                                ? Collections.singletonList(fullItinerary.getItineraryItems().get(0))
+                                : new ArrayList<>();
+                next.set(i, rebuildWithItems(next.get(i), previewItems));
                 break;
             }
         }
         userItineraries.setValue(next);
     }
 
+    // creates a copy of an Itinerary with a different items list
+    private Itinerary rebuildWithItems(Itinerary source, List<ItineraryItem> items) {
+        return Itinerary.builder()
+                .id(source.getId())
+                .ownerId(source.getOwnerId())
+                .title(source.getTitle())
+                .description(source.getDescription())
+                .privacy(source.getPrivacy())
+                .startDate(source.getStartDate())
+                .endDate(source.getEndDate())
+                .createdAt(source.getCreatedAt())
+                .updatedAt(source.getUpdatedAt())
+                .user(source.getUser())
+                .itineraryItems(items)
+                .build();
+    }
+
     /** Refreshes selectedItinerary only when it holds the same ID as updated. */
     private void syncSelectedItinerary(Itinerary updated) {
         Itinerary current = selectedItinerary.getValue();
-        if (current != null && current.getId().equals(updated.getId())) {
-            selectedItinerary.setValue(updated);
-        }
+        if (current == null || !current.getId().equals(updated.getId())) return;
+
+        // only take metadata from updated
+        selectedItinerary.setValue(rebuildWithItems(updated, current.getItineraryItems()));
     }
 
     /** Functional interface for transforming an item list inside updateItineraryItems. */

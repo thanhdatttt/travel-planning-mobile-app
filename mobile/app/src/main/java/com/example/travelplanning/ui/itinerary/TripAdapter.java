@@ -1,10 +1,14 @@
 package com.example.travelplanning.ui.itinerary;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.databinding.ItemSmallTripBinding;
 import org.jetbrains.annotations.UnknownNullability;
@@ -45,7 +49,8 @@ public class TripAdapter extends ListAdapter<Itinerary, TripAdapter.TripViewHold
                 public boolean areContentsTheSame(@NonNull Itinerary oldItem, @NonNull Itinerary newItem) {
                     return Objects.equals(oldItem.getTitle(), newItem.getTitle())
                             && Objects.equals(oldItem.getStartDate(), newItem.getStartDate())
-                            && Objects.equals(oldItem.getEndDate(), newItem.getEndDate());
+                            && Objects.equals(oldItem.getEndDate(), newItem.getEndDate())
+                            && Objects.equals(oldItem.getItineraryItems().get(0).getLocation().getImageUrl(), newItem.getItineraryItems().get(0).getLocation().getImageUrl());
                 }
             };
 
@@ -73,6 +78,28 @@ public class TripAdapter extends ListAdapter<Itinerary, TripAdapter.TripViewHold
 
         void bind(Itinerary itinerary) {
             binding.tvSmallTripName.setText(itinerary.getTitle());
+
+            // image cover
+            String imageUrl = null;
+            if (itinerary.getItineraryItems() != null && !itinerary.getItineraryItems().isEmpty()) {
+                var firstItem = itinerary.getItineraryItems().get(0);
+                if (firstItem != null && firstItem.getLocation() != null) {
+                    imageUrl = firstItem.getLocation().getImageUrl();
+                }
+            }
+
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_placeholder) // image when loading
+                        .error(R.drawable.ic_placeholder)       // image when error
+                        .centerCrop()
+                        .into(binding.ivSmallCover);
+            } else {
+                // clear resource and set default image if source image is empty
+                Glide.with(itemView.getContext()).clear(binding.ivSmallCover);
+                binding.ivSmallCover.setImageResource(R.drawable.ic_placeholder);
+            }
 
             // format date
             if (itinerary.getStartDate() != null && itinerary.getEndDate() != null) {

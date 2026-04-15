@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/trips"
                 android:textColor="@color/text"
-                android:textSize="32sp"
+                android:textSize="40sp"
                 android:textStyle="bold" />
 
             <!--      create and AI buttons      -->
@@ -112,12 +112,14 @@
         android:id="@+id/fabAi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="150dp"
         android:layout_marginEnd="20dp"
         android:contentDescription="@string/ai"
         android:visibility="gone"
         app:fabSize="mini"
         app:srcCompat="@drawable/ic_ai"
+        app:backgroundTint="@color/primary"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircleComponent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -131,6 +133,8 @@
         android:visibility="gone"
         app:fabSize="mini"
         app:srcCompat="@drawable/ic_add"
+        app:backgroundTint="@color/primary"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircleComponent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -144,6 +148,7 @@
         app:backgroundTint="@color/primary"
         app:tint="@color/white"
         app:rippleColor="@color/white"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircleComponent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -161,11 +166,7 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:indeterminateTint="@color/primary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/primary" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

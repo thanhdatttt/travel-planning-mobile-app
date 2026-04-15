@@ -43,13 +43,22 @@ export const getItinerary = async (req: Request, res: Response) => {
     const itinerary = await prisma.itinerary.findUnique({
       where: { id: String(id) },
       include: {
+        user: {
+          select: {id: true, username: true, avatarUrl:true}
+        },
         itineraryItems: {
           orderBy: [
             { date: 'asc' },
             { orderIdx: 'asc' }
           ],
-          include: { location: true }
-        }
+          include: {
+            location: {
+              include: {
+                locationPhotos: true
+              }
+            }
+          }
+        },
       }
     });
     if (!itinerary) {
@@ -95,13 +104,24 @@ export const getUserItineraries = async (req: Request, res: Response) => {
         take: limit,
         orderBy: { createdAt: 'desc' },
         include: {
+          user: {
+            select: {id: true, username: true, avatarUrl:true}
+          },
           itineraryItems: {
             orderBy: [
               { date: 'asc' },
               { orderIdx: 'asc' }
             ],
             take: 1, // only take 1 for preview
-            include: { location: true }
+            include: { 
+              location: {
+                include: {
+                  locationPhotos: {
+                    take: 1,
+                  } // <--- Quan trọng: Thêm dòng này để lấy ảnh
+                }
+              } 
+            }
           }
         }
       }),
@@ -139,18 +159,29 @@ export const getPublicItineraries = async (req: Request, res: Response) => {
 
     const [itineraries, total] = await Promise.all([
       prisma.itinerary.findMany({
-        where: { privacy: "public" },
+        where: { privacy: "public", ownerId: { not: req.user.id } },
         skip: skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { updatedAt: 'desc' },
         include: {
+          user: {
+            select: {id: true, username: true, avatarUrl:true}
+          },
           itineraryItems: {
             orderBy: [
               { date: 'asc' },
               { orderIdx: 'asc' }
             ],
             take: 1, // only take 1 for preview
-            include: { location: true }
+            include: {
+              location: {
+                include: {
+                  locationPhotos: {
+                    take: 1,
+                  }
+                }
+              }
+            }
           }
         }
       }),

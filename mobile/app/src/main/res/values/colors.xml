@@ -4,10 +4,15 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#999999</color>
     <color name="light_gray">#DDDDDD</color>
-
-    <color name="primary">#34D399</color> <color name="primary_variant">#059669</color>
+    <color name="primary">#34D399</color>
+    <color name="primary_variant">#059669</color>
     <color name="text">#000000</color>
     <color name="text_secondary">#555555</color>
+    <color name="error">#F44336</color>
+    <color name="warning">#FFB300</color>
+    <color name="info">#0288D1</color>
+    <color name="google_color">#FF1744</color>
+    <color name="facebook_color">#007BFF</color>
     <color name="card_background">#EEEEEE</color>
     <color name="background">#FFFFFF</color>
     <color name="admin_header_color">#15000000</color>
