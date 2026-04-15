@@ -431,26 +431,34 @@ public class LocationDetailFragment extends Fragment {
             summaryBinding.tvTotalReviews.setText(countStr);
             summaryBinding.tvAverageRating.setText(String.format(Locale.US, "%.1f", average));
             summaryBinding.miniRatingBar.setRating((float) average);
+
+            // ĐƯA VÒNG LẶP TÍNH PROGRESS VÀO TRONG IF ĐỂ AN TOÀN
+            for (RatingStat stat : stats) {
+                int progress = (stat.getCount() * 100) / totalReviews;
+                switch (stat.getRating()) {
+                    case 5: summaryBinding.pbStar5.setProgress(progress); break;
+                    case 4: summaryBinding.pbStar4.setProgress(progress); break;
+                    case 3: summaryBinding.pbStar3.setProgress(progress); break;
+                    case 2: summaryBinding.pbStar2.setProgress(progress); break;
+                    case 1: summaryBinding.pbStar1.setProgress(progress); break;
+                }
+            }
         } else {
+            // XỬ LÝ TRƯỜNG HỢP TOTAL = 0
             binding.tvDetailRatingScore.setText("0.0");
             binding.ratingBar.setRating(0f);
             binding.tvDetailRatingCount.setText("(0 reviews)");
-        }
+            
+            summaryBinding.tvTotalReviews.setText("(0)");
+            summaryBinding.tvAverageRating.setText("0.0");
+            summaryBinding.miniRatingBar.setRating(0f);
 
-
-        // Gán tổng số lượng vào TextView trong summary
-        summaryBinding.tvTotalReviews.setText("(" + totalReviews + ")");
-
-        // Duyệt qua danh sách stats (Backend trả về 1-5 sao)
-        for (RatingStat stat : stats) {
-            int progress = (stat.getCount() * 100) / totalReviews;
-            switch (stat.getRating()) {
-                case 5: summaryBinding.pbStar5.setProgress(progress); break;
-                case 4: summaryBinding.pbStar4.setProgress(progress); break;
-                case 3: summaryBinding.pbStar3.setProgress(progress); break;
-                case 2: summaryBinding.pbStar2.setProgress(progress); break;
-                case 1: summaryBinding.pbStar1.setProgress(progress); break;
-            }
+            // Reset tất cả các thanh progress bar về 0
+            summaryBinding.pbStar5.setProgress(0);
+            summaryBinding.pbStar4.setProgress(0);
+            summaryBinding.pbStar3.setProgress(0);
+            summaryBinding.pbStar2.setProgress(0);
+            summaryBinding.pbStar1.setProgress(0);
         }
     }
 
