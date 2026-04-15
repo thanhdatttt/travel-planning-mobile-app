@@ -34,8 +34,8 @@ public class AccountFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentAccountBinding.inflate(inflater, container, false);
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
         return binding.getRoot();
     }
 
@@ -70,9 +70,8 @@ public class AccountFragment extends Fragment {
         list.add(new AccountOption(1, R.drawable.ic_user, R.string.personal_info));
         list.add(new AccountOption(2, R.drawable.ic_setting, R.string.setting));
         list.add(new AccountOption(3, R.drawable.ic_star, R.string.my_reviews));
-        list.add(new AccountOption(4, R.drawable.ic_heart, R.string.my_fav_location));
+        list.add(new AccountOption(4, R.drawable.ic_heart, R.string.saved_location));
         //check role then add admin board
-        profileViewModel.fetchUserProfile();
         if (profile != null && profile.getRole() == UserRole.ADMIN) {
             list.add(new AccountOption(AccountViewModel.ID_ADMIN, R.drawable.ic_admin, R.string.menu_admin));
         }
@@ -88,6 +87,8 @@ public class AccountFragment extends Fragment {
         } else if (option.getId() == AccountViewModel.ID_SETTING) {
             Navigation.findNavController(requireView())
                     .navigate(R.id.nav_settings);
+        } else if (option.getId() == AccountViewModel.ID_FAV) {
+            Navigation.findNavController(requireView()).navigate(R.id.nav_saved_locations);
         } else if (option.getId() == AccountViewModel.ID_ADMIN){
             Navigation.findNavController(requireView()).navigate(R.id.nav_admin);
         }  else if (option.getId() == AccountViewModel.ID_LOGOUT) {

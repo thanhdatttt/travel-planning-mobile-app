@@ -55,7 +55,7 @@
     <string name="personal_info">Personal Information</string>
     <string name="setting">Setting</string>
     <string name="my_reviews">My Reviews</string>
-    <string name="my_fav_location">Favorite Locations</string>
+    <string name="saved_location">Saved Locations</string>
     <string name="admin_board">Admin Board</string>
     <string name="version">Version 1.0.0</string>
 
@@ -213,5 +213,10 @@
     <string name="delete_location">Delete location</string>
     <string name="restore_location">Restore location</string>
     <string name="price">Price:</string>
+    <string name="write_a_review">How would you rate your experience</string>
+    <string name="review_title">Title</string>
+    <string name="review_body">Your feelings</string>
+    <string name="post_review">Post</string>
+    <string name="empty_bookmark_list">You haven\'t save any locations</string>
 
 </resources>

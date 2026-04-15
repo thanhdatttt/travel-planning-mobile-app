@@ -18,7 +18,6 @@ public interface ReviewApi {
             @Query("limit") int limit
     );
 
-    // Lấy thống kê số sao
     @GET("api/reviews/stats/{id}")
     Call<ApiResponse<List<RatingStatResponse>>> getReviewStats(
             @Path("id") String locationId
@@ -28,4 +27,7 @@ public interface ReviewApi {
     Call<ApiResponse<ReviewResponse>> createReview(
             @Body ReviewRequest request
     );
+
+    @DELETE("api/reviews/{id}")
+    Call<ApiResponse<Void>> deleteReview(@Path("id") String reviewId);
 }

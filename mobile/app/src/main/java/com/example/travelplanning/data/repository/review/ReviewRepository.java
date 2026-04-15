@@ -10,6 +10,7 @@ import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.model.review.Review;
 import com.example.travelplanning.data.model.review.RatingStat;
 import com.example.travelplanning.data.remote.review.ReviewApi;
+import com.example.travelplanning.data.remote.review.dto.request.ReviewRequest;
 import com.example.travelplanning.data.remote.review.dto.response.ReviewPaginationResponse;
 import com.example.travelplanning.data.remote.review.dto.response.ReviewResponse;
 import com.example.travelplanning.data.remote.review.dto.response.RatingStatResponse;
@@ -83,6 +84,43 @@ public class ReviewRepository {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<List<ReviewResponse>>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void createReview(ReviewRequest request, ReviewCallback<Review> callback) {
+        reviewApi.createReview(request).enqueue(new Callback<ApiResponse<ReviewResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<ReviewResponse>> call, @NonNull Response<ApiResponse<ReviewResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Review domainReview = reviewMapper.mapToDomain(response.body().getData());
+                    callback.onSuccess(domainReview);
+                } else {
+                    callback.onError("Bạn đã đánh giá địa điểm này rồi hoặc có lỗi xảy ra");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<ReviewResponse>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void deleteReview(String reviewId, ReviewCallback<String> callback) {
+        reviewApi.deleteReview(reviewId).enqueue(new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<Void>> call, @NonNull Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess("Xóa đánh giá thành công");
+                } else {
+                    callback.onError("Không thể xóa đánh giá");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<Void>> call, @NonNull Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

@@ -7,6 +7,7 @@ import android.webkit.MimeTypeMap;
 import androidx.annotation.NonNull;
 
 import com.example.travelplanning.core.network.ApiServiceFactory;
+import com.example.travelplanning.core.storage.TokenManager;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.remote.profile.dto.request.UpdateMeRequest;
 import com.example.travelplanning.data.remote.profile.dto.response.UserProfileResponse;
@@ -166,5 +167,10 @@ public class UserProfileRepository {
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+
+    public String getCurrentUserId() {
+        String id = TokenManager.getUserId(context);
+        return id;
     }
 }
