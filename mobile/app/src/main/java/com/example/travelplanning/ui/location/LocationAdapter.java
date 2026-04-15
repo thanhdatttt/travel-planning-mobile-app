@@ -3,6 +3,8 @@ package com.example.travelplanning.ui.location;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
         Location location = locationList.get(position);
+        Log.d("DEBUG", "location: " + location);
         
         holder.tvName.setText(location.getName());
         
@@ -56,6 +59,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                 .centerCrop()
                 .placeholder(R.drawable.ic_placeholder)
                 .into(holder.ivImage);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onLocationClick(location);
+        });
     }
 
     @Override

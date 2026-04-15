@@ -6,6 +6,7 @@
     <color name="primary">#34D399</color>
     <color name="primary_variant">#059669</color>
     <color name="text">#FFFFFF</color>
+    <color name="text_secondary">#B0B0B0</color>
     <color name="error">#F44336</color>
     <color name="warning">#FFB300</color>
     <color name="info">#0288D1</color>

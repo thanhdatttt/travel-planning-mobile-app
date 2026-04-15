@@ -469,6 +469,7 @@ public class ItineraryViewModel extends AndroidViewModel {
                 .endDate(source.getEndDate())
                 .createdAt(source.getCreatedAt())
                 .updatedAt(source.getUpdatedAt())
+                .user(source.getUser())
                 .itineraryItems(items)
                 .build();
     }

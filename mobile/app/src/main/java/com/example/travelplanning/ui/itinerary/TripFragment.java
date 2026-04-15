@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.databinding.FragmentTripsBinding;
@@ -168,6 +169,26 @@ public class TripFragment extends Fragment {
     }
 
     private void showActiveCard(Itinerary latest) {
+        String imageUrl = null;
+        if (latest.getItineraryItems() != null && !latest.getItineraryItems().isEmpty()) {
+            var firstItem = latest.getItineraryItems().get(0);
+            if (firstItem != null && firstItem.getLocation() != null) {
+                imageUrl = firstItem.getLocation().getImageUrl();
+            }
+        }
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_placeholder) // image when loading
+                    .error(R.drawable.ic_placeholder)       // image when error
+                    .centerCrop()
+                    .into(binding.includeActiveTrip.ivCover);
+        } else {
+            // clear resource and set default image if source image is empty
+            Glide.with(this).clear(binding.includeActiveTrip.ivCover);
+            binding.includeActiveTrip.ivCover.setImageResource(R.drawable.ic_placeholder);
+        }
         binding.includeActiveTrip.tvTripName.setText(latest.getTitle());
         if (latest.getStartDate() != null && latest.getEndDate() != null) {
             String dates = dateFormat.format(latest.getStartDate()) + " – " + dateFormat.format(latest.getEndDate());

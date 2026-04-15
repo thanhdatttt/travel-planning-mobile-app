@@ -91,26 +91,26 @@ public class LocationSearchActivity extends AppCompatActivity {
         locationViewModel = new ViewModelProvider(this).get(LocationViewModel.class);
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.fetchAllCategories();
-        
+
+        adapter.setOnLocationClickListener(location -> {
+            if (MODE_PICK.equals(launchMode)) {
+                // pick mode: return locationId to the fragment
+                Intent result = new Intent();
+                result.putExtra(EXTRA_SELECTED_LOCATION_ID, location.getId());
+                setResult(RESULT_OK, result);
+                finish();
+            } else {
+                Bundle bundle = new Bundle();
+                bundle.putString("location_id", location.getId());
+
+//                        Navigation.findNavController(binding.getRoot())
+//                                .navigate(R.id.nav_location_detail, bundle);
+            }
+        });
+
         locationViewModel.getSearchResults().observe(this, locations -> {
             if (locations != null && !locations.isEmpty()) {
                 adapter.setList(locations);
-                
-                adapter.setOnLocationClickListener(location -> {
-                    if (MODE_PICK.equals(launchMode)) {
-                        // pick mode: return locationId to the fragment
-                        Intent result = new Intent();
-                        result.putExtra(EXTRA_SELECTED_LOCATION_ID, location.getId());
-                        setResult(RESULT_OK, result);
-                        finish();
-                    } else {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("location_id", location.getId());
-
-                        Navigation.findNavController(binding.getRoot())
-                                .navigate(R.id.nav_location_detail, bundle);
-                    }
-                });
             }
         });
 

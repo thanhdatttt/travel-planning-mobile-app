@@ -51,7 +51,13 @@ export const getItinerary = async (req: Request, res: Response) => {
             { date: 'asc' },
             { orderIdx: 'asc' }
           ],
-          include: { location: true }
+          include: {
+            location: {
+              include: {
+                locationPhotos: true
+              }
+            }
+          }
         },
       }
     });
@@ -107,7 +113,15 @@ export const getUserItineraries = async (req: Request, res: Response) => {
               { orderIdx: 'asc' }
             ],
             take: 1, // only take 1 for preview
-            include: { location: true }
+            include: { 
+              location: {
+                include: {
+                  locationPhotos: {
+                    take: 1,
+                  } // <--- Quan trọng: Thêm dòng này để lấy ảnh
+                }
+              } 
+            }
           }
         }
       }),
@@ -159,7 +173,15 @@ export const getPublicItineraries = async (req: Request, res: Response) => {
               { orderIdx: 'asc' }
             ],
             take: 1, // only take 1 for preview
-            include: { location: true }
+            include: {
+              location: {
+                include: {
+                  locationPhotos: {
+                    take: 1,
+                  }
+                }
+              }
+            }
           }
         }
       }),

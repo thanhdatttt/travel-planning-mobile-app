@@ -76,12 +76,27 @@ public class TripPublicAdapter extends ListAdapter<Itinerary, TripPublicAdapter.
             binding.tvCreatorName.setText(itinerary.getUser().getUsername());
 
             // load image cover
+            String imageUrl = null;
             if (itinerary.getItineraryItems() != null && !itinerary.getItineraryItems().isEmpty()) {
-                String imageUrl = itinerary.getItineraryItems().get(0).getLocation().getImageUrl();
-                Glide.with(this.itemView).load(imageUrl).into(binding.ivCover);
+                var firstItem = itinerary.getItineraryItems().get(0);
+                if (firstItem != null && firstItem.getLocation() != null) {
+                    imageUrl = firstItem.getLocation().getImageUrl();
+                }
+            }
+
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_placeholder) // image when loading
+                        .error(R.drawable.ic_placeholder)       // image when error
+                        .centerCrop()
+                        .into(binding.ivCover);
             } else {
+                // clear resource and set default image if source image is empty
+                Glide.with(itemView.getContext()).clear(binding.ivCover);
                 binding.ivCover.setImageResource(R.drawable.ic_placeholder);
             }
+
 
             // format date
             if (itinerary.getStartDate() != null && itinerary.getEndDate() != null) {

@@ -1,46 +1,59 @@
 package com.example.travelplanning.ui.itinerary;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.itinerary.ItineraryItem;
 import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.databinding.ItemTripLocationBinding;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
-public class TripLocationAdapter extends RecyclerView.Adapter<TripLocationAdapter.ViewHolder> {
+import org.jetbrains.annotations.UnknownNullability;
+import java.util.Locale;
+import java.util.Objects;
+
+public class TripLocationAdapter extends ListAdapter<ItineraryItem, TripLocationAdapter.ViewHolder> {
 
     // handle click
     public interface OnDeleteClickListener {
         void onDelete(ItineraryItem item);
     }
+
     public interface OnItemClickListener {
         void onItemClick(ItineraryItem item);
     }
 
-    private OnDeleteClickListener deleteListener;
-    private OnItemClickListener itemClickListener;
+    private final OnDeleteClickListener deleteListener;
+    private final OnItemClickListener itemClickListener;
 
-    public void setOnDeleteClickListener(OnDeleteClickListener l) {
-        this.deleteListener = l;
-    }
-    public void setOnItemClickListener(OnItemClickListener l) {
-        this.itemClickListener = l;
+    public TripLocationAdapter(OnItemClickListener itemClickListener, OnDeleteClickListener deleteListener) {
+        super(DIFF_ITEM_CALLBACK);
+        this.itemClickListener = itemClickListener;
+        this.deleteListener = deleteListener;
     }
 
-    private List<ItineraryItem> items = new ArrayList<>();
+    // DiffUtil to compare and update only changed items in recycle view
+    private static final DiffUtil.ItemCallback<ItineraryItem> DIFF_ITEM_CALLBACK =
+            new DiffUtil.ItemCallback<ItineraryItem>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull ItineraryItem oldItem, @NonNull ItineraryItem newItem) {
+                    return Objects.equals(oldItem.getId(), newItem.getId());
+                }
 
-    public void setItems(List<ItineraryItem> items) {
-        this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
-        notifyDataSetChanged();
-    }
+                @Override
+                public boolean areContentsTheSame(@NonNull ItineraryItem oldItem, @NonNull ItineraryItem newItem) {
+                    return Objects.equals(oldItem.getDate(), newItem.getDate())
+                            && Objects.equals(oldItem.getNote(), newItem.getNote())
+                            && Objects.equals(oldItem.getOrderIdx(), newItem.getOrderIdx())
+                            && Objects.equals(oldItem.getLocationId(), newItem.getLocationId()); // ← ADD
+                }
+            };
 
     @NonNull
     @Override
@@ -52,25 +65,23 @@ public class TripLocationAdapter extends RecyclerView.Adapter<TripLocationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(items.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return items.size();
+        holder.bind(getItem(position));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private final ItemTripLocationBinding binding;
+        private final @UnknownNullability ItemTripLocationBinding binding;
 
-        ViewHolder(ItemTripLocationBinding binding) {
+        ViewHolder(@UnknownNullability ItemTripLocationBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
         void bind(ItineraryItem item) {
             Location loc = item.getLocation();
-            if (loc == null) return;
+            Log.d("DEBUG", "location: " + loc);
+            if (loc == null) {
+                return;
+            }
 
             // Name
             binding.tvLocationName.setText(loc.getName());
@@ -94,25 +105,15 @@ public class TripLocationAdapter extends RecyclerView.Adapter<TripLocationAdapte
                 binding.tvAddress.setVisibility(View.GONE);
             }
 
-            // Schedule status badge
-            if (item.getDate() != null) {
-                String dateStr = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(item.getDate());
-                String status = binding.getRoot().getContext().getString(R.string.schedule) + dateStr;
-                binding.tvScheduleStatus.setText(status);
-                binding.tvScheduleStatus.setBackgroundResource(R.drawable.bg_chip_scheduled);
-            } else {
-                binding.tvScheduleStatus.setText(R.string.unschedule);
-                binding.tvScheduleStatus.setBackgroundResource(R.drawable.bg_chip_unscheduled);
-            }
-
             // Image
             Glide.with(binding.ivLocationImage.getContext())
                     .load(loc.getImageUrl())
                     .placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_placeholder)
                     .centerCrop()
                     .into(binding.ivLocationImage);
 
-            // Delete
+            // handle click
             binding.btnDelete.setOnClickListener(v -> {
                 if (deleteListener != null) deleteListener.onDelete(item);
             });

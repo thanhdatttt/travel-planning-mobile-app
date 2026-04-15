@@ -98,6 +98,7 @@ public class TripPublicDetailFragment extends Fragment {
 
     private void setupListeners() {
         binding.btnBack.setOnClickListener(v -> {
+            viewModel.getSelectedItinerary().setValue(null);
             requireActivity().getSupportFragmentManager().popBackStack();
         });
 
@@ -140,6 +141,9 @@ public class TripPublicDetailFragment extends Fragment {
         binding.tvTripTitle.setText(itinerary.getTitle());
         String dates = dateFormat.format(itinerary.getStartDate()) + " – " + dateFormat.format(itinerary.getEndDate());
         binding.tvTripDates.setText(dates);
+        if (itinerary.getItineraryItems() != null && !itinerary.getItineraryItems().isEmpty()) {
+            binding.tvTripLocation.setText(itinerary.getItineraryItems().get(0).getLocation().getName());
+        }
         if (itinerary.getDescription() != null) binding.tvTripDescription.setText(itinerary.getDescription());
     }
 }

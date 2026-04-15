@@ -49,7 +49,8 @@ public class TripAdapter extends ListAdapter<Itinerary, TripAdapter.TripViewHold
                 public boolean areContentsTheSame(@NonNull Itinerary oldItem, @NonNull Itinerary newItem) {
                     return Objects.equals(oldItem.getTitle(), newItem.getTitle())
                             && Objects.equals(oldItem.getStartDate(), newItem.getStartDate())
-                            && Objects.equals(oldItem.getEndDate(), newItem.getEndDate());
+                            && Objects.equals(oldItem.getEndDate(), newItem.getEndDate())
+                            && Objects.equals(oldItem.getItineraryItems().get(0).getLocation().getImageUrl(), newItem.getItineraryItems().get(0).getLocation().getImageUrl());
                 }
             };
 
@@ -79,10 +80,24 @@ public class TripAdapter extends ListAdapter<Itinerary, TripAdapter.TripViewHold
             binding.tvSmallTripName.setText(itinerary.getTitle());
 
             // image cover
+            String imageUrl = null;
             if (itinerary.getItineraryItems() != null && !itinerary.getItineraryItems().isEmpty()) {
-                String imageUrl = itinerary.getItineraryItems().get(0).getLocation().getImageUrl();
-                Glide.with(this.itemView).load(imageUrl).into(binding.ivSmallCover);
+                var firstItem = itinerary.getItineraryItems().get(0);
+                if (firstItem != null && firstItem.getLocation() != null) {
+                    imageUrl = firstItem.getLocation().getImageUrl();
+                }
+            }
+
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_placeholder) // image when loading
+                        .error(R.drawable.ic_placeholder)       // image when error
+                        .centerCrop()
+                        .into(binding.ivSmallCover);
             } else {
+                // clear resource and set default image if source image is empty
+                Glide.with(itemView.getContext()).clear(binding.ivSmallCover);
                 binding.ivSmallCover.setImageResource(R.drawable.ic_placeholder);
             }
 

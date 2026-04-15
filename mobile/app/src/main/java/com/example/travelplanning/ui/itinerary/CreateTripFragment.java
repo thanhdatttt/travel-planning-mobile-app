@@ -63,7 +63,7 @@ public class CreateTripFragment extends Fragment {
 
         viewModel.getCreateSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success) {
-                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Trip created", SnackBarHelper.SnackBarType.ERROR);
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Trip created", SnackBarHelper.SnackBarType.SUCCESS);
                 viewModel.getCreateSuccess().setValue(false);
                 assert getParentFragment() != null;
                 ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), true);

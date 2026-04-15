@@ -96,11 +96,13 @@ public class TripDetailFragment extends Fragment {
     private void setupListeners() {
         binding.btnSettings.setOnClickListener(v -> {
             assert getParentFragment() != null;
-            ((TripContainerFragment) getParentFragment()).navigateTo(TripSettingFragment.newInstance(tripId), false);
+            ((TripContainerFragment) getParentFragment()).navigateTo(TripSettingFragment.newInstance(tripId), true);
         });
         binding.btnBack.setOnClickListener(v -> {
-            assert getParentFragment() != null;
-            ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), false);
+            viewModel.getSelectedItinerary().setValue(null);
+            requireActivity().getSupportFragmentManager().popBackStack();
+//            assert getParentFragment() != null;
+//            ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), false);
         });
     }
 
@@ -121,12 +123,31 @@ public class TripDetailFragment extends Fragment {
     }
 
     private void displayTripDetail(Itinerary itinerary) {
+        String imageUrl = null;
+        String firstLocationName = "";
+
         if (itinerary.getItineraryItems() != null && !itinerary.getItineraryItems().isEmpty()) {
-            binding.tvTripLocation.setText(itinerary.getItineraryItems().get(0).getLocation().getName());
-            Glide.with(this).load(itinerary.getItineraryItems().get(0).getLocation().getImageUrl()).into(binding.ivTripCover);
+            var firstItem = itinerary.getItineraryItems().get(0);
+            if (firstItem != null && firstItem.getLocation() != null) {
+                firstLocationName = firstItem.getLocation().getName();
+                imageUrl = firstItem.getLocation().getImageUrl();
+            }
+        }
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_placeholder) // image when loading
+                    .error(R.drawable.ic_placeholder)       // image when error
+                    .centerCrop()
+                    .into(binding.ivTripCover);
         } else {
+            // clear resource and set default image if source image is empty
+            Glide.with(this).clear(binding.ivTripCover);
             binding.ivTripCover.setImageResource(R.drawable.ic_placeholder);
         }
+
+        binding.tvTripLocation.setText(firstLocationName);
         binding.tvTripTitle.setText(itinerary.getTitle());
         String dates = dateFormat.format(itinerary.getStartDate()) + " – " + dateFormat.format(itinerary.getEndDate());
         binding.tvTripDates.setText(dates);
