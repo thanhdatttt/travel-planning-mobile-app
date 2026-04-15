@@ -14,7 +14,7 @@ public class ItineraryItemResponse {
     private String itineraryId;
     private String locationId;
     private String note;
-    private int orderIdx;
+    private Integer orderIdx;
     private Date date;
     private LocationResponse location;
 }

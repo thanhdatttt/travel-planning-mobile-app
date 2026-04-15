@@ -24,5 +24,17 @@ public class Itinerary {
     Date endDate;
     Date createdAt;
     Date updatedAt;
+    User user;
     List<ItineraryItem> itineraryItems;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class User {
+        String id;
+        String username;
+        String avatarUrl;
+    }
 }

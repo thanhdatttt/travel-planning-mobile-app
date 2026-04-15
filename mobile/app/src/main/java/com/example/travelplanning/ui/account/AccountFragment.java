@@ -17,6 +17,7 @@ import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.data.model.profile.UserRole;
 import com.example.travelplanning.databinding.FragmentAccountBinding;
 import com.example.travelplanning.ui.auth.AuthActivity;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.account.AccountViewModel;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 import com.example.travelplanning.viewmodel.profile.ProfileViewModel;
@@ -103,6 +104,7 @@ public class AccountFragment extends Fragment {
     private void observeLogoutStatus() {
         authViewModel.getLogoutSuccess().observe(getViewLifecycleOwner(), isLoggedOut -> {
             if (isLoggedOut) {
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Logout successfully!", SnackBarHelper.SnackBarType.SUCCESS);
                 navigateToLogin();
             }
         });

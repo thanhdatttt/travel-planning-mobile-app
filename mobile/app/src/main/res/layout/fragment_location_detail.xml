@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -53,23 +53,41 @@
 
                 <TextView
                     android:id="@+id/tvDetailName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/layoutActions"
+                    android:layout_marginEnd="8dp"
                     android:gravity="start"
                     android:text="@string/location_name"
                     android:textColor="@color/text"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <ImageButton
-                    android:id="@+id/btnBookmark"
+                <LinearLayout
+                    android:id="@+id/layoutActions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_bookmark"
-                    android:contentDescription="@string/bookmark"/>
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/btnReport"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_report"
+                        app:tint="@color/red" />
+
+                    <ImageButton
+                        android:id="@+id/btnBookmark"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="4dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_heart_outline"
+                        app:tint="@color/primary" />
+                </LinearLayout>
             </RelativeLayout>
 
             <LinearLayout
@@ -176,6 +194,38 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false" />
+
+            <include android:id="@+id/layoutMiniMap"
+                layout="@layout/layout_location_mini_map" />
+
+            <include android:id="@+id/layoutPhotos"
+                layout="@layout/layout_location_photos"/>
+
+            <include android:id="@+id/layoutReviewSummary"
+                layout="@layout/layout_review_summary"/>
+
+            <include android:id="@+id/layoutReviewList"
+                layout="@layout/layout_review_list" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nearby Places"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="16dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvNearbyPlaces"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_place" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

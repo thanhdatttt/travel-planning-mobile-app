@@ -1,4 +1,5 @@
 package com.example.travelplanning.ui.location;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -32,8 +33,16 @@ import com.example.travelplanning.ui.location_detail.LocationDetailFragment;
 public class LocationSearchActivity extends AppCompatActivity {
     private LocationViewModel locationViewModel;
     private LocationAdapter adapter;
+
+    // constants for Intent extras
+    public static final String EXTRA_MODE                  = "mode";
+    public static final String EXTRA_ITINERARY_ID          = "itinerary_id";
+    public static final String EXTRA_SELECTED_LOCATION_ID  = "selected_location_id";
+    public static final String MODE_PICK                   = "pick";
+    private String launchMode = "browse";
     
-    private ImageButton btnBack; 
+    // UI
+    private ImageButton btnBack; // THÊM NÚT BACK
     private EditText edtSearch;
     private ImageButton btnFilter;
     private RecyclerView rvLocations;
@@ -50,6 +59,9 @@ public class LocationSearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_search);
+
+        launchMode = getIntent().getStringExtra(EXTRA_MODE);
+        if (launchMode == null) launchMode = "browse";
 
         initViews();
         setupViewModel();
@@ -79,18 +91,26 @@ public class LocationSearchActivity extends AppCompatActivity {
         locationViewModel = new ViewModelProvider(this).get(LocationViewModel.class);
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.fetchAllCategories();
-        
+
+        adapter.setOnLocationClickListener(location -> {
+            if (MODE_PICK.equals(launchMode)) {
+                // pick mode: return locationId to the fragment
+                Intent result = new Intent();
+                result.putExtra(EXTRA_SELECTED_LOCATION_ID, location.getId());
+                setResult(RESULT_OK, result);
+                finish();
+            } else {
+                Bundle bundle = new Bundle();
+                bundle.putString("location_id", location.getId());
+
+//                        Navigation.findNavController(binding.getRoot())
+//                                .navigate(R.id.nav_location_detail, bundle);
+            }
+        });
+
         locationViewModel.getSearchResults().observe(this, locations -> {
             if (locations != null && !locations.isEmpty()) {
                 adapter.setList(locations);
-                
-                adapter.setOnLocationClickListener(location -> {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("location_id", location.getId());
-                    
-                    Toast.makeText(this, "Đang mở: " + location.getName(), Toast.LENGTH_SHORT).show();
-                    
-                });
             }
         });
 

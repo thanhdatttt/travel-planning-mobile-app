@@ -25,7 +25,7 @@ public class LocationResponse {
 
     private CategoryResponse category;
 
-    @SerializedName("photos")
+    @SerializedName(value = "photos", alternate = {"locationPhotos"})
     private List<LocationPhotoResponse> photos;
 
     @SerializedName("imageUrl")

@@ -14,10 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.databinding.FragmentTripsBinding;
 import com.example.travelplanning.databinding.LayoutTripOptionsBinding;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.itinerary.ItineraryViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -108,7 +110,8 @@ public class TripFragment extends Fragment {
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            if (msg != null && !msg.isEmpty())
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), msg, SnackBarHelper.SnackBarType.ERROR);
         });
 
         viewModel.getUserItineraries().observe(getViewLifecycleOwner(), itineraries -> {
@@ -151,25 +154,48 @@ public class TripFragment extends Fragment {
         binding.nestedScrollView.setVisibility(View.VISIBLE);
         binding.includeLayoutEmpty.layoutEmpty.setVisibility(View.GONE);
 
-        // active card
+        // active card trip
         Itinerary latest = itineraries.get(0);
-        binding.includeActiveTrip.tvTripName.setText(latest.getTitle());
-        if (latest.getStartDate() != null && latest.getEndDate() != null) {
-            String dates = dateFormat.format(latest.getStartDate()) + " – " + dateFormat.format(latest.getEndDate());
-            binding.includeActiveTrip.tvTripDates.setText(dates);
-        }
-        binding.includeActiveTrip.cardActiveTrip.setOnClickListener(v -> navigateToDetail(latest));
+        showActiveCard(latest);
 
-        // other trips
-        List<Itinerary> otherTrips = itineraries.size() > 1
-                ? itineraries.subList(1, itineraries.size()) : java.util.Collections.emptyList();
-        tripAdapter.submitList(otherTrips);
+        // created trips
+        tripAdapter.submitList(itineraries);
 
         // handle page control
         isLoadingMore = false;
         if (itineraries.size() < (currentPage * LIMIT)) {
             isLastPage = true;
         }
+    }
+
+    private void showActiveCard(Itinerary latest) {
+        String imageUrl = null;
+        if (latest.getItineraryItems() != null && !latest.getItineraryItems().isEmpty()) {
+            var firstItem = latest.getItineraryItems().get(0);
+            if (firstItem != null && firstItem.getLocation() != null) {
+                imageUrl = firstItem.getLocation().getImageUrl();
+            }
+        }
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_placeholder) // image when loading
+                    .error(R.drawable.ic_placeholder)       // image when error
+                    .centerCrop()
+                    .into(binding.includeActiveTrip.ivCover);
+        } else {
+            // clear resource and set default image if source image is empty
+            Glide.with(this).clear(binding.includeActiveTrip.ivCover);
+            binding.includeActiveTrip.ivCover.setImageResource(R.drawable.ic_placeholder);
+        }
+        binding.includeActiveTrip.tvTripName.setText(latest.getTitle());
+        if (latest.getStartDate() != null && latest.getEndDate() != null) {
+            String dates = dateFormat.format(latest.getStartDate()) + " – " + dateFormat.format(latest.getEndDate());
+            binding.includeActiveTrip.tvTripDates.setText(dates);
+        }
+        binding.includeActiveTrip.btnConfig.setOnClickListener(v -> showTripBottomOptionsMenu(latest));
+        binding.includeActiveTrip.cardActiveTrip.setOnClickListener(v -> navigateToDetail(latest));
     }
 
     // show and handle click of trip bottom options menu
@@ -186,14 +212,13 @@ public class TripFragment extends Fragment {
 
         // handle click
         optionsBinding.swPrivacy.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            viewModel.updateItinerary(itinerary.getId(), null, null, isChecked ? "private" : "public", null, null);
-            optionsBinding.tvPrivacyStatus.setText(isChecked ? "Public — anyone can see this trip" : "Private — only you can see this trip");
-            Snackbar.make(requireView(), "Changed the privacy", Snackbar.LENGTH_LONG).show();
+            viewModel.updateItinerary(itinerary.getId(), null, null, isChecked ? "public" : "private", null, null);
+            SnackBarHelper.showTopSnackBar(binding.getRoot(), "Changed the privacy", SnackBarHelper.SnackBarType.SUCCESS);
             dialog.dismiss();
         });
         optionsBinding.btnCopyTrip.setOnClickListener(v -> {
             viewModel.cloneItinerary(itinerary.getId());
-            Snackbar.make(requireView(), "Cloned trip", Snackbar.LENGTH_LONG).show();
+            SnackBarHelper.showTopSnackBar(binding.getRoot(), "Trip cloned", SnackBarHelper.SnackBarType.SUCCESS);
             dialog.dismiss();
         });
         optionsBinding.btnDeleteTrip.setOnClickListener(v -> {
@@ -210,12 +235,10 @@ public class TripFragment extends Fragment {
                         viewModel.deleteItinerary(itinerary.getId());
                         dialogInterface.dismiss();
                         dialog.dismiss();
-
-                        Snackbar.make(requireView(), "Trip deleted", Snackbar.LENGTH_LONG).show();
+                        SnackBarHelper.showTopSnackBar(binding.getRoot(), "Trip deleted", SnackBarHelper.SnackBarType.SUCCESS);
                     })
                     .show();
         });
-
         dialog.show();
     }
 
@@ -226,7 +249,6 @@ public class TripFragment extends Fragment {
             currentPage++;
             viewModel.fetchUserItineraries(currentPage, LIMIT);
         }
-
     }
 
     // fab menu
@@ -272,15 +294,17 @@ public class TripFragment extends Fragment {
 
     // navigate
     private void navigateToCreate() {
-        ((TripActivity) requireActivity()).navigateTo(new CreateTripFragment(), true);
+        assert getParentFragment() != null;
+        ((TripContainerFragment) getParentFragment()).navigateTo(new CreateTripFragment(), true);
     }
 
     private void navigateToDetail(Itinerary itinerary) {
-        ((TripActivity) requireActivity()).navigateTo(TripDetailFragment.newInstance(itinerary), true);
+        assert getParentFragment() != null;
+        ((TripContainerFragment) getParentFragment()).navigateTo(TripDetailFragment.newInstance(itinerary.getId()), true);
     }
 
     private void navigateToAi() {
         // TODO: wire to your AI screen when ready
-        Snackbar.make(requireView(), "AI assistant coming soon", Snackbar.LENGTH_LONG).show();
+        SnackBarHelper.showTopSnackBar(binding.getRoot(), "AI feature coming soon", SnackBarHelper.SnackBarType.INFO);
     }
 }

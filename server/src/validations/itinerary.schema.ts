@@ -45,25 +45,21 @@ export const updateItinerarySchema = {
     title: z
       .string()
       .min(1, "Title is required")
-      .max(255, "Title is too long")
-      .optional(),
+      .max(255, "Title is too long"),
     description: z
       .string()
-      .min(1, "Description is required")
-      .max(500, "Description is too long (maximum 500 characters)")
-      .optional(),
+      .max(500, "Description is too long (maximum 500 characters)"),
     privacy: z.enum(["public", "private"]).optional(),
     startDate: z
       .string()
       .min(1, "Start date is required")
-      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid start date format")
-      .optional(),
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid start date format"),
     endDate: z
       .string()
       .min(1, "End date is required")
-      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid end date format")
-      .optional(),
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid end date format"),
   })
+  .partial()
   .refine((data) => {
     if (data.startDate && data.endDate) {
       return new Date(data.startDate) <= new Date(data.endDate);

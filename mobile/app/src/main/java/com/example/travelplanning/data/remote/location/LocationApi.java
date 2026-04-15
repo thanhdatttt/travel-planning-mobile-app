@@ -6,8 +6,12 @@ import com.example.travelplanning.data.remote.location.dto.response.LocationResp
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -32,4 +36,11 @@ public interface LocationApi {
 
     @GET("api/locations/{id}")
     Call<ApiResponse<LocationResponse>> getLocationById(@Path("id") String id);
+
+    @Multipart
+    @POST("api/locations/{id}/photos")
+    Call<ApiResponse<LocationResponse.LocationPhotoResponse>> uploadPhoto(
+            @Path("id") String locationId,
+            @Part MultipartBody.Part photo
+    );
 }

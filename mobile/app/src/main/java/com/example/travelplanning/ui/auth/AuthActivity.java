@@ -52,7 +52,12 @@ public class AuthActivity extends AppCompatActivity {
     public void navigateTo(Fragment fragment, boolean addToBackStack) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // set animation when change fragment
-        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+        transaction.setCustomAnimations(
+                android.R.anim.slide_in_left,  // enter
+                android.R.anim.slide_out_right, // exit
+                android.R.anim.slide_in_left,   // popEnter
+                android.R.anim.slide_out_right  // popExit
+        );
         transaction.replace(R.id.auth_fragment_container, fragment);
         if (addToBackStack) {
             transaction.addToBackStack(null);
