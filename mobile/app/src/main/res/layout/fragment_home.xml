@@ -98,8 +98,29 @@
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:clipToPadding="false"
-        android:paddingBottom="80dp" 
+        android:paddingBottom="80dp"
+        tools:listitem="@layout/item_public_trip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hsv_filters" />
 
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/background"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="@id/rv_community_feed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/primary" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

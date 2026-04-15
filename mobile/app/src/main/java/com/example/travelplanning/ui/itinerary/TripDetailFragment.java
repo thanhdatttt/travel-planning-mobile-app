@@ -14,25 +14,27 @@ import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.databinding.FragmentTripDetailBinding;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.itinerary.ItineraryViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class TripDetailFragment extends Fragment {
-    private static final String ARG_ITINERARY = "arg_itinerary";
-    private Itinerary mItinerary;
     private FragmentTripDetailBinding binding;
     private ItineraryViewModel viewModel;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     // newInstance to pass data to fragment
-    public static TripDetailFragment newInstance(Itinerary itinerary) {
+    private String tripId;
+
+    public static TripDetailFragment newInstance(String id) {
         TripDetailFragment fragment = new TripDetailFragment();
         Bundle args = new Bundle();
-
-        args.putSerializable(ARG_ITINERARY, (Serializable) itinerary);
-
+        args.putString("arg_trip_id", id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -41,7 +43,7 @@ public class TripDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mItinerary = (Itinerary) getArguments().getSerializable(ARG_ITINERARY);
+            tripId = getArguments().getString("arg_trip_id");
         }
     }
 
@@ -58,8 +60,8 @@ public class TripDetailFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(ItineraryViewModel.class);
 
         // fetch detail data of trip
-        if (mItinerary != null && mItinerary.getId() != null) {
-            viewModel.fetchItineraryById(mItinerary.getId());
+        if (tripId != null) {
+            viewModel.fetchItineraryById(tripId);
         }
 
         setupTabUI();
@@ -67,14 +69,21 @@ public class TripDetailFragment extends Fragment {
         setupListeners();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null; // prevent memory leaks
+    }
+
     private void setupObservers() {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             binding.loadingOverlay.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         });
+
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
             if (msg != null && !msg.isEmpty())
-                Snackbar.make(requireView(), msg, Snackbar.LENGTH_SHORT).show();
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), msg, SnackBarHelper.SnackBarType.ERROR);
         });
 
         viewModel.getSelectedItinerary().observe(getViewLifecycleOwner(), itinerary -> {
@@ -85,12 +94,15 @@ public class TripDetailFragment extends Fragment {
     }
 
     private void setupListeners() {
-        Glide.with(this).load(mItinerary.getItineraryItems().get(0).getLocation().getImageUrl()).into(binding.ivTripCover);
         binding.btnSettings.setOnClickListener(v -> {
-            ((TripActivity) requireActivity()).navigateTo(TripSettingFragment.newInstance(viewModel.getSelectedItinerary().getValue()), true);
+            assert getParentFragment() != null;
+            ((TripContainerFragment) getParentFragment()).navigateTo(TripSettingFragment.newInstance(tripId), true);
         });
         binding.btnBack.setOnClickListener(v -> {
-            ((TripActivity) requireActivity()).navigateTo(new TripFragment(), true);
+            viewModel.getSelectedItinerary().setValue(null);
+            requireActivity().getSupportFragmentManager().popBackStack();
+//            assert getParentFragment() != null;
+//            ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), false);
         });
     }
 
@@ -111,8 +123,34 @@ public class TripDetailFragment extends Fragment {
     }
 
     private void displayTripDetail(Itinerary itinerary) {
+        String imageUrl = null;
+        String firstLocationName = "";
+
+        if (itinerary.getItineraryItems() != null && !itinerary.getItineraryItems().isEmpty()) {
+            var firstItem = itinerary.getItineraryItems().get(0);
+            if (firstItem != null && firstItem.getLocation() != null) {
+                firstLocationName = firstItem.getLocation().getName();
+                imageUrl = firstItem.getLocation().getImageUrl();
+            }
+        }
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_placeholder) // image when loading
+                    .error(R.drawable.ic_placeholder)       // image when error
+                    .centerCrop()
+                    .into(binding.ivTripCover);
+        } else {
+            // clear resource and set default image if source image is empty
+            Glide.with(this).clear(binding.ivTripCover);
+            binding.ivTripCover.setImageResource(R.drawable.ic_placeholder);
+        }
+
+        binding.tvTripLocation.setText(firstLocationName);
         binding.tvTripTitle.setText(itinerary.getTitle());
-        binding.tvTripDates.setText(String.format("%s - %s", itinerary.getStartDate(), itinerary.getEndDate()));
+        String dates = dateFormat.format(itinerary.getStartDate()) + " – " + dateFormat.format(itinerary.getEndDate());
+        binding.tvTripDates.setText(dates);
         if (itinerary.getDescription() != null) binding.tvTripDescription.setText(itinerary.getDescription());
     }
 }

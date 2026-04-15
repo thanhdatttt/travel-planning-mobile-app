@@ -15,5 +15,6 @@ public class MetaResponse {
     @SerializedName(value = "page", alternate = {"currentPage"})
     private int page;
     private int limit;
+    @SerializedName(value = "totalPages", alternate = {"lastPage"})
     private int totalPages;
 }

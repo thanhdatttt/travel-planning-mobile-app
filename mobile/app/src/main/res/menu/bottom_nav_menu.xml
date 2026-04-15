@@ -6,18 +6,17 @@
         android:title="@string/discover" />
     
     <item
-        android:id="@+id/nav_trips" 
-        android:icon="@drawable/ic_ai" 
-        android:title="@string/trips" />
-
-    <item
         android:id="@+id/nav_nearby"
         android:icon="@drawable/ic_nearby"
         android:title="@string/nearby"/>
     <item
-        android:id="@+id/nav_map"
+        android:id="@+id/nav_trip"
+        android:icon="@drawable/ic_heart"
+        android:title="@string/trip" />
+    <item
+        android:id="@+id/nav_review"
         android:icon="@drawable/ic_map"
-        android:title="@string/map" />
+        android:title="@string/review" />
     <item
         android:id="@+id/nav_account"
         android:icon="@drawable/ic_user"

@@ -22,6 +22,15 @@ public class ItineraryMapper implements BaseMapper<ItineraryResponse, Itinerary>
             }
         }
 
+        Itinerary.User owner = null;
+        if (dto.getUser() != null) {
+            owner = Itinerary.User.builder()
+                    .id(dto.getUser().getId())
+                    .username(dto.getUser().getUsername())
+                    .avatarUrl(dto.getUser().getAvatarUrl())
+                    .build();
+        }
+
         return Itinerary.builder()
                 .id(dto.getId())
                 .ownerId(dto.getOwnerId())
@@ -32,6 +41,7 @@ public class ItineraryMapper implements BaseMapper<ItineraryResponse, Itinerary>
                 .endDate(dto.getEndDate())
                 .createdAt(dto.getCreatedAt())
                 .updatedAt(dto.getUpdatedAt())
+                .user(owner)
                 .itineraryItems(items)
                 .build();
     }

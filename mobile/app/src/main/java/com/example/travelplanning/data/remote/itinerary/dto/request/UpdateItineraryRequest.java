@@ -14,6 +14,6 @@ public class UpdateItineraryRequest {
     private String title;
     private String description;
     private String privacy;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
 }

@@ -54,6 +54,7 @@
     <string name="setting">Cài đặt</string>
     <string name="my_reviews">Đánh giá của tôi</string>
     <string name="my_fav_location">Địa điểm yêu thích</string>
+    <string name="admin_board">Bảng điều trị</string>
     <string name="version">Phiên bản 1.0.0</string>
 
     <string name="settings_title">Tùy chọn</string>
@@ -120,7 +121,6 @@
     <string name="show_less">Hiện bớt</string>
     <string name="error_cannot_open_link">Không thể mở liên kết này</string>
 
-    <string name="admin_board">Bảng điều khiển Admin</string>
     <string name="menu_admin">Vào bảng quản trị Admin</string>
     <string name="manage_location">Quản lý địa điểm</string>
     <string name="manage_user">Quản lý người dùng</string>
@@ -160,6 +160,10 @@
     
     <string name="dialog_delete_session_title">Xóa cuộc trò chuyện</string>
     <string name="dialog_delete_session_message">Bạn có chắc muốn xóa vĩnh viễn cuộc trò chuyện này không?</string>
+
+    //thông tin chi tiết địa điểm
+    <string name="location_on_map">Vị trí trên bản đồ</string>
+    <string name="view_on_map">Xem trên bản đồ</string>
     <string name="save_change">Lưu thay đổi</string>
     <string name="detail">Chi tiết</string>
 

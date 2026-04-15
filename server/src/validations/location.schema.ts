@@ -65,3 +65,19 @@ export const LocationSearchSchema = {
       .transform((v) => parseInt(v || "10")),
   }),
 };
+
+export const uploadLocationPhotoSchema = {
+  params: z.object({
+    locationId: z.string().uuid("Invalid location ID format"),
+  }),
+  file: z.object({
+    fieldname: z.literal("photo"),
+    mimetype: z
+      .string()
+      .refine((cap) => ["image/jpeg", "image/png", "image/jpg"].includes(cap), {
+        message: "Only .jpg, .jpeg, .png files are allowed",
+      }),
+    size: z.number().max(5 * 1024 * 1024, "File cannot exceed 5MB"),
+    path: z.url("Invalid Cloudinary URL"),
+  }),
+};

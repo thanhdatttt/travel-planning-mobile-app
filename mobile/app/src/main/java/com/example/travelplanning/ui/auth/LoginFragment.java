@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.travelplanning.databinding.FragmentLoginBinding;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.auth.AuthViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -43,13 +44,14 @@ public class LoginFragment extends Fragment {
 
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
-            if (msg != null) Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+            if (msg != null) SnackBarHelper.showTopSnackBar(binding.getRoot(), msg, SnackBarHelper.SnackBarType.ERROR);
         });
 
 
         viewModel.getLoginSuccess().observe(getViewLifecycleOwner(), res -> {
             if (res != null) {
                 startActivity(new Intent(requireActivity(), MainScreenActivity.class));
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Login successful!", SnackBarHelper.SnackBarType.SUCCESS);
                 requireActivity().finish();
             }
         });
@@ -57,6 +59,7 @@ public class LoginFragment extends Fragment {
         viewModel.getSocialLoginSuccess().observe(getViewLifecycleOwner(), res -> {
             if (res != null) {
                 startActivity(new Intent(requireActivity(), MainScreenActivity.class));
+                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Login successful!", SnackBarHelper.SnackBarType.SUCCESS);
                 requireActivity().finish();
             }
         });

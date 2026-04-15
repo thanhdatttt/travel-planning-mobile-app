@@ -92,8 +92,7 @@
     <string name="description_to_trip">Description to trip</string>
     <string name="add_button">add button</string>
     <string name="trip_detail">Trip detail</string>
-    <string name="ha_noi_viet_nam">Ha Noi, Viet Nam</string>
-    <string name="number_of_locations">5 Locations</string>
+    <string name="number_of_locations">0 Locations</string>
     <string name="add">Add</string>
     <string name="trip_setting">Trip setting</string>
     <string name="add_some_description_to_your_trip">Add some description to your trip</string>
@@ -107,12 +106,20 @@
     <string name="call">Call</string>
     <string name="see_more">See more</string>
     <string name="loading_description">Loading description…</string>
+    <string name="email">Email</string>
     <string name="website">Website</string>
     <string name="back">Back</string>
     <string name="bookmark">Bookmark</string>
     <string name="location_image">location image</string>
     <string name="saved_locations">Saved locations</string>
     <string name="itinerary">Itinerary</string>
+    <string name="created_by">Created by</string>
+    <string name="user_name">User Name</string>
+    <string name="location_here">Location here</string>
+    <string name="description_here">Description here</string>
+    <string name="save_to_your_trip">Save to your trip</string>
+    <string name="unschedule">Unscheduled</string>
+    <string name="schedule">Scheduled</string>
 
     //settings
     <string name="settings_title">Settings</string>
@@ -149,15 +156,22 @@
     <string name="save_change">Save change</string>
     <string name="detail">Detail</string>
 
-    <string name="price">price</string>
-    <string name="email">email</string>
-
     //category
     <string name="cat_food_and_drink">Food &amp; Drink</string>
     <string name="cat_accommodation">Accommodation</string>
     <string name="cat_attractions">Attractions</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_services">Services</string>
+    <string name="trip">Trip</string>
+    <string name="review">Review</string>
+
+
+    //location detail
+    <string name="location_on_map">Location on map</string>
+    <string name="view_on_map">View on map</string>
+    <string name="images">Location Photos</string>
+    <string name="add_photos">Add Photos</string>
+    <string name="reviews">reviews</string>
 
     // chatbot
     <string name="new_conversation">New Conversation</string>
@@ -208,5 +222,6 @@
     <string name="edit_location">Edit location</string>
     <string name="delete_location">Delete location</string>
     <string name="restore_location">Restore location</string>
+    <string name="price">Price:</string>
 
 </resources>

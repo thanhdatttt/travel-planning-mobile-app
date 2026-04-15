@@ -13,9 +13,11 @@ material = "1.13.0"
 activity = "1.12.3"
 constraintlayout = "2.2.1"
 okhttp = "5.3.2"
+osmdroidAndroidVersion = "6.1.18"
 playServicesAuth = "21.5.1"
 playServicesAuthVersion = "15.0.1"
 osmdroidAndroid = "6.1.20"
+preference = "1.2.1"
 retrofit = "3.0.0"
 coreSplashscreen = "1.2.0"
 lombok = "1.18.32"
@@ -41,9 +43,11 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+osmdroid-android-v6118 = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroidVersion" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 play-services-auth-v1501 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
 osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
+preference = { module = "androidx.preference:preference", version.ref = "preference" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }

@@ -36,4 +36,10 @@ public class MainScreenActivity extends AppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(LocaleHelper.wrap(newBase));
     }
+
+    public void setBottomNavVisibility(int visibility) {
+        if (binding != null) {
+            binding.bottomNavigation.setVisibility(visibility);
+        }
+    }
 }
