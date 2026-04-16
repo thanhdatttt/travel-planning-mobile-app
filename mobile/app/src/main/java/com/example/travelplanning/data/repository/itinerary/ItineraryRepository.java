@@ -1,6 +1,8 @@
 package com.example.travelplanning.data.repository.itinerary;
 
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import com.example.travelplanning.core.network.ApiServiceFactory;
 import com.example.travelplanning.data.mapper.itinerary.ItineraryItemMapper;
@@ -90,9 +92,35 @@ public class ItineraryRepository {
     private void handleItemResponse(
             Response<ApiResponse<ItineraryItemResponse>> response,
             ItineraryItemCallback callback) {
+
+        // ✅ Add comprehensive logging
         if (response.isSuccessful() && response.body() != null) {
-            callback.onSuccess(itineraryItemMapper.mapToDomain(response.body().getData()));
+            try {
+                ItineraryItemResponse dto = response.body().getData();
+
+                // ✅ Log what we received
+                if (dto == null) {
+                    Log.w("ItineraryRepository", "Response data is NULL");
+                    callback.onError("Server returned empty response");
+                    return;
+                }
+
+                Log.d("ItineraryRepository", "Item response: " + dto);
+
+                // ✅ Validate location exists for display operations
+                if (dto.getLocation() == null) {
+                    Log.w("ItineraryRepository", "Location is NULL for item: " + dto.getId());
+                    // Still pass it through, adapter will handle null gracefully
+                }
+
+                callback.onSuccess(itineraryItemMapper.mapToDomain(dto));
+
+            } catch (Exception e) {
+                Log.e("ItineraryRepository", "Error parsing response: " + e.getMessage(), e);
+                callback.onError("Error parsing response: " + e.getMessage());
+            }
         } else {
+            Log.e("ItineraryRepository", "Response failed: code=" + response.code());
             callback.onError("Error server (" + response.code() + ").");
         }
     }

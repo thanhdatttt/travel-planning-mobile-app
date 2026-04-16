@@ -101,14 +101,12 @@ public class TripLocationListFragment extends Fragment {
 
         viewModel.getAddItemSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success) {
-                SnackBarHelper.showTopSnackBar(requireView(), "Location added", SnackBarHelper.SnackBarType.SUCCESS);
                 viewModel.getAddItemSuccess().setValue(false);
             }
         });
 
         viewModel.getDeleteItemSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success) {
-                SnackBarHelper.showTopSnackBar(requireView(), "Location removed", SnackBarHelper.SnackBarType.SUCCESS);
                 viewModel.getDeleteItemSuccess().setValue(false);
             }
         });

@@ -2,6 +2,16 @@ import { prisma } from "../../libs/prisma";
 import { Request, Response } from "express";
 import { createResponse } from "../../utils/response";
 
+const LOCATION_INCLUDE = {
+  location: {
+    include: {
+      locationPhotos: {
+        take: 1,
+      }
+    }
+  }
+};
+
 export const addItineraryItem = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -40,15 +50,7 @@ export const addItineraryItem = async (req: Request, res: Response) => {
         locationId: data.locationId,
         note: data.note ?? null,
       },
-      include: { 
-        location: {
-          include: {
-            locationPhotos: {
-              take: 1,
-            }
-          }
-        } 
-      },
+      include: LOCATION_INCLUDE,
     });
 
     return res.status(201).json(
@@ -157,15 +159,7 @@ export const scheduleItineraryItem = async (req: Request, res: Response) => {
       return tx.itineraryItem.update({
         where: { id: String(itemId) },
         data: { date: targetDate, orderIdx: newOrderIdx },
-        include: { 
-          location: {
-            include: {
-              locationPhotos: {
-                take: 1,
-              }
-            }
-          } 
-        },
+        include: LOCATION_INCLUDE,
       });
     });
 
@@ -218,6 +212,7 @@ export const unscheduleItineraryItem = async (req: Request, res: Response) => {
       prisma.itineraryItem.update({
         where: { id: String(itemId) },
         data: { date: null, orderIdx: null },
+        include: LOCATION_INCLUDE,
       }),
       prisma.itineraryItem.updateMany({
         where: {
@@ -272,15 +267,7 @@ export const updateItineraryItemNote = async (req: Request, res: Response) => {
       data: {
         note: data.note,
       },
-      include: { 
-        location: {
-          include: {
-            locationPhotos: {
-              take: 1,
-            }
-          }
-        } 
-      },
+      include: LOCATION_INCLUDE,
     });
 
     return res.status(200).json(
