@@ -29,10 +29,6 @@ public class AccountViewModel extends ViewModel {
 
     private void loadMenuData() {
         List<AccountOption> list = new ArrayList<>();
-//        list.add(new AccountOption(ID_INFO, R.drawable.ic_user, "Thông tin cá nhân"));
-//        list.add(new AccountOption(ID_SETTING, R.drawable.ic_setting, "Cài đặt"));
-//        list.add(new AccountOption(ID_LOGOUT, R.drawable.ic_logout, "Đăng xuất"));
-
         _menuItems.setValue(list);
     }
 

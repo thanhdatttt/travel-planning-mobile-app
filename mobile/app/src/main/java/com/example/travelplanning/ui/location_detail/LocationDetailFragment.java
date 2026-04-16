@@ -1,6 +1,7 @@
 package com.example.travelplanning.ui.location_detail;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,10 +32,12 @@ import com.example.travelplanning.data.model.location.LocationHour;
 import com.example.travelplanning.data.model.location.Photo;
 import com.example.travelplanning.data.model.review.RatingStat;
 import com.example.travelplanning.databinding.FragmentLocationDetailBinding;
+import com.example.travelplanning.databinding.LayoutAddReviewBinding;
 import com.example.travelplanning.databinding.LayoutReviewListBinding;
 import com.example.travelplanning.ui.map.LocationAdapter;
 import com.example.travelplanning.ui.review.ReviewAdapter;
 import com.example.travelplanning.viewmodel.location_detail.LocationDetailViewModel;
+import com.example.travelplanning.viewmodel.profile.ProfileViewModel;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -49,10 +52,12 @@ import java.util.Locale;
 public class LocationDetailFragment extends Fragment {
     private FragmentLocationDetailBinding binding;
     private LayoutReviewListBinding reviewListBinding;
+    private LayoutAddReviewBinding addReviewBinding;
     private LocationDetailViewModel viewModel;
     private PhotoAdapter photoAdapter;
     private ReviewAdapter reviewAdapter;
     private LocationAdapter nearbyAdapter;
+    private String locationId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +71,7 @@ public class LocationDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentLocationDetailBinding.inflate(inflater, container, false);
         reviewListBinding = binding.layoutReviewList;
+        addReviewBinding = binding.layoutAddReview;
         return binding.getRoot();
     }
 
@@ -74,18 +80,34 @@ public class LocationDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(LocationDetailViewModel.class);
+        ProfileViewModel profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
+        profileViewModel.fetchUserProfile();
+
+        profileViewModel.getUserProfile().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                reviewAdapter.setCurrentUserId(user.getId());
+            }
+        });
 
         setupRecyclerViews();
         setupPhotoAreaLogic();
         setupObservers();
         setupBookmarkActions();
+        setupAddReviewLogic();
+        setupToolbar();
 
         if (getArguments() != null) {
-            String locationId = getArguments().getString("location_id");
+            locationId = getArguments().getString("location_id");
             if (locationId != null) {
                 viewModel.fetchDetail(locationId);
             }
         }
+    }
+
+    private void setupToolbar() {
+        binding.btnBack.setOnClickListener(v -> {
+            androidx.navigation.Navigation.findNavController(requireView()).navigateUp();
+        });
     }
 
     private void setupRecyclerViews() {
@@ -104,6 +126,16 @@ public class LocationDetailFragment extends Fragment {
         reviewListBinding.rvReviews.setLayoutManager(new LinearLayoutManager(getContext()));
         reviewListBinding.rvReviews.setNestedScrollingEnabled(false); //để cuộn mượt trong ScrollView
         reviewListBinding.rvReviews.setAdapter(reviewAdapter);
+        reviewAdapter.setOnDeleteClickListener(reviewId -> {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Xóa đánh giá")
+                    .setMessage("Bạn có chắc chắn muốn xóa đánh giá này?")
+                    .setPositiveButton("Xóa", (dialog, which) -> {
+                        viewModel.deleteReview(reviewId, locationId);
+                    })
+                    .setNegativeButton("Hủy", null)
+                    .show();
+        });
 
         //Nearby
         nearbyAdapter = new LocationAdapter(location -> {
@@ -338,7 +370,6 @@ public class LocationDetailFragment extends Fragment {
         Marker marker = new Marker(mapBinding.mapDetail);
         marker.setPosition(startPoint);
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        // Bạn có thể set icon tùy chỉnh theo category tại đây
         mapBinding.mapDetail.getOverlays().add(marker);
 
         mapBinding.touchOverlay.setOnTouchListener((v, event) -> {
@@ -370,8 +401,7 @@ public class LocationDetailFragment extends Fragment {
         mapBinding.mapDetail.invalidate(); // Vẽ lại bản đồ
     }
 
-
-    // LOCATION PHOTOS------------------
+    // LOCATION PHOTOS
     private final ActivityResultLauncher<PickVisualMediaRequest> pickLocationPhoto =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 if (uri != null && viewModel.getLocationDetail().getValue() != null) {
@@ -386,7 +416,7 @@ public class LocationDetailFragment extends Fragment {
         }
         binding.layoutPhotos.getRoot().setVisibility(View.VISIBLE);
 
-        // Logic phân trang: mỗi lần hiện 2 ảnh (vì ta muốn 2 ảnh full màn hình)
+        // phân trang: mỗi lần hiện 2 ảnh
         int ITEMS_PER_PAGE = 2;
         int fromIndex = page * ITEMS_PER_PAGE;
         int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, allPhotos.size());
@@ -419,11 +449,8 @@ public class LocationDetailFragment extends Fragment {
         if (totalReviews > 0) {
             double average = totalPoints / totalReviews;
 
-            // Update điểm số (ví dụ: 4.7)
             binding.tvDetailRatingScore.setText(String.format(Locale.US, "%.1f", average));
-            // Update sao vàng
             binding.ratingBar.setRating((float) average);
-            // Update số lượng (ví dụ: (7 reviews))
             String countStr = "(" + totalReviews + " " + getString(R.string.reviews) + ")";
             binding.tvDetailRatingCount.setText(countStr);
 
@@ -448,18 +475,46 @@ public class LocationDetailFragment extends Fragment {
             binding.tvDetailRatingScore.setText("0.0");
             binding.ratingBar.setRating(0f);
             binding.tvDetailRatingCount.setText("(0 reviews)");
-            
-            summaryBinding.tvTotalReviews.setText("(0)");
-            summaryBinding.tvAverageRating.setText("0.0");
-            summaryBinding.miniRatingBar.setRating(0f);
-
-            // Reset tất cả các thanh progress bar về 0
-            summaryBinding.pbStar5.setProgress(0);
-            summaryBinding.pbStar4.setProgress(0);
-            summaryBinding.pbStar3.setProgress(0);
-            summaryBinding.pbStar2.setProgress(0);
-            summaryBinding.pbStar1.setProgress(0);
         }
+
+        // Gán tổng số lượng vào TextView trong summary
+        summaryBinding.tvTotalReviews.setText("(" + totalReviews + ")");
+
+        // Duyệt qua danh sách stats
+        for (RatingStat stat : stats) {
+            int progress = (stat.getCount() * 100) / totalReviews;
+            switch (stat.getRating()) {
+                case 5: summaryBinding.pbStar5.setProgress(progress); break;
+                case 4: summaryBinding.pbStar4.setProgress(progress); break;
+                case 3: summaryBinding.pbStar3.setProgress(progress); break;
+                case 2: summaryBinding.pbStar2.setProgress(progress); break;
+                case 1: summaryBinding.pbStar1.setProgress(progress); break;
+            }
+        }
+    }
+
+    private void setupAddReviewLogic() {
+        String locationId = getArguments() != null ? getArguments().getString("location_id") : null;
+
+        addReviewBinding.btnSubmitReview.setOnClickListener(v -> {
+            String title = addReviewBinding.etReviewTitle.getText().toString().trim();
+            String body = addReviewBinding.etReviewBody.getText().toString().trim();
+            int rating = (int) addReviewBinding.rbNewRating.getRating();
+
+            viewModel.postReview(title, body, rating, locationId);
+        });
+
+        // Quan sát kết quả gửi review
+        viewModel.getReviewSubmissionSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (success) {
+                Toast.makeText(getContext(), "Đánh giá thành công!", Toast.LENGTH_SHORT).show();
+                // Xóa form sau khi gửi
+                addReviewBinding.etReviewTitle.setText("");
+                addReviewBinding.etReviewBody.setText("");
+                addReviewBinding.rbNewRating.setRating(0);
+                addReviewBinding.getRoot().setVisibility(View.GONE);
+            }
+        });
     }
 
     private void setupBookmarkActions() {
@@ -473,10 +528,10 @@ public class LocationDetailFragment extends Fragment {
 
         viewModel.getIsBookmarked().observe(getViewLifecycleOwner(), bookmarked -> {
             if (bookmarked) {
-                binding.btnBookmark.setImageResource(R.drawable.ic_heart);
+                binding.btnBookmark.setImageResource(R.drawable.ic_bookmark_full);
                 binding.btnBookmark.setColorFilter(Color.GRAY);
             } else {
-                binding.btnBookmark.setImageResource(R.drawable.ic_heart_outline);
+                binding.btnBookmark.setImageResource(R.drawable.ic_bookmark);
                 binding.btnBookmark.setColorFilter(Color.GRAY);
             }
         });

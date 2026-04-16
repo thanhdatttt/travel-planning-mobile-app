@@ -42,7 +42,7 @@ export const reviewController = {
     const [reviews, total] = await Promise.all([
       prisma.review.findMany({
         where: {
-          locationId: locationId, 
+          locationId: locationId,
           isDeleted: false,
         },
         skip,
@@ -122,14 +122,9 @@ export const reviewController = {
     if (review.userId !== userId)
       throw new ApiError(403, "Not authorized to delete this review");
 
-    await prisma.review.update({
+    await prisma.review.delete({
       where: { id },
-      data: {
-        isDeleted: true,
-        deletedAt: new Date(),
-      },
     });
-
     return res.json(createResponse({ message: "Review deleted successfully" }));
   },
 

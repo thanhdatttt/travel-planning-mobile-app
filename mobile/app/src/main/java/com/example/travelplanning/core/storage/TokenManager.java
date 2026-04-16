@@ -7,6 +7,7 @@ public class TokenManager {
     private static final String PREF_NAME = "auth_prefs";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String REFRESH_TOKEN = "refresh_token";
+    private static final String USER_ID = "user_id";
 
     public static void saveTokens(Context context, String accessToken, String refreshToken) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -27,15 +28,24 @@ public class TokenManager {
         prefs.edit().putString(REFRESH_TOKEN, refreshToken).apply();
     }
 
+    public static void saveUserId(Context context, String userId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(USER_ID, userId).apply();
+    }
+
     public static String getAccessToken(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(ACCESS_TOKEN, null);
     }
 
-
     public static String getRefreshToken(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(REFRESH_TOKEN, null);
+    }
+
+    public static String getUserId(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE);
+        return prefs.getString("user_id", null);
     }
 
     public static void clearTokens(Context context) {

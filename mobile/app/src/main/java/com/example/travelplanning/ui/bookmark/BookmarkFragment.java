@@ -56,13 +56,26 @@ public class BookmarkFragment extends Fragment {
 
     private void setupObservers() {
         viewModel.getBookmarkedLocations().observe(getViewLifecycleOwner(), locations -> {
-            if (locations != null) {
+            binding.pbLoading.setVisibility(View.GONE);
+
+            if (locations != null && !locations.isEmpty()) {
                 adapter.updateData(locations, null);
+                binding.rvBookmarks.setVisibility(View.VISIBLE);
+                binding.tvEmptyMessage.setVisibility(View.GONE);
+            } else {
+                // Trường hợp danh sách rỗng
+                binding.rvBookmarks.setVisibility(View.GONE);
+                binding.tvEmptyMessage.setVisibility(View.VISIBLE);
             }
         });
 
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            binding.pbLoading.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            if (isLoading) {
+                binding.pbLoading.setVisibility(View.VISIBLE);
+                binding.tvEmptyMessage.setVisibility(View.GONE);
+            } else {
+                binding.pbLoading.setVisibility(View.GONE);
+            }
         });
     }
 }
