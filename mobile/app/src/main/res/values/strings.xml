@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">travelPlanning</string>
+    <string name="app_name">TourGuide</string>
 
     // login and register
     <string name="complete_account">Complete Account</string>
@@ -44,7 +44,7 @@
     <string name="ai">AI</string>
     <string name="map">Map</string>
     <string name="account">Account</string>
-    <string name="title_activity_main_screen">MainScreenActivity</string>
+    <string name="title_activity_main_screen">TourGuide</string>
     <string name="profile">Profile</string>
     <string name="search">Search</string>
     <string name="map_enter_location">Enter location</string>
@@ -173,6 +173,16 @@
     <string name="add_photos">Add Photos</string>
     <string name="reviews">reviews</string>
 
+    // chatbot
+    <string name="new_conversation">New Conversation</string>
+    <string name="Hello">Hello! What can I help you with?</string>
+    <string name="ask_tourguide">Ask TourGuide...</string>
+    <string name="answering">Answering...</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+
+    <string name="dialog_delete_session_title">Delete Conversation</string>
+    <string name="dialog_delete_session_message">Are you sure you want to permanently delete this conversation?</string>
     // admin
     <string name="enter_name">Enter name</string>
     <string name="full_name">Full Name</string>

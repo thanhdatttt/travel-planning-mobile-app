@@ -30,6 +30,7 @@ import com.google.android.material.chip.ChipGroup;
 import android.content.Intent;
 import com.example.travelplanning.data.model.category.Category;
 import com.example.travelplanning.ui.location_detail.LocationDetailFragment;
+import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
 public class LocationSearchActivity extends AppCompatActivity {
     private LocationViewModel locationViewModel;
     private LocationAdapter adapter;
@@ -94,17 +95,16 @@ public class LocationSearchActivity extends AppCompatActivity {
 
         adapter.setOnLocationClickListener(location -> {
             if (MODE_PICK.equals(launchMode)) {
-                // pick mode: return locationId to the fragment
                 Intent result = new Intent();
                 result.putExtra(EXTRA_SELECTED_LOCATION_ID, location.getId());
                 setResult(RESULT_OK, result);
                 finish();
             } else {
-                Bundle bundle = new Bundle();
-                bundle.putString("location_id", location.getId());
-
-//                        Navigation.findNavController(binding.getRoot())
-//                                .navigate(R.id.nav_location_detail, bundle);
+                Intent intent = new Intent(LocationSearchActivity.this, MainScreenActivity.class);
+                intent.putExtra("ACTION_OPEN_DETAIL", location.getId());
+                
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
             }
         });
 

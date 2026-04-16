@@ -458,7 +458,20 @@ public class LocationDetailFragment extends Fragment {
             summaryBinding.tvTotalReviews.setText(countStr);
             summaryBinding.tvAverageRating.setText(String.format(Locale.US, "%.1f", average));
             summaryBinding.miniRatingBar.setRating((float) average);
+
+            // ĐƯA VÒNG LẶP TÍNH PROGRESS VÀO TRONG IF ĐỂ AN TOÀN
+            for (RatingStat stat : stats) {
+                int progress = (stat.getCount() * 100) / totalReviews;
+                switch (stat.getRating()) {
+                    case 5: summaryBinding.pbStar5.setProgress(progress); break;
+                    case 4: summaryBinding.pbStar4.setProgress(progress); break;
+                    case 3: summaryBinding.pbStar3.setProgress(progress); break;
+                    case 2: summaryBinding.pbStar2.setProgress(progress); break;
+                    case 1: summaryBinding.pbStar1.setProgress(progress); break;
+                }
+            }
         } else {
+            // XỬ LÝ TRƯỜNG HỢP TOTAL = 0
             binding.tvDetailRatingScore.setText("0.0");
             binding.ratingBar.setRating(0f);
             binding.tvDetailRatingCount.setText("(0 reviews)");

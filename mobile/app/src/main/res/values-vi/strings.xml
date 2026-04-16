@@ -43,7 +43,7 @@
     <string name="ai">AI</string>
     <string name="map">Bản đồ</string>
     <string name="account">Tài khoản</string>
-    <string name="title_activity_main_screen">MainScreenActivity</string>
+    <string name="title_activity_main_screen">TourGuide</string>
     <string name="profile">Hồ sơ</string>
     <string name="search">Tìm kiếm</string>
     <string name="map_enter_location">Nhập địa điểm</string>
@@ -150,6 +150,16 @@
     <string name="cat_shopping">Mua sắm</string>
     <string name="cat_services">Dịch vụ khác</string>
 
+    // chatbot
+    <string name="new_conversation">Cuộc trò chuyện mới</string>
+    <string name="Hello">Xin chào! Mình có thể giúp gì cho bạn?</string>
+    <string name="ask_tourguide">Hỏi TourGuide...</string>
+    <string name="answering">Đang trả lời...</string>
+    <string name="action_delete">Xóa</string>
+    <string name="action_cancel">Hủy</string>
+    
+    <string name="dialog_delete_session_title">Xóa cuộc trò chuyện</string>
+    <string name="dialog_delete_session_message">Bạn có chắc muốn xóa vĩnh viễn cuộc trò chuyện này không?</string>
 
     //thông tin chi tiết địa điểm
     <string name="trip">Chuyến đi</string>

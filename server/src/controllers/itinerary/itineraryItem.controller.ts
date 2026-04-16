@@ -40,7 +40,15 @@ export const addItineraryItem = async (req: Request, res: Response) => {
         locationId: data.locationId,
         note: data.note ?? null,
       },
-      include: { location: true },
+      include: { 
+        location: {
+          include: {
+            locationPhotos: {
+              take: 1,
+            }
+          }
+        } 
+      },
     });
 
     return res.status(201).json(
@@ -148,7 +156,16 @@ export const scheduleItineraryItem = async (req: Request, res: Response) => {
       const newOrderIdx = lastItemInDay ? (lastItemInDay.orderIdx ?? 0) + 1 : 0;
       return tx.itineraryItem.update({
         where: { id: String(itemId) },
-        data: { date: targetDate, orderIdx: newOrderIdx }, include: { location: true }
+        data: { date: targetDate, orderIdx: newOrderIdx },
+        include: { 
+          location: {
+            include: {
+              locationPhotos: {
+                take: 1,
+              }
+            }
+          } 
+        },
       });
     });
 
@@ -255,7 +272,15 @@ export const updateItineraryItemNote = async (req: Request, res: Response) => {
       data: {
         note: data.note,
       },
-      include: { location: true },
+      include: { 
+        location: {
+          include: {
+            locationPhotos: {
+              take: 1,
+            }
+          }
+        } 
+      },
     });
 
     return res.status(200).json(
