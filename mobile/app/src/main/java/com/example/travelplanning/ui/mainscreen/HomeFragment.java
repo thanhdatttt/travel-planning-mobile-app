@@ -1,5 +1,5 @@
 package com.example.travelplanning.ui.mainscreen;
-
+import com.example.travelplanning.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;

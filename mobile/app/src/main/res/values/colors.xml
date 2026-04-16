@@ -15,6 +15,12 @@
     <color name="facebook_color">#007BFF</color>
     <color name="card_background">#EEEEEE</color>
     <color name="background">#FFFFFF</color>
+    <color name="reverse_background">#000000</color>
+    <color name="surface_chat_input">#F1F3F4</color> 
+    <color name="surface_drawer">#F8F9FA</color>     
+    <color name="text_hint">#757575</color>
+    <color name="chat_input_bg">#F2F2F7</color> 
+    <color name="chat_input_stroke">#E5E5EA</color>
     <color name="admin_header_color">#15000000</color>
     <color name="admin_dark_green">#3E814D</color>
     <color name="dark_green">#219D0E</color>

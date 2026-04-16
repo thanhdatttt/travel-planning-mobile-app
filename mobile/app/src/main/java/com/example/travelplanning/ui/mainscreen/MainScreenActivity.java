@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-
+import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -30,6 +30,24 @@ public class MainScreenActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
 
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        
+        if (intent != null && intent.hasExtra("ACTION_OPEN_DETAIL")) {
+            String locationId = intent.getStringExtra("ACTION_OPEN_DETAIL");
+            
+            Bundle bundle = new Bundle();
+            bundle.putString("location_id", locationId);
+            
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.nav_host_fragment);
+            if (navHostFragment != null) {
+                navHostFragment.getNavController().navigate(R.id.nav_location_detail, bundle);
+            }
+        }
     }
 
     @Override

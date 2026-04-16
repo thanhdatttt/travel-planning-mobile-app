@@ -51,6 +51,17 @@
         tools:layout="@layout/fragment_profile"/>
 
     <fragment
+        android:id="@+id/nav_trips"
+        android:name="com.example.travelplanning.ui.itinerary.TripFragment"
+        android:label="My Trips"
+        tools:layout="@layout/fragment_trips" />
+
+    <fragment
+        android:id="@+id/nav_chatbot"
+        android:name="com.example.travelplanning.ui.chat.ChatbotFragment"
+        android:label="TourGuide Bot"
+        tools:layout="@layout/fragment_chatbot" />
+    <fragment
         android:id="@+id/nav_admin"
         android:name="com.example.travelplanning.ui.admin.AdminUserFragment"
         android:label="fragment_admin_user"
