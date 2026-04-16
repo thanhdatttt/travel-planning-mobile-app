@@ -11,6 +11,15 @@ const router = express.Router();
 
 router.get("/", validate(BookmarkQuerySchema), bookmarkController.getAll);
 router.post("/", validate(BookmarkCreateSchema), bookmarkController.toggle);
-router.delete("/:id", validate(BookmarkParamsSchema), bookmarkController.delete);
+router.delete(
+  "/:id",
+  validate(BookmarkParamsSchema),
+  bookmarkController.delete,
+);
 
+router.get(
+  "/check",
+  validate(BookmarkQuerySchema),
+  bookmarkController.getByLocationId,
+);
 export default router;

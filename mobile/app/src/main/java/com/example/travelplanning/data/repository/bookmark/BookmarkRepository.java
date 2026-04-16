@@ -8,6 +8,7 @@ import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.data.remote.bookmark.BookmarkApi;
 import com.example.travelplanning.data.remote.bookmark.dto.response.BookmarkResponse;
 import com.example.travelplanning.data.remote.core.ApiResponse;
+import com.example.travelplanning.data.remote.location.dto.response.LocationResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +78,24 @@ public class BookmarkRepository {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<List<BookmarkResponse>>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void checkBookmarkStatus(String locationId, BookmarkCallback<Boolean> callback) {
+        bookmarkApi.checkStatus(locationId).enqueue(new Callback<ApiResponse<Boolean>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Boolean>> call, Response<ApiResponse<Boolean>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body().getData(), 1);
+                } else {
+                    callback.onSuccess(false, 1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Boolean>> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

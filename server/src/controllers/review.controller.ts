@@ -89,6 +89,33 @@ export const reviewController = {
     return res.json(createResponse({ data: review }));
   },
 
+  async getAllByUserId(req: Request, res: Response) {
+    const userId = req.user.id;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const [reviews, total] = await Promise.all([
+      prisma.review.findMany({
+        where: { userId, isDeleted: false },
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+        include: {
+          location: { select: { name: true } },
+        },
+      }),
+      prisma.review.count({ where: { userId, isDeleted: false } }),
+    ]);
+
+    return res.json(
+      createResponse({
+        data: reviews,
+        metadata: { total, page, lastPage: Math.ceil(total / limit) },
+      }),
+    );
+  },
+
   async update(req: Request, res: Response) {
     const { id } = req.params as { id: string };
     const userId = req.user.id;
@@ -112,7 +139,6 @@ export const reviewController = {
     );
   },
 
-  //Soft Delete
   async delete(req: Request, res: Response) {
     const { id } = req.params as { id: string };
     const userId = req.user.id;

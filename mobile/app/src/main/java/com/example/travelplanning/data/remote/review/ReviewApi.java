@@ -30,4 +30,10 @@ public interface ReviewApi {
 
     @DELETE("api/reviews/{id}")
     Call<ApiResponse<Void>> deleteReview(@Path("id") String reviewId);
+
+    @GET("api/reviews/me")
+    Call<ApiResponse<List<ReviewResponse>>> getMyReviews(
+            @Query("page") int page,
+            @Query("limit") int limit
+    );
 }

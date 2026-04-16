@@ -71,4 +71,32 @@ export const bookmarkController = {
       createResponse({ message: "Bookmark deleted successfully" }),
     );
   },
+
+  async getByLocationId(req: Request, res: Response) {
+    const { locationId } = req.query as { locationId: string };
+    const userId = req.user.id;
+
+    const bookmark = await prisma.bookmark.findUnique({
+      where: { userId_locationId: { userId, locationId } },
+    });
+
+    return res.json(createResponse({ data: !!bookmark }));
+  },
+
+  async getAllByUserId(req: Request, res: Response) {
+    const userId = req.user.id; 
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    const bookmarks = await prisma.bookmark.findMany({
+      where: { userId },
+      include: { location: true },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    const locations = bookmarks.map(b => b.location);
+
+    return res.json(createResponse({ data: locations }));
+  }
 };

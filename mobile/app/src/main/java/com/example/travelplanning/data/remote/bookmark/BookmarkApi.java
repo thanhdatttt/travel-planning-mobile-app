@@ -1,6 +1,5 @@
 package com.example.travelplanning.data.remote.bookmark;
 
-import com.example.travelplanning.data.model.bookmark.Bookmark;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 
 import java.util.List;
@@ -15,6 +14,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 import com.example.travelplanning.data.remote.bookmark.dto.response.BookmarkResponse;
+import com.example.travelplanning.data.remote.location.dto.response.LocationResponse;
 
 public interface BookmarkApi {
 
@@ -32,5 +32,14 @@ public interface BookmarkApi {
     @DELETE("api/bookmarks/{id}")
     Call<ApiResponse<Void>> deleteBookmark(
             @Path("id") String bookmarkId
+    );
+
+    @GET("api/bookmarks/check")
+    Call<ApiResponse<Boolean>> checkStatus(@Query("locationId") String locationId);
+
+    @GET("api/bookmarks/me")
+    Call<ApiResponse<List<LocationResponse>>> getAllByUserId(
+            @Query("page") int page,
+            @Query("limit") int limit
     );
 }
