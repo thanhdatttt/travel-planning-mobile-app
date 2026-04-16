@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">travelPlanning</string>
+    <string name="app_name">TourGuide</string>
 
     // login and register
     <string name="complete_account">Complete Account</string>
@@ -44,7 +44,7 @@
     <string name="ai">AI</string>
     <string name="map">Map</string>
     <string name="account">Account</string>
-    <string name="title_activity_main_screen">MainScreenActivity</string>
+    <string name="title_activity_main_screen">TourGuide</string>
     <string name="profile">Profile</string>
     <string name="search">Search</string>
     <string name="map_enter_location">Enter location</string>
