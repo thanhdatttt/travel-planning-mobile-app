@@ -460,9 +460,8 @@ public class LocationDetailFragment extends Fragment {
             summaryBinding.tvAverageRating.setText(String.format(Locale.US, "%.1f", average));
             summaryBinding.miniRatingBar.setRating((float) average);
 
-            // ĐƯA VÒNG LẶP TÍNH PROGRESS VÀO TRONG IF ĐỂ AN TOÀN
             for (RatingStat stat : stats) {
-                int progress = (stat.getCount() * 100) / totalReviews;
+                int progress = (totalReviews > 0) ? (int) ((stat.getCount() * 100.0) / totalReviews) : 0;
                 switch (stat.getRating()) {
                     case 5: summaryBinding.pbStar5.setProgress(progress); break;
                     case 4: summaryBinding.pbStar4.setProgress(progress); break;

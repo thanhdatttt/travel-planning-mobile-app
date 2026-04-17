@@ -45,7 +45,7 @@ export const favoriteController = {
         skip,
         take: limit,
         include: {
-          //   itinerary: true //might need corresponding itinerary
+          itinerary: true,
         },
         orderBy: { createdAt: "desc" },
       }),
@@ -72,5 +72,16 @@ export const favoriteController = {
     await prisma.favorite.delete({ where: { id } });
 
     return res.json(createResponse({ message: "Favorite deleted" }));
+  },
+
+  async checkStatus(req: Request, res: Response) {
+    const { itineraryId } = req.query as { itineraryId: string };
+    const userId = req.user.id;
+
+    const favorite = await prisma.favorite.findUnique({
+      where: { userId_itineraryId: { userId, itineraryId } },
+    });
+
+    return res.json(createResponse({ data: !!favorite }));
   },
 };

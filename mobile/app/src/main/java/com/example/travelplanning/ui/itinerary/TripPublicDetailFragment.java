@@ -58,11 +58,13 @@ public class TripPublicDetailFragment extends Fragment {
 
         if (tripId != null) {
             viewModel.fetchItineraryById(tripId);
+            viewModel.checkFavoriteStatus(tripId);
         }
 
         setupTabUI();
         setupObservers();
         setupListeners();
+        setupFavoriteActions();
     }
 
     @Override
@@ -145,5 +147,21 @@ public class TripPublicDetailFragment extends Fragment {
             binding.tvTripLocation.setText(itinerary.getItineraryItems().get(0).getLocation().getName());
         }
         if (itinerary.getDescription() != null) binding.tvTripDescription.setText(itinerary.getDescription());
+    }
+
+    private void setupFavoriteActions() {
+        binding.btnFavorite.setOnClickListener(v -> {
+            if (tripId != null) {
+                viewModel.toggleFavorite(tripId);
+            }
+        });
+
+        viewModel.getIsFavorited().observe(getViewLifecycleOwner(), favorited -> {
+            if (favorited) {
+                binding.btnFavorite.setImageResource(R.drawable.ic_heart);
+            } else {
+                binding.btnFavorite.setImageResource(R.drawable.ic_heart_outline);
+            }
+        });
     }
 }
