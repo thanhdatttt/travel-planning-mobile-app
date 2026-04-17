@@ -19,13 +19,20 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
     private List<ProfileItem> items;
     private boolean isEditMode = false;
 
+    private final OnBirthdateClickListener listener;
+
+    public interface OnBirthdateClickListener {
+        void onBirthdateClick(ProfileItem item);
+    }
+
     public void setEditMode(boolean mode) {
         this.isEditMode = mode;
         notifyDataSetChanged();
     }
 
-    public ProfileAdapter(List<ProfileItem> items){
+    public ProfileAdapter(List<ProfileItem> items, OnBirthdateClickListener listener){
         this.items = items;
+        this.listener = listener;
     }
 
     @NonNull
@@ -39,7 +46,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
     @Override
     public void onBindViewHolder(@NonNull ProfileViewHolder holder, int position) {
         ProfileItem item = items.get(position);
-        holder.bind(item, isEditMode);
+        holder.bind(item, isEditMode, listener);
     }
 
     @Override
@@ -50,7 +57,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
     static class ProfileViewHolder extends RecyclerView.ViewHolder {
         TextView tvLabel, tvValue;
         EditText etValue;
-        TextWatcher currentTextWatcher; // Lưu lại để tránh trùng lặp listener
+        TextWatcher currentTextWatcher;
 
         public ProfileViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -59,7 +66,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
             etValue = itemView.findViewById(R.id.etValue);
         }
 
-        public void bind(ProfileItem item, boolean isEditMode) {
+        public void bind(ProfileItem item, boolean isEditMode, OnBirthdateClickListener listener) {
             String labelText = itemView.getContext().getString(item.getLabelRes());
             tvLabel.setText(labelText);
 
@@ -68,17 +75,23 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
                 etValue.removeTextChangedListener(currentTextWatcher);
             }
 
+            if (isEditMode && "dob".equals(item.getFieldKey())) {
+                etValue.setFocusable(false);
+                etValue.setClickable(true);
+                etValue.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onBirthdateClick(item);
+                    }
+                });
+            } else {
+                etValue.setFocusableInTouchMode(isEditMode);
+                etValue.setOnClickListener(null);
+            }
+
             if (isEditMode) {
                 tvValue.setVisibility(View.GONE);
                 etValue.setVisibility(View.VISIBLE);
                 etValue.setText(item.getValue());
-
-                if (item.getFieldKey().equals("birthdate")) {
-                    etValue.setHint("YYYY-MM-DD"); // VD: 2000-03-06
-                }
-//                else {
-//                    etValue.setHint("");
-//                }
 
                 currentTextWatcher = new TextWatcher() {
                     @Override

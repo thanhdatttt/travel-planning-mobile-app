@@ -1,5 +1,7 @@
 package com.example.travelplanning.data.remote.profile.dto.request;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,6 +19,7 @@ public class UpdateMeRequest {
 
     String phone;
     String address;
+    String dob;
     String avatarUrl;
     String bio;
     Map<String, Object> preference;

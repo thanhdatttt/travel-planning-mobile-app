@@ -26,4 +26,5 @@
     <color name="dark_green">#219D0E</color>
     <color name="rating_balls">#F4C23A</color>
     <color name="red">#FF0800</color>
+    <color name="icon">#FF000000</color>
 </resources>

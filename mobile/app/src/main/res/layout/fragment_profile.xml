@@ -6,14 +6,25 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/background"
+        app:navigationIcon="@drawable/ic_chevron_left"
+        app:navigationIconTint="@color/icon"
+        app:title="@string/personal_info"
+        app:titleTextColor="@color/text"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivAvatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircleComponent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/suprised_car" />
