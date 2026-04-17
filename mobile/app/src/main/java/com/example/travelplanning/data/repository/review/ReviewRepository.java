@@ -5,7 +5,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import com.example.travelplanning.core.network.ApiServiceFactory;
+import com.example.travelplanning.data.mapper.review.UserReviewMapper;
 import com.example.travelplanning.data.model.review.ReviewPagination;
+import com.example.travelplanning.data.model.review.UserReview;
+import com.example.travelplanning.data.model.review.UserReviewPagination;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.model.review.Review;
 import com.example.travelplanning.data.model.review.RatingStat;
@@ -25,10 +28,12 @@ import retrofit2.Response;
 public class ReviewRepository {
     private final ReviewApi reviewApi;
     private final ReviewMapper reviewMapper;
+    private final UserReviewMapper userReviewMapper;
 
     public ReviewRepository(Context context) {
         this.reviewApi = ApiServiceFactory.create(context, ReviewApi.class);
         this.reviewMapper = new ReviewMapper();
+        this.userReviewMapper = new UserReviewMapper();
     }
 
     public interface ReviewCallback<T> {
@@ -67,10 +72,8 @@ public class ReviewRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     ApiResponse<List<ReviewResponse>> body = response.body();
 
-                    // 1. Chuyển đổi List DTO sang Domain
                     List<Review> domainReviews = reviewMapper.mapToDomainList(body.getData());
 
-                    // 2. Lấy metadata (check null để tránh crash)
                     int lastPage = 1;
                     if (body.getMetadata() != null) {
                         lastPage = body.getMetadata().getTotalPages();
@@ -121,6 +124,34 @@ public class ReviewRepository {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<Void>> call, @NonNull Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void getMyReviews(int page, ReviewCallback<UserReviewPagination> callback) {
+        reviewApi.getMyReviews(page, 10).enqueue(new Callback<ApiResponse<List<ReviewResponse>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<List<ReviewResponse>>> call,
+                                   @NonNull Response<ApiResponse<List<ReviewResponse>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<List<ReviewResponse>> body = response.body();
+
+                    List<UserReview> domainList = userReviewMapper.mapToDomainList(body.getData());
+
+                    int lastPage = 1;
+                    if (body.getMetadata() != null) {
+                        lastPage = body.getMetadata().getTotalPages();
+                    }
+
+                    callback.onSuccess(new UserReviewPagination(domainList, lastPage));
+                } else {
+                    callback.onError("Không thể tải danh sách đánh giá");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<List<ReviewResponse>>> call, @NonNull Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

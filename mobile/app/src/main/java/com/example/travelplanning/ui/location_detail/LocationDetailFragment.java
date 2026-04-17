@@ -438,6 +438,7 @@ public class LocationDetailFragment extends Fragment {
     private void updateReviewStatsUI(List<RatingStat> stats) {
         if (stats == null) return;
         var summaryBinding = binding.layoutReviewSummary;
+        if (stats == null) return;
         int totalReviews = 0;
         double totalPoints = 0;
 
@@ -472,7 +473,6 @@ public class LocationDetailFragment extends Fragment {
                 }
             }
         } else {
-            // XỬ LÝ TRƯỜNG HỢP TOTAL = 0
             binding.tvDetailRatingScore.setText("0.0");
             binding.ratingBar.setRating(0f);
             binding.tvDetailRatingCount.setText("(0 reviews)");
@@ -526,7 +526,7 @@ public class LocationDetailFragment extends Fragment {
         binding.btnBookmark.setOnClickListener(v -> {
             viewModel.toggleBookmark(locationId);
         });
-
+        viewModel.checkBookmarkStatus(locationId);
         viewModel.getIsBookmarked().observe(getViewLifecycleOwner(), bookmarked -> {
             if (bookmarked) {
                 binding.btnBookmark.setImageResource(R.drawable.ic_bookmark_full);
