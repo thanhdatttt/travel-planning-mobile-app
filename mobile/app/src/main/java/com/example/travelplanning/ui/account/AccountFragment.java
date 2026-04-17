@@ -106,7 +106,9 @@ public class AccountFragment extends Fragment {
         } else if (option.getId() == AccountViewModel.ID_SETTING) {
             Navigation.findNavController(requireView())
                     .navigate(R.id.nav_settings);
-        } else if (option.getId() == AccountViewModel.ID_BOOKMARK) {
+        } else if (option.getId() == AccountViewModel.ID_REVIEW){
+            Navigation.findNavController(requireView()).navigate(R.id.nav_review);
+        }else if (option.getId() == AccountViewModel.ID_BOOKMARK) {
             Navigation.findNavController(requireView()).navigate(R.id.nav_saved_locations);
         }else if (option.getId() == AccountViewModel.ID_FAV) {
             Navigation.findNavController(requireView()).navigate(R.id.nav_favorite_trips);
