@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.data.model.profile.UserRole;
@@ -48,6 +49,16 @@ public class AccountFragment extends Fragment {
         // 1. Thiết lập Observer để lắng nghe khi có dữ liệu Profile
         profileViewModel.getUserProfile().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
+                if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+                    Glide.with(this)
+                            .load(user.getAvatarUrl())
+                            .placeholder(R.drawable.ic_user)
+                            .error(R.drawable.ic_user)
+                            .centerCrop()
+                            .into(binding.ivAvatar);
+                } else {
+                    binding.ivAvatar.setImageResource(R.drawable.ic_user);
+                }
                 // Tạo danh sách menu dựa trên user vừa nhận được
                 List<AccountOption> menuItems = getMenuItemsByRole(user);
 
