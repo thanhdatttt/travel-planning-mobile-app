@@ -70,12 +70,6 @@ public class SettingsFragment extends Fragment {
 
             prefs.edit().putString("lang", newLang).apply();
 
-//            Locale locale = new Locale(newLang);
-//            Resources res = getResources();
-//            Configuration config = res.getConfiguration();
-//            config.setLocale(locale);
-//            res.updateConfiguration(config, res.getDisplayMetrics());
-
             // restarts the Activity and applies the attachBaseContext logic
             requireActivity().recreate();
         });

@@ -303,4 +303,17 @@ public class LocationDetailViewModel extends AndroidViewModel {
             }
         });
     }
+
+    public void checkBookmarkStatus(String locationId) {
+        bookmarkRepo.checkBookmarkStatus(locationId, new BookmarkRepository.BookmarkCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean isBookmarkedFromDb, int lp) {
+                isBookmarked.setValue(isBookmarkedFromDb);
+            }
+            @Override
+            public void onError(String msg) {
+                isBookmarked.setValue(false);
+            }
+        });
+    }
 }

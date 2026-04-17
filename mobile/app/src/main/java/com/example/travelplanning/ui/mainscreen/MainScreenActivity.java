@@ -1,11 +1,13 @@
 package com.example.travelplanning.ui.mainscreen;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -20,6 +22,11 @@ public class MainScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        boolean isDark = prefs.getBoolean("dark_mode", false);
+        AppCompatDelegate.setDefaultNightMode(isDark ?
+                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+
         super.onCreate(savedInstanceState);
         binding = ActivityMainScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
