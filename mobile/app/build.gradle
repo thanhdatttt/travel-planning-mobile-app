@@ -114,4 +114,11 @@ dependencies {
 
     // markdown
     implementation "io.noties.markwon:core:4.6.2"
+
+    // Room components
+    implementation "androidx.room:room-runtime:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
+
+    // Gson for TypeConverters
+    implementation 'com.google.code.gson:gson:2.10.1'
 }

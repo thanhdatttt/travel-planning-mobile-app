@@ -31,6 +31,8 @@ import android.content.Intent;
 import com.example.travelplanning.data.model.category.Category;
 import com.example.travelplanning.ui.location_detail.LocationDetailFragment;
 import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
+
+import com.example.travelplanning.ui.util.CategoryHelper;
 public class LocationSearchActivity extends AppCompatActivity {
     private LocationViewModel locationViewModel;
     private LocationAdapter adapter;
@@ -190,7 +192,9 @@ public class LocationSearchActivity extends AppCompatActivity {
             chipGroupCategory.removeAllViews();
             for (Category cat : categories) {
                 Chip chip = new Chip(this);
-                chip.setText(cat.getNameVi()); 
+                
+                chip.setText(CategoryHelper.getCategoryName(this, cat.getSlug())); 
+                
                 chip.setCheckable(true);
                 chip.setTag(cat.getId()); 
                 

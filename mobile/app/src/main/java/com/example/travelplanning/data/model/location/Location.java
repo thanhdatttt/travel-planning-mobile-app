@@ -15,13 +15,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.Ignore;
+
+@Entity(tableName = "locations")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = {@Ignore})
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Location implements Parcelable{
+    @PrimaryKey
+    @NonNull
     String id;
+
     String name;
     String address;
     Double avgRating;
@@ -45,6 +55,7 @@ public class Location implements Parcelable{
     List<LocationHour> openingHours;
     String email;
 
+    @Ignore
     protected Location(Parcel in) {
         id = in.readString();
         name = in.readString();

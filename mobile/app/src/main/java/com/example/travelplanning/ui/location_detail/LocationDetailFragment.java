@@ -436,6 +436,7 @@ public class LocationDetailFragment extends Fragment {
 
     // REVIEW
     private void updateReviewStatsUI(List<RatingStat> stats) {
+        if (stats == null) return;
         var summaryBinding = binding.layoutReviewSummary;
         int totalReviews = 0;
         double totalPoints = 0;

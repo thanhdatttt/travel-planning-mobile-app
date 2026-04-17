@@ -149,7 +149,7 @@
     <string name="cat_attractions">Tham quan</string>
     <string name="cat_shopping">Mua sắm</string>
     <string name="cat_services">Dịch vụ khác</string>
-
+    <string name="cat_unknown">Không xác định</string>
     // chatbot
     <string name="new_conversation">Cuộc trò chuyện mới</string>
     <string name="Hello">Xin chào! Mình có thể giúp gì cho bạn?</string>
@@ -211,4 +211,14 @@
     <string name="review_body">Cảm nhận của bạn</string>
     <string name="post_review">Đăng</string>
     <string name="empty_bookmark_list">Bạn chưa lưu bất kì địa điểm nào</string>
+
+    //priceLevel
+    <string name="price_cheap">Rẻ</string>
+    <string name="price_moderate">Trung bình</string>  
+    <string name="price_expensive">Đắt</string>
+    <string name="price_very_expensive">Rất đắt</string>
+
+    // home
+    <string name="explore_itinerary">Khám phá lịch trình</string>
+    <string name="search_hint">Tìm điểm đến...</string>
 </resources>

@@ -156,15 +156,25 @@
     <string name="save_change">Save change</string>
     <string name="detail">Detail</string>
 
+    // home
+    <string name="explore_itinerary">Explore Itinerary</string>
+    <string name="search_hint">Search locations...</string>
+
     //category
     <string name="cat_food_and_drink">Food &amp; Drink</string>
     <string name="cat_accommodation">Accommodation</string>
     <string name="cat_attractions">Attractions</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_services">Services</string>
+    <string name="cat_unknown">Unknown</string>
     <string name="trip">Trip</string>
     <string name="review">Review</string>
 
+    //priceLevel
+    <string name="price_cheap">Cheap</string>
+    <string name="price_moderate">Moderate</string>
+    <string name="price_expensive">Expensive</string>
+    <string name="price_very_expensive">Very Expensive</string>
 
     //location detail
     <string name="location_on_map">Location on map</string>
