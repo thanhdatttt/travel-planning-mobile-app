@@ -440,7 +440,6 @@ public class LocationDetailFragment extends Fragment {
         int totalReviews = 0;
         double totalPoints = 0;
 
-        // Tính toán con số thực tế từ kết quả API Stats trả về
         for (RatingStat stat : stats) {
             totalReviews += stat.getCount();
             totalPoints += (stat.getRating() * stat.getCount());
@@ -449,20 +448,17 @@ public class LocationDetailFragment extends Fragment {
         if (totalReviews > 0) {
             double average = totalPoints / totalReviews;
 
-            // Cập nhật phần Header
             binding.tvDetailRatingScore.setText(String.format(Locale.US, "%.1f", average));
             binding.ratingBar.setRating((float) average);
             String countStr = "(" + totalReviews + " " + getString(R.string.reviews) + ")";
             binding.tvDetailRatingCount.setText(countStr);
 
-            // Cập nhật phần Summary phía dưới
             summaryBinding.tvTotalReviews.setText(countStr);
             summaryBinding.tvAverageRating.setText(String.format(Locale.US, "%.1f", average));
             summaryBinding.miniRatingBar.setRating((float) average);
 
-            // Tính và vẽ Progress Bar AN TOÀN
             for (RatingStat stat : stats) {
-                int progress = (stat.getCount() * 100) / totalReviews;
+                int progress = (totalReviews > 0) ? (int) ((stat.getCount() * 100.0) / totalReviews) : 0;
                 switch (stat.getRating()) {
                     case 5: summaryBinding.pbStar5.setProgress(progress); break;
                     case 4: summaryBinding.pbStar4.setProgress(progress); break;
@@ -472,20 +468,16 @@ public class LocationDetailFragment extends Fragment {
                 }
             }
         } else {
-            // Không có review nào -> Reset toàn bộ giao diện về 0
             String zeroStr = "(0 " + getString(R.string.reviews) + ")";
             
-            // Header
             binding.tvDetailRatingScore.setText("0.0");
             binding.ratingBar.setRating(0f);
             binding.tvDetailRatingCount.setText(zeroStr);
 
-            // Summary
             summaryBinding.tvTotalReviews.setText(zeroStr);
             summaryBinding.tvAverageRating.setText("0.0");
             summaryBinding.miniRatingBar.setRating(0f);
             
-            // Xóa sạch các thanh Progress Bar cũ (nếu có)
             summaryBinding.pbStar5.setProgress(0);
             summaryBinding.pbStar4.setProgress(0);
             summaryBinding.pbStar3.setProgress(0);

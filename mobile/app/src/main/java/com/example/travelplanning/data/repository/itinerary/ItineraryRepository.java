@@ -35,7 +35,7 @@ public class ItineraryRepository {
     private final ItineraryMapper itineraryMapper;
     private final ItineraryItemMapper itineraryItemMapper;
     private final ItineraryDao itineraryDao;
-
+    private final Context context;
     private final ExecutorService executorService = Executors.newFixedThreadPool(4);
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -44,6 +44,7 @@ public class ItineraryRepository {
         this.itineraryMapper = new ItineraryMapper();
         this.itineraryItemMapper = new ItineraryItemMapper();
         this.itineraryDao = AppDatabase.getInstance(context).itineraryDao();
+        this.context = context.getApplicationContext();
     }
 
     // --- CALLBACKS (Giữ nguyên của bạn) ---
@@ -64,16 +65,17 @@ public class ItineraryRepository {
         void onError(String errorMessage);
     }
 
-    // --- API CALLS KẾT HỢP OFFLINE ---
 
-    // 1. LẤY DANH SÁCH LỊCH TRÌNH
     public void getUserItineraries(int page, int limit, ItineraryListCallback callback) {
-        if (page == 1) {
+        String currentUserId = com.example.travelplanning.core.storage.TokenManager.getUserId(context);
+
+        if (page == 1 && currentUserId != null) {
             executorService.execute(() -> {
-                List<Itinerary> cachedList = itineraryDao.getCachedItineraries(limit);
-                android.util.Log.d("ROOM_DEBUG", "Cached items count: " + (cachedList != null ? cachedList.size() : 0));
+                List<Itinerary> cachedList = itineraryDao.getMyCachedItineraries(currentUserId, limit);
                 if (cachedList != null && !cachedList.isEmpty()) {
-                    mainHandler.post(() -> callback.onSuccess(cachedList, null));
+                    mainHandler.post(() -> {
+                        callback.onSuccess(cachedList, null);
+                    });
                 }
             });
         }
@@ -81,28 +83,38 @@ public class ItineraryRepository {
         itineraryApi.getUserItineraries(page, limit).enqueue(new Callback<ApiResponse<PaginatedData<ItineraryResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<PaginatedData<ItineraryResponse>>> call,
-                                   @NonNull Response<ApiResponse<PaginatedData<ItineraryResponse>>> response) {
+                                @NonNull Response<ApiResponse<PaginatedData<ItineraryResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     PaginatedData<ItineraryResponse> paginatedData = response.body().getData();
-                    if (paginatedData != null && paginatedData.getItems() != null) {
-                        List<Itinerary> domainList = new ArrayList<>();
-                        for (ItineraryResponse dto : paginatedData.getItems()) {
-                            domainList.add(itineraryMapper.mapToDomain(dto));
+                    List<Itinerary> domainList = new ArrayList<>();
+                    
+                    if (paginatedData.getItems() != null) {
+                        for (ItineraryResponse res : paginatedData.getItems()) {
+                            domainList.add(itineraryMapper.mapToDomain(res));
                         }
-                        // Lưu Room
-                        executorService.execute(() -> itineraryDao.insertItineraries(domainList));
-                        callback.onSuccess(domainList, paginatedData.getMeta());
-                    } else {
-                        callback.onError("Itinerary data not found.");
                     }
+
+                    executorService.execute(() -> {
+                        if (currentUserId != null) {
+                            if (page == 1) {
+                                itineraryDao.clearMyItineraries(currentUserId);
+                            }
+                            
+                            if (!domainList.isEmpty()) {
+                                itineraryDao.insertItineraries(domainList);
+                            }
+                        }
+                    });
+
+                    callback.onSuccess(domainList, paginatedData.getMeta());
                 } else {
-                    callback.onError("Error server (" + response.code() + ").");
+                    callback.onError("Lỗi máy chủ: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<PaginatedData<ItineraryResponse>>> call, @NonNull Throwable t) {
-                if (page > 1) callback.onError("Error network: " + t.getMessage());
+                callback.onError("Không có kết nối mạng");
             }
         });
     }

@@ -14,7 +14,9 @@ import com.example.travelplanning.data.model.bookmark.Bookmark;
 import com.example.travelplanning.data.model.review.Review;
 import com.example.travelplanning.data.model.review.RatingStat;
 import com.example.travelplanning.data.model.review.UserReview;
+import com.example.travelplanning.data.model.favorite.Favorite;
 
+import com.example.travelplanning.data.local.favorite.FavoriteDao;
 import com.example.travelplanning.data.local.review.ReviewDao;
 import com.example.travelplanning.data.local.bookmark.BookmarkDao;
 import com.example.travelplanning.data.local.profile.UserProfileDao;
@@ -25,7 +27,7 @@ import com.example.travelplanning.data.local.location.LocationConverters;
 import com.example.travelplanning.data.local.itinerary.ItineraryDao;
 import com.example.travelplanning.data.local.itinerary.ItineraryConverters;
 
-@Database(entities = {Location.class, Itinerary.class, Category.class, UserProfile.class, Bookmark.class, Review.class, RatingStat.class, UserReview.class}, version = 6, exportSchema = false)
+@Database(entities = {Location.class, Itinerary.class, Category.class, UserProfile.class, Bookmark.class, Review.class, RatingStat.class, UserReview.class, Favorite.class}, version = 7, exportSchema = false)
 @TypeConverters({LocationConverters.class, ItineraryConverters.class, UserProfileConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract BookmarkDao bookmarkDao();
@@ -34,6 +36,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CategoryDao categoryDao();
     public abstract UserProfileDao userProfileDao();
     public abstract ReviewDao reviewDao();
+    public abstract FavoriteDao favoriteDao();
 
     private static volatile AppDatabase INSTANCE;
 
