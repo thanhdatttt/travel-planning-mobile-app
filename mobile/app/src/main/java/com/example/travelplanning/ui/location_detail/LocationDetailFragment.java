@@ -434,14 +434,12 @@ public class LocationDetailFragment extends Fragment {
         binding.layoutPhotos.btnNext.setAlpha(page < totalPages - 1 ? 1.0f : 0.3f);
     }
 
-    // REVIEW
     private void updateReviewStatsUI(List<RatingStat> stats) {
         var summaryBinding = binding.layoutReviewSummary;
         if (stats == null) return;
         int totalReviews = 0;
         double totalPoints = 0;
 
-        // Tính toán con số thực tế từ kết quả API Stats trả về
         for (RatingStat stat : stats) {
             totalReviews += stat.getCount();
             totalPoints += (stat.getRating() * stat.getCount());
@@ -455,7 +453,6 @@ public class LocationDetailFragment extends Fragment {
             String countStr = "(" + totalReviews + " " + getString(R.string.reviews) + ")";
             binding.tvDetailRatingCount.setText(countStr);
 
-            // Cập nhật phần Summary phía dưới
             summaryBinding.tvTotalReviews.setText(countStr);
             summaryBinding.tvAverageRating.setText(String.format(Locale.US, "%.1f", average));
             summaryBinding.miniRatingBar.setRating((float) average);
@@ -471,24 +468,21 @@ public class LocationDetailFragment extends Fragment {
                 }
             }
         } else {
+            String zeroStr = "(0 " + getString(R.string.reviews) + ")";
+            
             binding.tvDetailRatingScore.setText("0.0");
             binding.ratingBar.setRating(0f);
-            binding.tvDetailRatingCount.setText("(0 reviews)");
-        }
+            binding.tvDetailRatingCount.setText(zeroStr);
 
-        // Gán tổng số lượng vào TextView trong summary
-        summaryBinding.tvTotalReviews.setText("(" + totalReviews + ")");
-
-        // Duyệt qua danh sách stats
-        for (RatingStat stat : stats) {
-            int progress = (stat.getCount() * 100) / totalReviews;
-            switch (stat.getRating()) {
-                case 5: summaryBinding.pbStar5.setProgress(progress); break;
-                case 4: summaryBinding.pbStar4.setProgress(progress); break;
-                case 3: summaryBinding.pbStar3.setProgress(progress); break;
-                case 2: summaryBinding.pbStar2.setProgress(progress); break;
-                case 1: summaryBinding.pbStar1.setProgress(progress); break;
-            }
+            summaryBinding.tvTotalReviews.setText(zeroStr);
+            summaryBinding.tvAverageRating.setText("0.0");
+            summaryBinding.miniRatingBar.setRating(0f);
+            
+            summaryBinding.pbStar5.setProgress(0);
+            summaryBinding.pbStar4.setProgress(0);
+            summaryBinding.pbStar3.setProgress(0);
+            summaryBinding.pbStar2.setProgress(0);
+            summaryBinding.pbStar1.setProgress(0);
         }
     }
 

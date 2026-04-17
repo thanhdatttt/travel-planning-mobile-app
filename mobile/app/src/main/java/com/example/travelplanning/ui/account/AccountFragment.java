@@ -46,7 +46,9 @@ public class AccountFragment extends Fragment {
 
         binding.rvAccountMenu.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // 1. Thiết lập Observer để lắng nghe khi có dữ liệu Profile
+        List<AccountOption> defaultMenu = getMenuItemsByRole(null);
+        binding.rvAccountMenu.setAdapter(new AccountAdapter(defaultMenu, this::handleMenuClick));
+
         profileViewModel.getUserProfile().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
@@ -59,19 +61,14 @@ public class AccountFragment extends Fragment {
                 } else {
                     binding.ivAvatar.setImageResource(R.drawable.ic_user);
                 }
-                // Tạo danh sách menu dựa trên user vừa nhận được
-                List<AccountOption> menuItems = getMenuItemsByRole(user);
 
-                // Cập nhật Adapter
-                AccountAdapter adapter = new AccountAdapter(menuItems, this::handleMenuClick);
-                binding.rvAccountMenu.setAdapter(adapter);
+                List<AccountOption> updatedMenu = getMenuItemsByRole(user);
+                binding.rvAccountMenu.setAdapter(new AccountAdapter(updatedMenu, this::handleMenuClick));
             }
         });
 
-        // 2. Gọi API lấy thông tin Profile
         profileViewModel.fetchUserProfile();
 
-        // logout
         observeLogoutStatus();
         handleLogout();
     }

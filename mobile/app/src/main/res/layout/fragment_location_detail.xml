@@ -29,7 +29,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:contentDescription="@string/back"
-                    android:background="@drawable/bg_circle_yellow"
+                    android:background="@drawable/bg_circle_back"
                     android:src="@drawable/ic_back" />
             </androidx.appcompat.widget.Toolbar>
 
