@@ -228,5 +228,7 @@
     <string name="review_body">Your feelings</string>
     <string name="post_review">Post</string>
     <string name="empty_bookmark_list">You haven\'t save any locations</string>
+    <string name="favorite_trips_title">Favorite Trips</string>
+    <string name="empty_favorite_message">You do not have any favorite trips yet</string>
 
 </resources>

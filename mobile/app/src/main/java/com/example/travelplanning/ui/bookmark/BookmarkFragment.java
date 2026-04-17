@@ -39,7 +39,6 @@ public class BookmarkFragment extends Fragment {
 
         binding.btnBack.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
-        // Gọi API lấy dữ liệu trang 1
         viewModel.fetchAllBookmarks(1);
     }
 

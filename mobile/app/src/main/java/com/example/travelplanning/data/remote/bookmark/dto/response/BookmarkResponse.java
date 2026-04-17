@@ -1,6 +1,5 @@
 package com.example.travelplanning.data.remote.bookmark.dto.response;
 
-
 import com.example.travelplanning.data.remote.location.dto.response.LocationResponse;
 import lombok.Data;
 
