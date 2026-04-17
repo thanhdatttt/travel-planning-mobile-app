@@ -12,14 +12,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelplanning.R;
-import com.example.travelplanning.data.model.report.Report;
+import com.example.travelplanning.data.model.moderator.LocationReport;
 import com.example.travelplanning.databinding.FragmentModeratorLocationBinding;
 import com.example.travelplanning.databinding.ModeratorHeaderBinding;
-import com.example.travelplanning.viewmodel.moderator.ModeratorReviewViewModel; // Consider renaming to ModeratorReportViewModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.example.travelplanning.viewmodel.moderator.ModeratorLocationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +25,9 @@ import java.util.List;
 public class ModeratorLocationFragment extends Fragment {
     private FragmentModeratorLocationBinding binding;
     private ModeratorHeaderBinding headerBinding;
-    private ModeratorReviewViewModel viewModel;
+    private ModeratorLocationViewModel viewModel;
     private ModeratorLocationAdapter adapter;
-    private final List<Report> reportList = new ArrayList<>();
+    private final List<LocationReport> reportList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -42,12 +40,8 @@ public class ModeratorLocationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(ModeratorReviewViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ModeratorLocationViewModel.class);
 
-        // QUAN TRỌNG: Thiết lập filter cho Location
-        viewModel.setFilterType("location");
-
-        // Highlight nút hiện tại trên Header
         headerBinding.btnLocations.setSelected(true);
 
         setupRecyclerView();
@@ -63,21 +57,18 @@ public class ModeratorLocationFragment extends Fragment {
         binding.rvLocations.setAdapter(adapter);
     }
 
-    private void showPopupMenu(View anchor, Report report) {
+    private void showPopupMenu(View anchor, LocationReport report) {
         PopupMenu popup = new PopupMenu(requireContext(), anchor);
-        popup.getMenu().add(0, 1, 0, "Ban Creator");
-        popup.getMenu().add(0, 2, 1, "Delete Location");
-        popup.getMenu().add(0, 3, 2, "Dismiss Report");
+        popup.getMenu().add(0, 1, 1, "Delete Location");
+        popup.getMenu().add(0, 2, 2, "Dismiss Report");
 
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
-            if (id == 1) {
-                showBanConfirmationDialog(report);
-            } else if (id == 2) {
+             if (id == 1) {
                 // TODO: Call API to delete location
                 Toast.makeText(getContext(), "Location deleted", Toast.LENGTH_SHORT).show();
-            } else if (id == 3) {
-                viewModel.dismissReport(report.getId());
+            } else if (id == 2) {
+                viewModel.dismissReport(report.getReportId());
                 Toast.makeText(getContext(), "Report dismissed", Toast.LENGTH_SHORT).show();
             }
             return true;
@@ -102,11 +93,4 @@ public class ModeratorLocationFragment extends Fragment {
         headerBinding.btnTrips.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_moderator_trip));
     }
 
-    private void showBanConfirmationDialog(Report report) {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setMessage(R.string.are_you_sure_you_want_to_ban_the_user_who_created_this + report.getTargetType() + "?")
-                .setPositiveButton(R.string.ban, (dialog, which) -> viewModel.banUserFromReport(report.getTargetId()))
-                .setNegativeButton(R.string.cancel, null)
-                .show();
-    }
 }

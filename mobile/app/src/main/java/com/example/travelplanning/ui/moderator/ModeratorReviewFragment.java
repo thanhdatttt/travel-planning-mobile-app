@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelplanning.R;
-import com.example.travelplanning.data.model.report.Report;
-import com.example.travelplanning.databinding.FragmentModeratorReviewBinding; // Generated from your XML
+import com.example.travelplanning.data.model.moderator.ReviewReport;
+import com.example.travelplanning.databinding.FragmentModeratorReviewBinding;
 import com.example.travelplanning.databinding.ModeratorHeaderBinding;
 import com.example.travelplanning.viewmodel.moderator.ModeratorReviewViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -30,7 +30,7 @@ public class ModeratorReviewFragment extends Fragment {
     private ModeratorHeaderBinding headerBinding;
     private ModeratorReviewViewModel viewModel;
     private ModeratorReviewAdapter adapter;
-    private final List<Report> reportList = new ArrayList<>();
+    private final List<ReviewReport> reportList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -44,7 +44,6 @@ public class ModeratorReviewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(ModeratorReviewViewModel.class);
-        viewModel.setFilterType("review");
         headerBinding.btnReview.setSelected(true);
 
         setupRecyclerView();
@@ -61,7 +60,7 @@ public class ModeratorReviewFragment extends Fragment {
         binding.rvUsers.setAdapter(adapter);
     }
 
-    private void showPopupMenu(View anchor, Report report) {
+    private void showPopupMenu(View anchor, ReviewReport report) {
         PopupMenu popup = new PopupMenu(requireContext(), anchor);
         popup.getMenu().add(0, 1, 0, "Ban User");
         popup.getMenu().add(0, 2, 1, "Dismiss Report");
@@ -72,7 +71,7 @@ public class ModeratorReviewFragment extends Fragment {
                 showBanConfirmationDialog(report);
                 return true;
             } else if (id == 2) {
-                viewModel.dismissReport(report.getId());
+                viewModel.dismissReport(report.getReportId());
                 Toast.makeText(getContext(), "Report dismissed", Toast.LENGTH_SHORT).show();
                 return true;
             }
@@ -141,11 +140,11 @@ public class ModeratorReviewFragment extends Fragment {
         });
     }
 
-    private void showBanConfirmationDialog(Report report) {
+    private void showBanConfirmationDialog(ReviewReport report) {
         new MaterialAlertDialogBuilder(requireContext())
-                .setMessage(R.string.are_you_sure_you_want_to_ban_the_user_who_created_this + report.getTargetType() + "?")
+                .setMessage(R.string.are_you_sure_you_want_to_ban_the_user + " " + report.getReviewerName() + "?")
                 .setPositiveButton(R.string.ban, (dialog, which) -> {
-                    viewModel.banUserFromReport(report.getTargetId());
+                    viewModel.banUserFromReport(report.getReviewerId());
                 })
                 .setNegativeButton( R.string.cancel , null)
                 .show();

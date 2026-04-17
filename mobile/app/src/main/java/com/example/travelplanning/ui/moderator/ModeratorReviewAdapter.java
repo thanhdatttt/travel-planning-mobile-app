@@ -7,21 +7,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelplanning.R;
-import com.example.travelplanning.data.model.report.Report;
-import com.example.travelplanning.databinding.ItemModeratorReviewBinding; // Ensure this matches your layout file name
+import com.example.travelplanning.data.model.moderator.ReviewReport;
+import com.example.travelplanning.databinding.ItemModeratorReviewBinding;
 
 import java.util.List;
 
 public class ModeratorReviewAdapter extends RecyclerView.Adapter<ModeratorReviewAdapter.ReportViewHolder> {
-    private List<Report> reports;
+    private List<ReviewReport> reports;
     private final OnReportActionListener listener;
 
-    // Interface đã được tối giản để chỉ truyền View anchor và Data
     public interface OnReportActionListener {
-        void onOptionClick(View anchor, Report report);
+        void onOptionClick(View anchor, ReviewReport report);
     }
 
-    public ModeratorReviewAdapter(List<Report> reports, OnReportActionListener listener) {
+    public ModeratorReviewAdapter(List<ReviewReport> reports, OnReportActionListener listener) {
         this.reports = reports;
         this.listener = listener;
     }
@@ -52,15 +51,17 @@ public class ModeratorReviewAdapter extends RecyclerView.Adapter<ModeratorReview
             this.binding = binding;
         }
 
-        public void bind(Report report, OnReportActionListener listener) {
+        public void bind(ReviewReport report, OnReportActionListener listener) {
             binding.tvReviewText.setMaxLines(4);
             binding.tvReadMore.setVisibility(View.GONE);
 
-//            binding.tvReviewText.setText(report.getReviewContent());
-//            binding.tvReviewerUsername.setText(report.getReviewerName());
-//            binding.tvPlaceName.setText(report.getPlaceName());
-//            binding.tvReportReason.setText(report.getReason());
-//            binding.tvReportedBy.setText(report.getReporterName());
+            binding.tvReviewText.setText(report.getReviewText());
+            binding.tvReviewerUsername.setText(report.getReviewerName());
+            binding.tvReportReason.setText(report.getReportReason());
+            binding.tvReportedBy.setText(report.getReporterName());
+
+            binding.tvTitle.setText(report.getTitle());
+            binding.tvRating.setText(report.getFormattedRating());
 
             binding.tvReviewText.post(() -> {
                 if (binding.tvReviewText.getLineCount() > 4) {

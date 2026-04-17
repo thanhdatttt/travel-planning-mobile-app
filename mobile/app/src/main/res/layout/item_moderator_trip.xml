@@ -17,7 +17,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:src="@drawable/no_avatar"
-            android:contentDescription="Trip creator avatar" />
+            android:contentDescription="@string/trip_creator_avatar" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -30,24 +30,53 @@
                 android:id="@+id/tvTripTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Itinerary Title"
+                android:text="@string/itinerary"
                 android:textColor="@color/text"
                 android:textStyle="bold"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tvTripDetails"
+                android:textSize="15sp" />
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Private • YYYY/MM/DD - YYYY/MM/DD"
+                android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/private_dot"
                 android:textSize="12sp"
                 android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/tvStartDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yyyy_mm_dd"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/floating_minus_sign"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary" />
+
+                <TextView
+                    android:id="@+id/tvEndDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yyyy_mm_dd"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/btnMoreOptions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/option"
             android:src="@drawable/ic_option"
             android:backgroundTint="@color/black"
             android:background="?attr/selectableItemBackgroundBorderless" />
@@ -59,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:paddingHorizontal="10dp"
-        android:text="Trip description or reported content..."
+        android:text="@string/itinerary"
         android:textSize="13sp"
         android:textColor="@color/text"
         android:maxLines="4"
@@ -92,7 +121,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reported by: "
+            android:text="@string/reported_by"
             android:textSize="12sp"
             android:textColor="@color/text_secondary" />
 
@@ -101,7 +130,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="reporter_username"
+            android:text="@string/username"
             android:textColor="@color/text"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -109,7 +138,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reason: "
+            android:text="@string/reason"
             android:textSize="12sp"
             android:textColor="@color/text_secondary" />
 
@@ -117,7 +146,7 @@
             android:id="@+id/tvReportReason"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="reason"
+            android:text="@string/reason"
             android:textSize="12sp"
             android:textColor="@color/text"
             android:textStyle="bold" />

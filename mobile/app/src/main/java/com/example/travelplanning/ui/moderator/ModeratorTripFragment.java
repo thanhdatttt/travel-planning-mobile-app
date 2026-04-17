@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelplanning.R;
-import com.example.travelplanning.data.model.report.Report;
+import com.example.travelplanning.data.model.moderator.ItineraryReport;
 import com.example.travelplanning.databinding.FragmentModeratorTripBinding;
 import com.example.travelplanning.databinding.ModeratorHeaderBinding;
-import com.example.travelplanning.viewmodel.moderator.ModeratorReviewViewModel;
+import com.example.travelplanning.viewmodel.moderator.ModeratorItineraryViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
@@ -27,9 +27,9 @@ import java.util.List;
 public class ModeratorTripFragment extends Fragment {
     private FragmentModeratorTripBinding binding;
     private ModeratorHeaderBinding headerBinding;
-    private ModeratorReviewViewModel viewModel;
+    private ModeratorItineraryViewModel viewModel;
     private ModeratorTripAdapter adapter;
-    private final List<Report> reportList = new ArrayList<>();
+    private final List<ItineraryReport> reportList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -42,9 +42,7 @@ public class ModeratorTripFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(ModeratorReviewViewModel.class);
-
-        viewModel.setFilterType("itinerary");
+        viewModel = new ViewModelProvider(this).get(ModeratorItineraryViewModel.class);
 
         if(headerBinding.btnTrips != null) {
             headerBinding.btnTrips.setSelected(true);
@@ -63,7 +61,7 @@ public class ModeratorTripFragment extends Fragment {
         binding.rvTrips.setAdapter(adapter);
     }
 
-    private void showPopupMenu(View anchor, Report report) {
+    private void showPopupMenu(View anchor, ItineraryReport report) {
         PopupMenu popup = new PopupMenu(requireContext(), anchor);
         popup.getMenu().add(0, 1, 0, "Ban Creator");
         popup.getMenu().add(0, 2, 1, "Delete Trip");
@@ -77,7 +75,7 @@ public class ModeratorTripFragment extends Fragment {
                 // TODO: Delegate to Service/API layer to delete the itinerary
                 Toast.makeText(getContext(), "Trip deleted", Toast.LENGTH_SHORT).show();
             } else if (id == 3) {
-                viewModel.dismissReport(report.getId());
+                viewModel.dismissReport(report.getReportId());
                 Toast.makeText(getContext(), "Report dismissed", Toast.LENGTH_SHORT).show();
             }
             return true;
@@ -108,10 +106,10 @@ public class ModeratorTripFragment extends Fragment {
         headerBinding.btnLocations.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_moderator_location));
     }
 
-    private void showBanConfirmationDialog(Report report) {
+    private void showBanConfirmationDialog(ItineraryReport report) {
         new MaterialAlertDialogBuilder(requireContext())
-                .setMessage(R.string.are_you_sure_you_want_to_ban_the_user_who_created_this + report.getTargetType() + "?")
-                .setPositiveButton(R.string.ban, (dialog, which) -> viewModel.banUserFromReport(report.getTargetId()))
+                .setMessage(R.string.are_you_sure_you_want_to_ban_the_user + " " + report.getOwnerName() + "?")
+                .setPositiveButton(R.string.ban, (dialog, which) -> viewModel.banUserFromReport(report.getOwnerId()))
                 .setNegativeButton(R.string.cancel, null)
                 .show();
     }

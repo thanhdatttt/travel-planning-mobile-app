@@ -5,19 +5,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.travelplanning.data.model.report.Report;
+import com.example.travelplanning.data.model.moderator.LocationReport;
 import com.example.travelplanning.databinding.ItemModeratorLocationBinding;
 import java.util.List;
 
 public class ModeratorLocationAdapter extends RecyclerView.Adapter<ModeratorLocationAdapter.LocationViewHolder> {
-    private List<Report> reports;
+    private List<LocationReport> reports;
     private final OnReportActionListener listener;
 
     public interface OnReportActionListener {
-        void onOptionClick(View anchor, Report report);
+        void onOptionClick(View anchor, LocationReport report);
     }
 
-    public ModeratorLocationAdapter(List<Report> reports, OnReportActionListener listener) {
+    public ModeratorLocationAdapter(List<LocationReport> reports, OnReportActionListener listener) {
         this.reports = reports;
         this.listener = listener;
     }
@@ -46,12 +46,12 @@ public class ModeratorLocationAdapter extends RecyclerView.Adapter<ModeratorLoca
             this.binding = binding;
         }
 
-        public void bind(Report report, OnReportActionListener listener) {
+        public void bind(LocationReport report, OnReportActionListener listener) {
             binding.tvDescription.setMaxLines(4);
             binding.tvReadMore.setVisibility(View.GONE);
 
-            // TODO: Map from Location Report DTO
-//            binding.tvLocationName.setText(report.getName());
+            binding.tvLocationName.setText(report.getLocationName());
+            binding.tvDescription.setText(report.getLocationDescription());
             binding.tvReportReason.setText(report.getReason());
             binding.tvReportedBy.setText(report.getReporterId());
 

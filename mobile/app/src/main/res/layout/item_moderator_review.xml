@@ -19,7 +19,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:src="@drawable/no_avatar"
-            android:contentDescription="User avatar" />
+            android:contentDescription="@string/user_avatar" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/username"
                 android:textStyle="bold"
+                android:color="@color/text"
                 android:textSize="14sp" />
 
             <LinearLayout
@@ -43,23 +44,28 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/tvPlaceName"
+                    android:id="@+id/tvDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Place Name"
+                    android:text="@string/_20_12_2026"
+                    android:color="@color/text_secondary"
                     android:textSize="12sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" · "
+                    android:text="@string/dot"
+                    android:layout_marginHorizontal="5dp"
                     android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tvRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4/5"
+                    android:color="@color/text_secondary"
+                    android:text="@string/_4_5"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/ic_rating_full"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -71,9 +77,21 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_option"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="More options" />
+            android:contentDescription="@string/option" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="150dp"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="10dp"
+        android:color="@color/text"
+        android:textStyle="bold"
+        android:text="@string/are_you_sure_you_want_to_ban_the_user"
+        android:textSize="15sp" />
 
     <!-- Review Text -->
     <TextView
@@ -83,7 +101,8 @@
         android:maxHeight="150dp"
         android:layout_marginTop="10dp"
         android:paddingHorizontal="10dp"
-        android:text="Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes here Review text goes hereReview text goes hereReview text goes here Review text goes hereReview text goes here Review text goes hereReview text goes here Review text goes here Review text goes here Review text goes here"
+        android:color="@color/text"
+        android:text="@string/are_you_sure_you_want_to_ban_the_user"
         android:textSize="13sp" />
 
     <TextView
@@ -119,7 +138,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reported by: "
+                android:text="@string/reported_by"
                 android:textSize="12sp"
                 android:textColor="@android:color/darker_gray" />
 
@@ -127,8 +146,9 @@
                 android:id="@+id/tvReportedBy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="reporter_username"
+                android:text="@string/username"
                 android:textSize="12sp"
+                android:color="@color/text"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -148,7 +168,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reason: "
+                android:text="@string/reason"
                 android:textSize="12sp"
                 android:textColor="@android:color/darker_gray" />
 
@@ -156,8 +176,9 @@
                 android:id="@+id/tvReportReason"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="reason goes here"
+                android:text="@string/reason"
                 android:textSize="12sp"
+                android:color="@color/text"
                 android:textStyle="bold" />
 
         </LinearLayout>

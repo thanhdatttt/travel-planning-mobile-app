@@ -4,21 +4,19 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.travelplanning.data.model.moderator.ReviewReport;
+import com.example.travelplanning.data.model.moderator.ItineraryReport;
 import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.data.repository.moderator.ModeratorRepository;
-
-
 
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class ModeratorReviewViewModel extends AndroidViewModel {
+public class ModeratorItineraryViewModel extends AndroidViewModel {
     private final ModeratorRepository repository;
 
-    private final MutableLiveData<List<ReviewReport>> reports = new MutableLiveData<>();
+    private final MutableLiveData<List<ItineraryReport>> reports = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> error = new MutableLiveData<>();
 
@@ -26,10 +24,11 @@ public class ModeratorReviewViewModel extends AndroidViewModel {
     private final int LIMIT = 20;
     private boolean isLastPage = false;
 
-    public ModeratorReviewViewModel(Application app) {
+    public ModeratorItineraryViewModel(Application app) {
         super(app);
         this.repository = new ModeratorRepository(app);
     }
+
     public void fetchReports(boolean isLoadMore) {
         if (Boolean.TRUE.equals(isLoading.getValue()) || (isLoadMore && isLastPage)) return;
 
@@ -39,15 +38,15 @@ public class ModeratorReviewViewModel extends AndroidViewModel {
         }
         isLoading.setValue(true);
 
-        repository.getReportsReview(
+        repository.getReportsItinerary(
                 currentOffset,
                 LIMIT,
-                new ModeratorRepository.ModeratorCallback<List<ReviewReport>>() {
+                new ModeratorRepository.ModeratorCallback<List<ItineraryReport>>() {
                     @Override
-                    public void onSuccess(List<ReviewReport> data) {
+                    public void onSuccess(List<ItineraryReport> data) {
                         isLoading.setValue(false);
 
-                        List<ReviewReport> currentList = isLoadMore ? reports.getValue() : new ArrayList<>();
+                        List<ItineraryReport> currentList = isLoadMore ? reports.getValue() : new ArrayList<>();
                         if (currentList == null) currentList = new ArrayList<>();
                         if (data.size() < LIMIT) isLastPage = true;
 
@@ -87,7 +86,7 @@ public class ModeratorReviewViewModel extends AndroidViewModel {
             @Override
             public void onSuccess(Boolean data) {
                 isLoading.setValue(false);
-                fetchReports(false);
+                fetchReports(false); // Refresh list after dismissing
             }
 
             @Override

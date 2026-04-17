@@ -231,7 +231,9 @@ model Report {
   status     reportStatus @default(pending)
   createdAt  DateTime     @default(now())
   handledAt  DateTime?
-  handledBy  String
+  handledBy  String?
+
+  user       User         @relation(fields: [reporterId], references: [id])
 
   @@unique([reporterId, targetId])
 }

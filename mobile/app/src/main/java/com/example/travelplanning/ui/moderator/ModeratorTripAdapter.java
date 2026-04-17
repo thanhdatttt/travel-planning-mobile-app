@@ -5,19 +5,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.travelplanning.data.model.report.Report;
+import com.example.travelplanning.data.model.moderator.ItineraryReport;
 import com.example.travelplanning.databinding.ItemModeratorTripBinding;
 import java.util.List;
 
 public class ModeratorTripAdapter extends RecyclerView.Adapter<ModeratorTripAdapter.TripViewHolder> {
-    private List<Report> reports;
+    private List<ItineraryReport> reports;
     private final OnReportActionListener listener;
 
     public interface OnReportActionListener {
-        void onOptionClick(View anchor, Report report);
+        void onOptionClick(View anchor, ItineraryReport report);
     }
 
-    public ModeratorTripAdapter(List<Report> reports, OnReportActionListener listener) {
+    public ModeratorTripAdapter(List<ItineraryReport> reports, OnReportActionListener listener) {
         this.reports = reports;
         this.listener = listener;
     }
@@ -46,16 +46,19 @@ public class ModeratorTripAdapter extends RecyclerView.Adapter<ModeratorTripAdap
             this.binding = binding;
         }
 
-        public void bind(Report report, OnReportActionListener listener) {
+        public void bind(ItineraryReport report, OnReportActionListener listener) {
             binding.tvDescription.setMaxLines(4);
             binding.tvReadMore.setVisibility(View.GONE);
 
-            // TODO: Map from Trip/Itinerary Report DTO
-            // binding.tvTripTitle.setText(report.getItineraryTitle());
-            // binding.tvTripDetails.setText(report.getPrivacy() + " • " + report.getStartDate() + " - " + report.getEndDate());
+            binding.tvTripTitle.setText(report.getTitle());
+            binding.tvStartDate.setText(report.getFormattedStartDate());
+            binding.tvEndDate.setText(report.getFormattedEndDate());
+            binding.tvDescription.setText(report.getDescription());
+            binding.tvReportReason.setText(report.getReportReason());
+            binding.tvReportedBy.setText(report.getReporterName());
 
-            binding.tvReportReason.setText(report.getReason());
-            binding.tvReportedBy.setText(report.getReporterId());
+            binding.tvReportReason.setText(report.getReportReason());
+            binding.tvReportedBy.setText(report.getReporterName());
 
             binding.tvDescription.post(() -> {
                 if (binding.tvDescription.getLineCount() > 4) {
