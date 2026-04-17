@@ -9,20 +9,31 @@ import androidx.room.TypeConverters;
 import com.example.travelplanning.data.model.category.Category;
 import com.example.travelplanning.data.model.location.Location;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
+import com.example.travelplanning.data.model.profile.UserProfile;
+import com.example.travelplanning.data.model.bookmark.Bookmark;
+import com.example.travelplanning.data.model.review.Review;
+import com.example.travelplanning.data.model.review.RatingStat;
+import com.example.travelplanning.data.model.review.UserReview;
 
+import com.example.travelplanning.data.local.review.ReviewDao;
+import com.example.travelplanning.data.local.bookmark.BookmarkDao;
+import com.example.travelplanning.data.local.profile.UserProfileDao;
+import com.example.travelplanning.data.local.profile.UserProfileConverters;
 import com.example.travelplanning.data.local.category.CategoryDao;
 import com.example.travelplanning.data.local.location.LocationDao;
 import com.example.travelplanning.data.local.location.LocationConverters;
 import com.example.travelplanning.data.local.itinerary.ItineraryDao;
 import com.example.travelplanning.data.local.itinerary.ItineraryConverters;
 
-@Database(entities = {Location.class, Itinerary.class, Category.class}, version = 3, exportSchema = false)
-@TypeConverters({LocationConverters.class, ItineraryConverters.class})
+@Database(entities = {Location.class, Itinerary.class, Category.class, UserProfile.class, Bookmark.class, Review.class, RatingStat.class, UserReview.class}, version = 6, exportSchema = false)
+@TypeConverters({LocationConverters.class, ItineraryConverters.class, UserProfileConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
-    
+    public abstract BookmarkDao bookmarkDao();
     public abstract LocationDao locationDao();
     public abstract ItineraryDao itineraryDao();
     public abstract CategoryDao categoryDao();
+    public abstract UserProfileDao userProfileDao();
+    public abstract ReviewDao reviewDao();
 
     private static volatile AppDatabase INSTANCE;
 

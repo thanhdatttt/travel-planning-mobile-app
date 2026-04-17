@@ -434,9 +434,7 @@ public class LocationDetailFragment extends Fragment {
         binding.layoutPhotos.btnNext.setAlpha(page < totalPages - 1 ? 1.0f : 0.3f);
     }
 
-    // REVIEW
     private void updateReviewStatsUI(List<RatingStat> stats) {
-        if (stats == null) return;
         var summaryBinding = binding.layoutReviewSummary;
         if (stats == null) return;
         int totalReviews = 0;
@@ -451,6 +449,7 @@ public class LocationDetailFragment extends Fragment {
         if (totalReviews > 0) {
             double average = totalPoints / totalReviews;
 
+            // Cập nhật phần Header
             binding.tvDetailRatingScore.setText(String.format(Locale.US, "%.1f", average));
             binding.ratingBar.setRating((float) average);
             String countStr = "(" + totalReviews + " " + getString(R.string.reviews) + ")";
@@ -461,7 +460,7 @@ public class LocationDetailFragment extends Fragment {
             summaryBinding.tvAverageRating.setText(String.format(Locale.US, "%.1f", average));
             summaryBinding.miniRatingBar.setRating((float) average);
 
-            // ĐƯA VÒNG LẶP TÍNH PROGRESS VÀO TRONG IF ĐỂ AN TOÀN
+            // Tính và vẽ Progress Bar AN TOÀN
             for (RatingStat stat : stats) {
                 int progress = (stat.getCount() * 100) / totalReviews;
                 switch (stat.getRating()) {
@@ -473,24 +472,25 @@ public class LocationDetailFragment extends Fragment {
                 }
             }
         } else {
+            // Không có review nào -> Reset toàn bộ giao diện về 0
+            String zeroStr = "(0 " + getString(R.string.reviews) + ")";
+            
+            // Header
             binding.tvDetailRatingScore.setText("0.0");
             binding.ratingBar.setRating(0f);
-            binding.tvDetailRatingCount.setText("(0 reviews)");
-        }
+            binding.tvDetailRatingCount.setText(zeroStr);
 
-        // Gán tổng số lượng vào TextView trong summary
-        summaryBinding.tvTotalReviews.setText("(" + totalReviews + ")");
-
-        // Duyệt qua danh sách stats
-        for (RatingStat stat : stats) {
-            int progress = (stat.getCount() * 100) / totalReviews;
-            switch (stat.getRating()) {
-                case 5: summaryBinding.pbStar5.setProgress(progress); break;
-                case 4: summaryBinding.pbStar4.setProgress(progress); break;
-                case 3: summaryBinding.pbStar3.setProgress(progress); break;
-                case 2: summaryBinding.pbStar2.setProgress(progress); break;
-                case 1: summaryBinding.pbStar1.setProgress(progress); break;
-            }
+            // Summary
+            summaryBinding.tvTotalReviews.setText(zeroStr);
+            summaryBinding.tvAverageRating.setText("0.0");
+            summaryBinding.miniRatingBar.setRating(0f);
+            
+            // Xóa sạch các thanh Progress Bar cũ (nếu có)
+            summaryBinding.pbStar5.setProgress(0);
+            summaryBinding.pbStar4.setProgress(0);
+            summaryBinding.pbStar3.setProgress(0);
+            summaryBinding.pbStar2.setProgress(0);
+            summaryBinding.pbStar1.setProgress(0);
         }
     }
 

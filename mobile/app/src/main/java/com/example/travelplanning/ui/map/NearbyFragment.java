@@ -29,7 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
+import android.widget.RatingBar;
 import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.location.Location;
@@ -132,35 +132,28 @@ public class NearbyFragment extends Fragment {
         setupAutocomplete();
         observeData();
 
-        // 1. Quan sát locationDetail từ ViewModel để hiển thị Preview Card
         locationViewModel.getLocationDetail().observe(getViewLifecycleOwner(), location -> {
             if (location != null && getArguments() != null) {
                 String targetId = getArguments().getString("location_id");
 
-                // Kiểm tra xem địa điểm trả về có đúng ID đang cần không
                 if (location.getId().equals(targetId)) {
                     if (location.getLatitude() != null && location.getLongitude() != null) {
-                        // Di chuyển camera bản đồ đến địa điểm đó
                         GeoPoint targetPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                         mapController.setZoom(18.0);
                         mapController.animateTo(targetPoint);
 
-                        // Gọi hàm hiển thị Card Preview
                         showLocationPreview(location);
                     }
                 }
             }
         });
 
-        // 2. Logic điều hướng từ màn hình Detail sang
         if (getArguments() != null && getArguments().containsKey("location_id")) {
             String id = getArguments().getString("location_id");
             if (id != null) {
-                // Fetch dữ liệu để lấy thông tin (ảnh, rating...) hiển thị lên Preview Card
                 locationViewModel.fetchDetail(id);
             }
         } else {
-            // Nếu vào bình thường (không có id truyền sang), mới thực hiện lấy GPS hiện tại
             locationPermissionRequest.launch(new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -187,25 +180,9 @@ public class NearbyFragment extends Fragment {
         });
 
         locationViewModel.getSearchResults().observe(getViewLifecycleOwner(), locations -> {
-            if (locations != null) {
-                currentSearchLocations.clear();
-                currentSearchNames.clear();
-                for (Location loc : locations) {
-                    currentSearchLocations.add(loc);
-                    currentSearchNames.add(loc.getName()); 
-                }
-                if (searchAdapter != null) {
-                    searchAdapter.notifyDataSetChanged();
-                }
-
-                String currentText = binding.editTextSearch.getText().toString().trim();
-                if (currentText.length() > 0 && !currentSearchNames.isEmpty() && binding.editTextSearch.hasFocus()) {
-                    binding.editTextSearch.showDropDown();
-                }
-                if (locationAdapter != null) {
-                    GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
-                    locationAdapter.updateData(locations, myLoc);
-                }
+            if (locations != null && locationAdapter != null) {
+                GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
+                locationAdapter.updateData(locations, myLoc);
             }
         });
     }
@@ -409,9 +386,16 @@ public class NearbyFragment extends Fragment {
         
         double rating = loc.getAvgRating() != null ? loc.getAvgRating() : 0.0;
         int count = loc.getRatingCount() != null ? loc.getRatingCount() : 0;
-        String priceStr = (loc.getPriceLevel() != null && loc.getPriceLevel() > 0) 
-            ? " • " + new String(new char[loc.getPriceLevel()]).replace("\0", "$") : "";
-        ((TextView) card.findViewById(R.id.tvRating)).setText("⭐ " + rating + " (" + count + ")" + priceStr);
+            
+        TextView tvRatingScore = card.findViewById(R.id.tvRatingScore);
+        if (tvRatingScore != null) {
+            tvRatingScore.setText(String.format(java.util.Locale.US, "%.1f (%d)", rating, count));
+        }
+
+        RatingBar rbAverageRating = card.findViewById(R.id.rbAverageRating);
+        if (rbAverageRating != null) {
+            rbAverageRating.setRating((float) rating);
+        }
 
         GeoPoint myLoc = myLocationOverlay != null ? myLocationOverlay.getMyLocation() : null;
         if (myLoc != null && loc.getLatitude() != null) {

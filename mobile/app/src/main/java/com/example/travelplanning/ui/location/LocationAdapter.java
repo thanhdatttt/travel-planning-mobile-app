@@ -1,10 +1,5 @@
 package com.example.travelplanning.ui.location;
 
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,23 +34,23 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
         Location location = locationList.get(position);
-        Log.d("DEBUG", "location: " + location);
         
         holder.tvName.setText(location.getName());
         
-        double avgRating = location.getAvgRating() != null ? location.getAvgRating() : 0.0;
-        int ratingCount = location.getRatingCount() != null ? location.getRatingCount() : 0;
+        double rating = location.getAvgRating() != null ? location.getAvgRating() : 0.0;
+        int count = location.getRatingCount() != null ? location.getRatingCount() : 0;
         
-        String priceStr = (location.getPriceLevel() != null && location.getPriceLevel() > 0) 
-            ? " • " + new String(new char[location.getPriceLevel()]).replace("\0", "$") : "";
-        holder.tvRating.setText(String.format(java.util.Locale.US, "⭐ %.1f (%d)%s", avgRating, ratingCount, priceStr));
+        if (holder.tvRatingScore != null) {
+            holder.tvRatingScore.setText(String.format(java.util.Locale.US, "%.1f (%d)", rating, count));
+        }
+        if (holder.rbAverageRating != null) {
+            holder.rbAverageRating.setRating((float) rating);
+        }
 
         holder.tvDistanceAddress.setText(location.getAddress());
         
-        String imageUrlToLoad = location.getImageUrl();
-
         Glide.with(holder.itemView.getContext())
-                .load(imageUrlToLoad)
+                .load(location.getImageUrl())
                 .centerCrop()
                 .placeholder(R.drawable.ic_placeholder)
                 .into(holder.ivImage);
@@ -72,14 +67,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
     static class LocationViewHolder extends RecyclerView.ViewHolder {
         ImageView ivImage;
-        TextView tvName, tvRating, tvDistanceAddress;
+        TextView tvName, tvDistanceAddress;
+        TextView tvRatingScore; 
+        android.widget.RatingBar rbAverageRating; 
 
         public LocationViewHolder(@NonNull View itemView) {
             super(itemView);
             ivImage = itemView.findViewById(R.id.imgPlace);
             tvName = itemView.findViewById(R.id.tvPlaceName);
-            tvRating = itemView.findViewById(R.id.tvRating);
             tvDistanceAddress = itemView.findViewById(R.id.tvDistanceAddress);
+            
+            tvRatingScore = itemView.findViewById(R.id.tvRatingScore);
+            rbAverageRating = itemView.findViewById(R.id.rbAverageRating);
         }
     }
 

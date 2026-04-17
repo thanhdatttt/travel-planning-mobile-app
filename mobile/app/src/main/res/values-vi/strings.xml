@@ -221,4 +221,9 @@
     // home
     <string name="explore_itinerary">Khám phá lịch trình</string>
     <string name="search_hint">Tìm điểm đến...</string>
+
+    //filter
+    <string name="filter_search_results">Lọc kết quả tìm kiếm</string>
+    <string name="category">Danh mục</string>
+    <string name="price_level">Mức giá</string>
 </resources>

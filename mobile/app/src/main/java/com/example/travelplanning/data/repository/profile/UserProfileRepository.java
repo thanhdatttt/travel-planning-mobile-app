@@ -2,12 +2,16 @@ package com.example.travelplanning.data.repository.profile;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
 import com.example.travelplanning.core.network.ApiServiceFactory;
 import com.example.travelplanning.core.storage.TokenManager;
+import com.example.travelplanning.data.local.AppDatabase;
+import com.example.travelplanning.data.local.profile.UserProfileDao;
 import com.example.travelplanning.data.remote.core.ApiResponse;
 import com.example.travelplanning.data.remote.profile.dto.request.UpdateMeRequest;
 import com.example.travelplanning.data.remote.profile.dto.response.UserProfileResponse;
@@ -19,6 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -32,11 +38,16 @@ public class UserProfileRepository {
     private final UserApi userApi;
     private final Context context;
     private final UserProfileMapper userProfileMapper;
+    private final UserProfileDao userProfileDao;
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public UserProfileRepository(Context context) {
         this.context = context.getApplicationContext();
         this.userApi = ApiServiceFactory.create(context, UserApi.class);
-        this.userProfileMapper = new UserProfileMapper(); // Khởi tạo Mapper
+        this.userProfileMapper = new UserProfileMapper();
+        this.userProfileDao = AppDatabase.getInstance(context).userProfileDao();
     }
 
     public interface UserProfileCallback<T> {
@@ -45,23 +56,28 @@ public class UserProfileRepository {
     }
 
     public void getUserProfile(UserProfileCallback<UserProfile> callback) {
+        String currentUserId = getCurrentUserId();
+        if (currentUserId != null) {
+            executorService.execute(() -> {
+                UserProfile cachedProfile = userProfileDao.getProfileById(currentUserId);
+                if (cachedProfile != null) {
+                    mainHandler.post(() -> callback.onSuccess(cachedProfile));
+                }
+            });
+        }
+
         userApi.getProfile().enqueue(new Callback<ApiResponse<UserProfileResponse>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<UserProfileResponse>> call,
                                    @NonNull Response<ApiResponse<UserProfileResponse>> response) {
-
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<UserProfileResponse> apiResponse = response.body();
-
-                    if (apiResponse.getData() != null) {
-
-                        UserProfile cleanUser = userProfileMapper.mapToDomain(apiResponse.getData());
-
+                    if (response.body().getData() != null) {
+                        UserProfile cleanUser = userProfileMapper.mapToDomain(response.body().getData());
+                        
+                        executorService.execute(() -> userProfileDao.insertProfile(cleanUser));
                         callback.onSuccess(cleanUser);
-
                     } else {
-                        callback.onError(apiResponse.getMessage() != null ?
-                                apiResponse.getMessage() : "Không tìm thấy dữ liệu người dùng");
+                        callback.onError("Không tìm thấy dữ liệu người dùng");
                     }
                 } else {
                     callback.onError("Lỗi máy chủ. Vui lòng thử lại sau.");
@@ -82,16 +98,14 @@ public class UserProfileRepository {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<UserProfileResponse>> call,
                                    @NonNull Response<ApiResponse<UserProfileResponse>> response) {
-
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<UserProfileResponse> apiResponse = response.body();
-
-                    if (apiResponse.getData() != null) {
-                        UserProfile updatedUser = userProfileMapper.mapToDomain(apiResponse.getData());
+                    if (response.body().getData() != null) {
+                        UserProfile updatedUser = userProfileMapper.mapToDomain(response.body().getData());
+                        
+                        executorService.execute(() -> userProfileDao.insertProfile(updatedUser));
                         callback.onSuccess(updatedUser);
                     } else {
-                        callback.onError(apiResponse.getMessage() != null ?
-                                apiResponse.getMessage() : "Cập nhật thông tin thất bại");
+                        callback.onError("Cập nhật thông tin thất bại");
                     }
                 } else {
                     callback.onError("Lỗi máy chủ (" + response.code() + "). Vui lòng thử lại.");
@@ -107,7 +121,6 @@ public class UserProfileRepository {
 
     public void uploadAvatar(Uri imageUri, UserProfileCallback<UserProfile> callback) {
         try {
-            //chuyển đổi Uri thành MultipartBody.Part
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
             if (inputStream == null) {
                 callback.onError("Không thể mở tệp tin");
@@ -118,27 +131,21 @@ public class UserProfileRepository {
             String mimeType = context.getContentResolver().getType(imageUri);
             if (mimeType == null) mimeType = "image/jpeg";
 
-            RequestBody requestFile = RequestBody.create(
-                    bytes,
-                    MediaType.parse(mimeType)
-            );
-
+            RequestBody requestFile = RequestBody.create(bytes, MediaType.parse(mimeType));
             String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
-            if (extension == null) extension = "jpg"; // fallback
+            if (extension == null) extension = "jpg";
 
             MultipartBody.Part body = MultipartBody.Part.createFormData(
-                    "avatar",
-                    "user_avatar_" + System.currentTimeMillis() + "." + extension,
-                    requestFile
-            );
+                    "avatar", "user_avatar_" + System.currentTimeMillis() + "." + extension, requestFile);
 
             userApi.uploadAvatarApi(body).enqueue(new Callback<ApiResponse<UserProfileResponse>>() {
                 @Override
                 public void onResponse(@NonNull Call<ApiResponse<UserProfileResponse>> call,
                                        @NonNull Response<ApiResponse<UserProfileResponse>> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        // Trả về UserProfile đã có avatarUrl mới từ Cloudinary
                         UserProfile updatedUser = userProfileMapper.mapToDomain(response.body().getData());
+                        
+                        executorService.execute(() -> userProfileDao.insertProfile(updatedUser));
                         callback.onSuccess(updatedUser);
                     } else {
                         callback.onError("Lỗi máy chủ khi upload ảnh: " + response.code());
@@ -158,7 +165,6 @@ public class UserProfileRepository {
         }
     }
 
-    // Hàm hỗ trợ đọc byte stream
     private byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
@@ -170,7 +176,6 @@ public class UserProfileRepository {
     }
 
     public String getCurrentUserId() {
-        String id = TokenManager.getUserId(context);
-        return id;
+        return TokenManager.getUserId(context);
     }
 }
