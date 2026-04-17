@@ -228,5 +228,6 @@
     <string name="review_body">Your feelings</string>
     <string name="post_review">Post</string>
     <string name="empty_bookmark_list">You haven\'t save any locations</string>
+    <string name="choose_a_location">Choose a location</string>
 
 </resources>

@@ -3,10 +3,15 @@ package com.example.travelplanning.viewmodel.itinerary;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
+import com.example.travelplanning.data.model.itinerary.HeaderItem;
 import com.example.travelplanning.data.model.itinerary.Itinerary;
+import com.example.travelplanning.data.model.itinerary.ItineraryDisplayItem;
 import com.example.travelplanning.data.model.itinerary.ItineraryItem;
+import com.example.travelplanning.data.model.itinerary.LocationItem;
 import com.example.travelplanning.data.remote.core.MetaResponse;
 import com.example.travelplanning.data.remote.itinerary.dto.request.AddItineraryItemRequest;
 import com.example.travelplanning.data.remote.itinerary.dto.request.CreateItineraryRequest;
@@ -17,10 +22,14 @@ import com.example.travelplanning.data.repository.itinerary.ItineraryRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -50,6 +59,8 @@ public class ItineraryViewModel extends AndroidViewModel {
     private final MutableLiveData<Itinerary> selectedItinerary = new MutableLiveData<>();
     private final MutableLiveData<Boolean> addItemSuccess = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> deleteItemSuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> scheduleItemSuccess = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> unscheduleItemSuccess = new MutableLiveData<>(false);
 
     public ItineraryViewModel(@NonNull Application application) {
         super(application);
@@ -221,7 +232,9 @@ public class ItineraryViewModel extends AndroidViewModel {
                     public void onSuccess(Itinerary data) {
                         isLoading.setValue(false);
                         cloneSuccess.setValue(true);
-                        prependToUserItineraries(data);
+                        if (userItineraries.getValue() != null) {
+                            prependToUserItineraries(data);
+                        }
                     }
 
                     @Override
@@ -291,11 +304,13 @@ public class ItineraryViewModel extends AndroidViewModel {
                     public void onSuccess(ItineraryItem data) {
                         isLoading.setValue(false);
                         replaceItemInItinerary(itineraryId, data);
+                        scheduleItemSuccess.setValue(true);
                     }
 
                     @Override
                     public void onError(String errorMsg) {
                         isLoading.setValue(false);
+                        scheduleItemSuccess.setValue(false);
                         errorMessage.setValue(errorMsg);
                     }
                 });
@@ -309,11 +324,13 @@ public class ItineraryViewModel extends AndroidViewModel {
                     public void onSuccess(ItineraryItem data) {
                         isLoading.setValue(false);
                         replaceItemInItinerary(itineraryId, data);
+                        unscheduleItemSuccess.setValue(true);
                     }
 
                     @Override
                     public void onError(String errorMsg) {
                         isLoading.setValue(false);
+                        unscheduleItemSuccess.setValue(false);
                         errorMessage.setValue(errorMsg);
                     }
                 });
@@ -481,6 +498,74 @@ public class ItineraryViewModel extends AndroidViewModel {
 
         // only take metadata from updated
         selectedItinerary.setValue(rebuildWithItems(updated, current.getItineraryItems()));
+    }
+
+    // handle filter unschedule item in selected itinerary
+    public LiveData<List<ItineraryItem>> getUnscheduleItems() {
+        return Transformations.map(selectedItinerary, itinerary -> {
+            if (itinerary == null) return new ArrayList<>();
+            return itinerary.getItineraryItems().stream()
+                    .filter(item -> item.getDate() == null)
+                    .toList();
+        });
+    }
+
+    // handle flatten item in selected itinerary
+    public LiveData<List<ItineraryDisplayItem>> getFlattenedItinerary() {
+        return Transformations.map(selectedItinerary, itinerary -> {
+            if (itinerary == null) return new ArrayList<>();
+            return flattenItinerary(itinerary);
+        });
+    }
+
+    private List<ItineraryDisplayItem> flattenItinerary(Itinerary itinerary) {
+        List<ItineraryDisplayItem> displayItems = new ArrayList<>();
+        if (itinerary == null || itinerary.getStartDate() == null || itinerary.getEndDate() == null) {
+            return displayItems;
+        }
+
+        Map<String, List<ItineraryItem>> groupedItems = new HashMap<>();
+        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        if (itinerary.getItineraryItems() != null) {
+            for (ItineraryItem item : itinerary.getItineraryItems()) {
+                // filter all unschedule items
+                if (item.getDate() != null && item.getOrderIdx() != null) {
+                    String dateKey = fmt.format(item.getDate());
+                    groupedItems.computeIfAbsent(dateKey, k -> new ArrayList<>()).add(item);
+                }
+            }
+        }
+
+        // calculate date range to get all dates even those without items
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(itinerary.getStartDate());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date endDate = itinerary.getEndDate();
+
+        while (!calendar.getTime().after(endDate)) {
+            Date currentDay = calendar.getTime();
+            String dateKey = fmt.format(currentDay);
+
+            // always add header item
+            displayItems.add(new HeaderItem(currentDay));
+
+            // if there are items in this day, add them
+            List<ItineraryItem> itemsInDay = groupedItems.get(dateKey);
+            if (itemsInDay != null) {
+                itemsInDay.sort(Comparator.comparingInt(ItineraryItem::getOrderIdx));
+
+                for (ItineraryItem item : itemsInDay) {
+                    displayItems.add(new LocationItem(item));
+                }
+            }
+
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        return displayItems;
     }
 
     /** Functional interface for transforming an item list inside updateItineraryItems. */

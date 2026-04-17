@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -90,7 +91,7 @@ public class TripPublicDetailFragment extends Fragment {
 
         viewModel.getCloneSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success) {
-                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Trip cloned successfully!", SnackBarHelper.SnackBarType.SUCCESS);
+                Toast.makeText(requireContext(), "Trip clone successfully", Toast.LENGTH_SHORT).show();
                 viewModel.getCloneSuccess().setValue(false);
             }
         });

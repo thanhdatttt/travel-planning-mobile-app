@@ -92,14 +92,16 @@ export const deleteItineraryItem = async (req: Request, res: Response) => {
       await tx.itineraryItem.delete({ where: { id: String(itemId) } });
 
       // update order
-      await tx.itineraryItem.updateMany({
-        where: {
-          itineraryId: itineraryItem.itineraryId,
-          date: itineraryItem.date,
-          orderIdx: { gt: itineraryItem.orderIdx ?? 0 },
-        },
-        data: { orderIdx: { decrement: 1 } },
-      });
+      if (itineraryItem.orderIdx != null && itineraryItem.date != null) {
+        await tx.itineraryItem.updateMany({
+          where: {
+            itineraryId: itineraryItem.itineraryId,
+            date: itineraryItem.date,
+            orderIdx: { gt: itineraryItem.orderIdx },
+          },
+          data: { orderIdx: { decrement: 1 } },
+        });
+      }
     });
 
     return res.status(200).json(
@@ -137,7 +139,15 @@ export const scheduleItineraryItem = async (req: Request, res: Response) => {
     if (itineraryItem.itinerary.ownerId !== userId) {
       return res
         .status(403)
-        .json(createResponse({ message: "Forbbiden", error: "Itinerary item not yours or not found" }));
+        .json(createResponse({ message: "Forbbiden", error: "Itinerary item is not yours" }));
+    }
+
+    // check if item already scheduled
+    if (itineraryItem.date !== null) {
+      return res.status(400).json(createResponse({ 
+          message: "Bad request", 
+          error: "Item is already scheduled. Please unschedule it first before rescheduling." 
+        }));
     }
 
     // check schedule date valid
