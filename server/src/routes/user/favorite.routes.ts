@@ -9,7 +9,9 @@ import { favoriteController } from "../../controllers/favorite.controller";
 
 const router = express.Router();
 
+router.get("/check", validate(FavoriteQuerySchema), favoriteController.checkStatus);
 router.get("/", validate(FavoriteQuerySchema), favoriteController.getAll);
+
 router.post("/", validate(FavoriteCreateSchema), favoriteController.toggle);
 router.delete("/:id", validate(FavoriteParamsSchema), favoriteController.delete);
 

@@ -156,15 +156,30 @@
     <string name="save_change">Save change</string>
     <string name="detail">Detail</string>
 
+    // home
+    <string name="explore_itinerary">Explore Itinerary</string>
+    <string name="search_hint">Search locations...</string>
+
     //category
     <string name="cat_food_and_drink">Food &amp; Drink</string>
     <string name="cat_accommodation">Accommodation</string>
     <string name="cat_attractions">Attractions</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_services">Services</string>
+    <string name="cat_unknown">Unknown</string>
     <string name="trip">Trip</string>
     <string name="review">Review</string>
 
+    //priceLevel
+    <string name="price_cheap">Cheap</string>
+    <string name="price_moderate">Moderate</string>
+    <string name="price_expensive">Expensive</string>
+    <string name="price_very_expensive">Very Expensive</string>
+
+    //filter
+    <string name="filter_search_results">Filter Search Results</string>
+    <string name="category">Category</string>
+    <string name="price_level">Price Level</string>
 
     //location detail
     <string name="location_on_map">Location on map</string>
@@ -229,5 +244,7 @@
     <string name="post_review">Post</string>
     <string name="empty_bookmark_list">You haven\'t save any locations</string>
     <string name="choose_a_location">Choose a location</string>
+    <string name="favorite_trips_title">Favorite Trips</string>
+    <string name="empty_favorite_message">You do not have any favorite trips yet</string>
 
 </resources>

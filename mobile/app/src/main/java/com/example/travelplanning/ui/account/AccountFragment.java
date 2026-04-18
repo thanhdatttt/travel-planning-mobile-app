@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.data.model.profile.UserRole;
@@ -45,32 +46,40 @@ public class AccountFragment extends Fragment {
 
         binding.rvAccountMenu.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // 1. Thiết lập Observer để lắng nghe khi có dữ liệu Profile
+        List<AccountOption> defaultMenu = getMenuItemsByRole(null);
+        binding.rvAccountMenu.setAdapter(new AccountAdapter(defaultMenu, this::handleMenuClick));
+
         profileViewModel.getUserProfile().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                // Tạo danh sách menu dựa trên user vừa nhận được
-                List<AccountOption> menuItems = getMenuItemsByRole(user);
+                if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+                    Glide.with(this)
+                            .load(user.getAvatarUrl())
+                            .placeholder(R.drawable.ic_user)
+                            .error(R.drawable.ic_user)
+                            .centerCrop()
+                            .into(binding.ivAvatar);
+                } else {
+                    binding.ivAvatar.setImageResource(R.drawable.ic_user);
+                }
 
-                // Cập nhật Adapter
-                AccountAdapter adapter = new AccountAdapter(menuItems, this::handleMenuClick);
-                binding.rvAccountMenu.setAdapter(adapter);
+                List<AccountOption> updatedMenu = getMenuItemsByRole(user);
+                binding.rvAccountMenu.setAdapter(new AccountAdapter(updatedMenu, this::handleMenuClick));
             }
         });
 
-        // 2. Gọi API lấy thông tin Profile
         profileViewModel.fetchUserProfile();
 
-        // logout
         observeLogoutStatus();
         handleLogout();
     }
 
     private List<AccountOption> getMenuItemsByRole(UserProfile profile) {
         List<AccountOption> list = new ArrayList<>();
-        list.add(new AccountOption(1, R.drawable.ic_user, R.string.personal_info));
-        list.add(new AccountOption(2, R.drawable.ic_setting, R.string.setting));
-        list.add(new AccountOption(3, R.drawable.ic_star, R.string.my_reviews));
-        list.add(new AccountOption(4, R.drawable.ic_heart, R.string.saved_location));
+        list.add(new AccountOption(AccountViewModel.ID_INFO, R.drawable.ic_user, R.string.personal_info));
+        list.add(new AccountOption(AccountViewModel.ID_SETTING, R.drawable.ic_setting, R.string.setting));
+        list.add(new AccountOption(AccountViewModel.ID_REVIEW, R.drawable.ic_star_vector, R.string.my_reviews));
+        list.add(new AccountOption(AccountViewModel.ID_BOOKMARK, R.drawable.ic_bookmark_full, R.string.saved_location));
+        list.add(new AccountOption(AccountViewModel.ID_FAV, R.drawable.ic_heart, R.string.favorite_trips_title));
         //check role then add admin board
         if (profile != null && profile.getRole() == UserRole.ADMIN) {
             list.add(new AccountOption(AccountViewModel.ID_ADMIN, R.drawable.ic_admin, R.string.menu_admin));
@@ -87,9 +96,11 @@ public class AccountFragment extends Fragment {
         } else if (option.getId() == AccountViewModel.ID_SETTING) {
             Navigation.findNavController(requireView())
                     .navigate(R.id.nav_settings);
-        } else if (option.getId() == AccountViewModel.ID_FAV) {
+        } else if (option.getId() == AccountViewModel.ID_BOOKMARK) {
             Navigation.findNavController(requireView()).navigate(R.id.nav_saved_locations);
-        } else if (option.getId() == AccountViewModel.ID_ADMIN){
+        }else if (option.getId() == AccountViewModel.ID_FAV) {
+            Navigation.findNavController(requireView()).navigate(R.id.nav_favorite_trips);
+        }else if (option.getId() == AccountViewModel.ID_ADMIN){
             Navigation.findNavController(requireView()).navigate(R.id.nav_admin);
         }  else if (option.getId() == AccountViewModel.ID_LOGOUT) {
             // Logout
