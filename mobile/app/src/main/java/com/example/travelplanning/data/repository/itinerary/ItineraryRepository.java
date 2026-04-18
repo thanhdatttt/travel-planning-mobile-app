@@ -3,6 +3,7 @@ package com.example.travelplanning.data.repository.itinerary;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -47,7 +48,7 @@ public class ItineraryRepository {
         this.context = context.getApplicationContext();
     }
 
-    // --- CALLBACKS (Giữ nguyên của bạn) ---
+    // --- CALLBACKS ---
     public interface ItineraryListCallback {
         void onSuccess(List<Itinerary> data, MetaResponse meta);
         void onError(String errorMessage);
@@ -65,7 +66,54 @@ public class ItineraryRepository {
         void onError(String errorMessage);
     }
 
+    // --- HELPER METHODS TỪ NHÁNH FEATURE/ITINERARY ---
+    private void handleItineraryResponse(
+            Response<ApiResponse<ItineraryResponse>> response,
+            ItineraryCallback callback) {
+        if (response.isSuccessful() && response.body() != null) {
+            callback.onSuccess(itineraryMapper.mapToDomain(response.body().getData()));
+        } else {
+            callback.onError("Error server (" + response.code() + ").");
+        }
+    }
 
+    private void handleItemResponse(
+            Response<ApiResponse<ItineraryItemResponse>> response,
+            ItineraryItemCallback callback) {
+
+        // ✅ Add comprehensive logging
+        if (response.isSuccessful() && response.body() != null) {
+            try {
+                ItineraryItemResponse dto = response.body().getData();
+
+                // ✅ Log what we received
+                if (dto == null) {
+                    Log.w("ItineraryRepository", "Response data is NULL");
+                    callback.onError("Server returned empty response");
+                    return;
+                }
+
+                Log.d("ItineraryRepository", "Item response: " + dto);
+
+                // ✅ Validate location exists for display operations
+                if (dto.getLocation() == null) {
+                    Log.w("ItineraryRepository", "Location is NULL for item: " + dto.getId());
+                    // Still pass it through, adapter will handle null gracefully
+                }
+
+                callback.onSuccess(itineraryItemMapper.mapToDomain(dto));
+
+            } catch (Exception e) {
+                Log.e("ItineraryRepository", "Error parsing response: " + e.getMessage(), e);
+                callback.onError("Error parsing response: " + e.getMessage());
+            }
+        } else {
+            Log.e("ItineraryRepository", "Response failed: code=" + response.code());
+            callback.onError("Error server (" + response.code() + ").");
+        }
+    }
+
+    // --- LOGIC LẤY DANH SÁCH TỪ NHÁNH MAIN ---
     public void getUserItineraries(int page, int limit, ItineraryListCallback callback) {
         String currentUserId = com.example.travelplanning.core.storage.TokenManager.getUserId(context);
 
@@ -83,7 +131,7 @@ public class ItineraryRepository {
         itineraryApi.getUserItineraries(page, limit).enqueue(new Callback<ApiResponse<PaginatedData<ItineraryResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<PaginatedData<ItineraryResponse>>> call,
-                                @NonNull Response<ApiResponse<PaginatedData<ItineraryResponse>>> response) {
+                                   @NonNull Response<ApiResponse<PaginatedData<ItineraryResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     PaginatedData<ItineraryResponse> paginatedData = response.body().getData();
                     List<Itinerary> domainList = new ArrayList<>();
