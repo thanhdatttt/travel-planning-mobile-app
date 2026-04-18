@@ -39,25 +39,57 @@ export const favoriteController = {
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const [favorites, total] = await Promise.all([
-      prisma.favorite.findMany({
-        where: { userId },
-        skip,
-        take: limit,
-        include: {
-          itinerary: true,
-        },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.favorite.count({ where: { userId } }),
-    ]);
+    try {
+      const [favorites, total] = await Promise.all([
+        prisma.favorite.findMany({
+          where: { userId },
+          skip,
+          take: limit,
+          orderBy: { createdAt: "desc" },
+          include: {
+            itinerary: true,
+          },
+        }),
+        prisma.favorite.count({ where: { userId } }),
+      ]);
 
-    return res.json(
-      createResponse({
-        data: favorites,
-        metadata: { total, page, lastPage: Math.ceil(total / limit) },
-      }),
-    );
+      const formattedFavorites = favorites.map((fav: any) => {
+        const itinerary = fav.itinerary;
+
+        let finalImageUrl = itinerary.imageUrl || null;
+
+        if (
+          !finalImageUrl &&
+          itinerary.itineraryPhotos &&
+          itinerary.itineraryPhotos.length > 0
+        ) {
+          finalImageUrl = itinerary.itineraryPhotos[0].url;
+        }
+
+        return {
+          id: fav.id,
+          userId: fav.userId,
+          itineraryId: fav.itineraryId,
+          createdAt: fav.createdAt,
+          itinerary: {
+            ...itinerary,
+            imageUrl: finalImageUrl,
+          },
+        };
+      });
+
+      return res.json(
+        createResponse({
+          data: formattedFavorites,
+          metadata: { total, page, lastPage: Math.ceil(total / limit) },
+        }),
+      );
+    } catch (error) {
+      console.error("Lỗi khi lấy favorite:", error);
+      return res
+        .status(500)
+        .json(createResponse({ message: "Internal Server Error" }));
+    }
   },
 
   async delete(req: Request, res: Response) {

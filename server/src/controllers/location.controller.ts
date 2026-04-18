@@ -10,10 +10,23 @@ export const locationController = {
       `
       SELECT 
         l.id, l."osmId", l.name, l.slug, l.description, l.address, l.phone, 
-        l.website, l.email, l."avgRating", l."ratingCount", l."priceLevel",
-        l.metadata, c.id as "catId", c.slug as "catSlug", l."createdAt", l."updatedAt",
+        l.website, l.email, l."priceLevel", l.metadata, 
+        c.id as "catId", c.slug as "catSlug", l."createdAt", l."updatedAt",
         ST_X(l.location::geometry) as longitude, 
-        ST_Y(l.location::geometry) as latitude
+        ST_Y(l.location::geometry) as latitude,
+        
+        COALESCE((
+          SELECT ROUND(AVG(r.rating)::numeric, 1) 
+          FROM "Review" r 
+          WHERE r."locationId" = l.id
+        ), 0)::float as "avgRating",
+        
+        (
+          SELECT COUNT(*)::int 
+          FROM "Review" r 
+          WHERE r."locationId" = l.id
+        ) as "ratingCount"
+
       FROM "Location" l
       INNER JOIN "LocationCategory" c ON l."categoryId" = c.id
       WHERE l.id = $1
@@ -74,8 +87,19 @@ export const locationController = {
           l.address,
           l."categoryId",
           l."priceLevel",
-          l."avgRating",
-          l."ratingCount",
+          
+          COALESCE((
+            SELECT ROUND(AVG(r.rating)::numeric, 1) 
+            FROM "Review" r 
+            WHERE r."locationId" = l.id
+          ), 0)::float as "avgRating",
+          
+          (
+            SELECT COUNT(*)::int 
+            FROM "Review" r 
+            WHERE r."locationId" = l.id
+          ) as "ratingCount",
+
           ST_X(l.location::geometry) as longitude,
           ST_Y(l.location::geometry) as latitude,
           ST_Distance(
@@ -86,7 +110,6 @@ export const locationController = {
             'nameVi', c."nameVi", 
             'icon', c.icon
           ) as category,
-          -- SỬA Ở ĐÂY: Đổi alias thành "photos"
           COALESCE(
             (
               SELECT json_agg(json_build_object('url', lp.url))
@@ -141,103 +164,126 @@ export const locationController = {
     const limit = Math.max(1, Number(req.query.limit) || 10);
     const skip = (page - 1) * limit;
 
-    const where: any = {
-      isDeleted: false,
-    };
+    let whereClause = `WHERE l."isDeleted" = false`;
+    const whereParams: any[] = [];
+    let paramIndex = 1;
 
     if (q) {
-      where.OR = [
-        { name: { contains: q, mode: "insensitive" } },
-        { address: { contains: q, mode: "insensitive" } },
-      ];
+      whereParams.push(`%${q}%`);
+      whereClause += ` AND (l.name ILIKE $${paramIndex} OR l.address ILIKE $${paramIndex})`;
+      paramIndex++;
     }
 
     if (categoryId) {
-      where.categoryId = categoryId;
+      whereParams.push(categoryId);
+      whereClause += ` AND l."categoryId" = $${paramIndex}`;
+      paramIndex++;
     }
 
     if (priceLevel) {
-      where.priceLevel = priceLevel;
+      whereParams.push(priceLevel);
+      whereClause += ` AND l."priceLevel" = $${paramIndex}`;
+      paramIndex++;
     }
 
-    let orderByCondition: any = { avgRating: "desc" };
-
+    let orderClause = `ORDER BY "calculatedAvgRating" DESC`;
     if (sortBy === "priceLevel") {
-      orderByCondition = { priceLevel: sortOrder === "asc" ? "asc" : "desc" };
+      orderClause = `ORDER BY l."priceLevel" ${sortOrder === "asc" ? "ASC" : "DESC"}`;
     } else if (sortBy === "avgRating") {
-      orderByCondition = { avgRating: sortOrder === "asc" ? "asc" : "desc" };
+      orderClause = `ORDER BY "calculatedAvgRating" ${sortOrder === "asc" ? "ASC" : "DESC"}`;
     }
 
-    const [locations, total] = await prisma.$transaction([
-      prisma.location.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: orderByCondition,
-        include: {
-          category: true,
-          locationPhotos: {
-            take: 1,
-          },
-          _count: {
-            select: {
-              reviews: true,
+    try {
+      const countQuery = `SELECT COUNT(*)::int as total FROM "Location" l ${whereClause}`;
+      const countResult: any[] = await prisma.$queryRawUnsafe(
+        countQuery,
+        ...whereParams,
+      );
+      const total = countResult[0].total;
+
+      const queryParams = [...whereParams, limit, skip];
+      const limitIndex = paramIndex;
+      const skipIndex = paramIndex + 1;
+
+      const mainQuery = `
+        SELECT 
+          l.*,
+          ST_X(l.location::geometry) as longitude, 
+          ST_Y(l.location::geometry) as latitude,
+          
+          row_to_json(c) as category,
+          
+          COALESCE((
+            SELECT ROUND(AVG(r.rating)::numeric, 1) 
+            FROM "Review" r 
+            WHERE r."locationId" = l.id
+          ), 0)::float as "calculatedAvgRating",
+          
+          (
+            SELECT COUNT(*)::int 
+            FROM "Review" r 
+            WHERE r."locationId" = l.id
+          ) as "ratingCount",
+          
+          -- Lấy tối đa 1 bức ảnh (giống logic take: 1 cũ)
+          COALESCE((
+            SELECT json_agg(row_to_json(lp))
+            FROM (
+              SELECT * FROM "LocationPhoto" 
+              WHERE "locationId" = l.id 
+              LIMIT 1
+            ) lp
+          ), '[]'::json) as photos
+
+        FROM "Location" l
+        LEFT JOIN "LocationCategory" c ON l."categoryId" = c.id
+        ${whereClause}
+        ${orderClause}
+        LIMIT $${limitIndex} OFFSET $${skipIndex}
+      `;
+
+      const locations: any[] = await prisma.$queryRawUnsafe(
+        mainQuery,
+        ...queryParams,
+      );
+
+      const formattedLocations = locations.map((loc: any) => {
+        delete loc.location;
+        const locationPhotos = loc.photos || [];
+
+        const realAvgRating = loc.calculatedAvgRating;
+        delete loc.calculatedAvgRating;
+
+        return {
+          ...loc,
+          avgRating: realAvgRating,
+          photos: locationPhotos,
+          imageUrl: locationPhotos.length > 0 ? locationPhotos[0].url : null,
+        };
+      });
+
+      console.log("Formatted Locations:", formattedLocations);
+
+      return res.status(200).json(
+        createResponse({
+          data: {
+            items: formattedLocations,
+            meta: {
+              total,
+              page,
+              limit,
+              totalPages: Math.ceil(total / limit),
             },
           },
-        },
-      }),
-      prisma.location.count({ where }),
-    ]);
-
-    let coordinates: any[] = [];
-    if (locations.length > 0) {
-      const idsString = locations.map((loc) => `'${loc.id}'`).join(",");
-
-      coordinates = await prisma.$queryRawUnsafe(`
-        SELECT 
-          id, 
-          ST_X(location::geometry) as longitude, 
-          ST_Y(location::geometry) as latitude
-        FROM "Location"
-        WHERE id IN (${idsString})
-      `);
+          message: "Search successfully.",
+        }),
+      );
+    } catch (error) {
+      console.error("Lỗi khi search location:", error);
+      return res
+        .status(500)
+        .json(createResponse({ message: "Internal Server Error" }));
     }
-
-    const formattedLocations = locations.map((loc) => {
-      const { _count, locationPhotos, ...rest } = loc as any;
-
-      const coord = coordinates.find((c: any) => c.id === loc.id);
-
-      return {
-        ...rest,
-        ratingCount: _count?.reviews || 0,
-        latitude: coord ? coord.latitude : null,
-        longitude: coord ? coord.longitude : null,
-
-        photos: locationPhotos || [],
-
-        imageUrl:
-          locationPhotos && locationPhotos.length > 0
-            ? locationPhotos[0].url
-            : null,
-      };
-    });
-
-    return res.status(200).json(
-      createResponse({
-        data: {
-          items: formattedLocations,
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-          },
-        },
-        message: "Search successfully.",
-      }),
-    );
   },
-
   async getAll(req: Request, res: Response) {},
 };

@@ -122,7 +122,7 @@ public class AdminLocationFragment extends Fragment {
                     int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
                     // ONLY FETCH WHEN NEAR BOTTOM OF RC
-                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 5
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 13
                             && firstVisibleItemPosition >= 0) {
                         viewModel.fetchLocations(true);
                     }

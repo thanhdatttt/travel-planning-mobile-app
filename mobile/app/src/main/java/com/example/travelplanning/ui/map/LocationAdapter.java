@@ -15,6 +15,7 @@ import com.example.travelplanning.data.model.location.Location;
 import org.osmdroid.util.GeoPoint;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
 
@@ -57,7 +58,13 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
         double rating = loc.getAvgRating() != null ? loc.getAvgRating() : 0.0;
         int count = loc.getRatingCount() != null ? loc.getRatingCount() : 0;
-        holder.tvRating.setText("⭐ " + rating + " (" + count + ")" + priceStr);
+        
+        if (holder.tvRatingScore != null) {
+            holder.tvRatingScore.setText(String.format(Locale.US, "%.1f (%d)", rating, count));
+        }
+        if (holder.rbAverageRating != null) {
+            holder.rbAverageRating.setRating((float) rating);
+        }
 
         String distanceStr = "";
         if (currentUserLocation != null && loc.getLatitude() != null && loc.getLongitude() != null) {
@@ -74,7 +81,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             .load(loc.getImageUrl())
             .centerCrop()
             .placeholder(R.drawable.ic_placeholder) 
-            .into(holder.imgPlace);
+            .into(holder.ivImage);
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(loc));
     }
@@ -85,14 +92,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     }
 
     static class LocationViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgPlace;
-        TextView tvName, tvRating, tvDistanceAddress;
+        ImageView ivImage;
+        TextView tvName, tvRatingScore, tvDistanceAddress; 
+        android.widget.RatingBar rbAverageRating; 
 
         public LocationViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgPlace = itemView.findViewById(R.id.imgPlace);
+            ivImage = itemView.findViewById(R.id.imgPlace);
             tvName = itemView.findViewById(R.id.tvPlaceName);
-            tvRating = itemView.findViewById(R.id.tvRating);
+            
+            tvRatingScore = itemView.findViewById(R.id.tvRatingScore); 
+            rbAverageRating = itemView.findViewById(R.id.rbAverageRating);
+            
             tvDistanceAddress = itemView.findViewById(R.id.tvDistanceAddress);
         }
     }

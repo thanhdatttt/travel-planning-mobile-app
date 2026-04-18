@@ -34,10 +34,12 @@ import com.example.travelplanning.data.model.review.RatingStat;
 import com.example.travelplanning.databinding.FragmentLocationDetailBinding;
 import com.example.travelplanning.databinding.LayoutAddReviewBinding;
 import com.example.travelplanning.databinding.LayoutReviewListBinding;
+import com.example.travelplanning.databinding.DialogReviewReportBinding;
 import com.example.travelplanning.ui.map.LocationAdapter;
 import com.example.travelplanning.ui.review.ReviewAdapter;
 import com.example.travelplanning.viewmodel.location_detail.LocationDetailViewModel;
 import com.example.travelplanning.viewmodel.profile.ProfileViewModel;
+import com.example.travelplanning.viewmodel.report.ReportViewmodel;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -54,6 +56,7 @@ public class LocationDetailFragment extends Fragment {
     private LayoutReviewListBinding reviewListBinding;
     private LayoutAddReviewBinding addReviewBinding;
     private LocationDetailViewModel viewModel;
+    private ReportViewmodel reportViewModel;
     private PhotoAdapter photoAdapter;
     private ReviewAdapter reviewAdapter;
     private LocationAdapter nearbyAdapter;
@@ -82,6 +85,8 @@ public class LocationDetailFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(LocationDetailViewModel.class);
         ProfileViewModel profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
         profileViewModel.fetchUserProfile();
+        reportViewModel = new ViewModelProvider(this).get(ReportViewmodel.class);
+
 
         profileViewModel.getUserProfile().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
@@ -149,6 +154,10 @@ public class LocationDetailFragment extends Fragment {
         binding.rvNearbyPlaces.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.rvNearbyPlaces.setAdapter(nearbyAdapter);
+
+        reviewAdapter.setOnOptionsClickListener((anchorView, reviewId) -> {
+            showReviewOptionsMenu(anchorView, reviewId);
+        });
     }
 
     private void setupPhotoAreaLogic() {
@@ -255,6 +264,12 @@ public class LocationDetailFragment extends Fragment {
             }
         });
 
+        reportViewModel.getReportSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (success != null && success) {
+                Toast.makeText(getContext(), "Report submitted successfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         viewModel.getNearbyLocations().observe(getViewLifecycleOwner(), locations -> {
             if (locations != null) {
                 Location currentDetail = viewModel.getLocationDetail().getValue();
@@ -350,6 +365,13 @@ public class LocationDetailFragment extends Fragment {
                 viewModel.fetchReviews(locationId, true);
             }
         });
+
+        binding.btnReport.setOnClickListener(v -> {
+            if (locationId != null) {
+                // Pass "location" as the type
+                showReportDialog(locationId, "location");
+            }
+        });
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -441,7 +463,6 @@ public class LocationDetailFragment extends Fragment {
         int totalReviews = 0;
         double totalPoints = 0;
 
-        // Tính toán con số thực tế từ kết quả API Stats trả về
         for (RatingStat stat : stats) {
             totalReviews += stat.getCount();
             totalPoints += (stat.getRating() * stat.getCount());
@@ -455,7 +476,6 @@ public class LocationDetailFragment extends Fragment {
             String countStr = "(" + totalReviews + " " + getString(R.string.reviews) + ")";
             binding.tvDetailRatingCount.setText(countStr);
 
-            // Cập nhật phần Summary phía dưới
             summaryBinding.tvTotalReviews.setText(countStr);
             summaryBinding.tvAverageRating.setText(String.format(Locale.US, "%.1f", average));
             summaryBinding.miniRatingBar.setRating((float) average);
@@ -478,10 +498,13 @@ public class LocationDetailFragment extends Fragment {
             summaryBinding.tvTotalReviews.setText("(0 " + getString(R.string.reviews) + ")");
             summaryBinding.tvAverageRating.setText("0.0");
             summaryBinding.miniRatingBar.setRating(0f);
-        }
 
-        // Gán tổng số lượng vào TextView trong summary
-        summaryBinding.tvTotalReviews.setText("(" + totalReviews + ")");
+            summaryBinding.pbStar5.setProgress(0);
+            summaryBinding.pbStar4.setProgress(0);
+            summaryBinding.pbStar3.setProgress(0);
+            summaryBinding.pbStar2.setProgress(0);
+            summaryBinding.pbStar1.setProgress(0);
+        }
     }
 
     private void setupAddReviewLogic() {
@@ -526,6 +549,75 @@ public class LocationDetailFragment extends Fragment {
                 binding.btnBookmark.setColorFilter(Color.GRAY);
             }
         });
+    }
+
+    private void showReviewOptionsMenu(View anchor, String reviewId) {
+        android.widget.PopupMenu popupMenu = new android.widget.PopupMenu(requireContext(), anchor);
+        popupMenu.getMenu().add(0, 1, 0, "Report Review");
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == 1) {
+                // Pass "review" as the type
+                showReportDialog(reviewId, "review");
+                return true;
+            }
+            return false;
+        });
+        popupMenu.show();
+    }
+
+    private void showReportDialog(String targetId, String targetType) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
+        DialogReviewReportBinding dialogBinding = DialogReviewReportBinding.inflate(getLayoutInflater());
+
+        builder.setView(dialogBinding.getRoot());
+        AlertDialog dialog = builder.create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+        }
+
+        dialogBinding.btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        dialogBinding.rgReportReasons.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.rbOther) {
+                dialogBinding.tilOtherReason.setVisibility(View.VISIBLE);
+            } else {
+                dialogBinding.tilOtherReason.setVisibility(View.GONE);
+            }
+        });
+
+        dialogBinding.btnSubmitReport.setOnClickListener(v -> {
+            int selectedId = dialogBinding.rgReportReasons.getCheckedRadioButtonId();
+            if (selectedId == -1) {
+                Toast.makeText(requireContext(), "Please select a reason", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String reason = "";
+            if (selectedId == R.id.rbSpam) reason = "Spam";
+            else if (selectedId == R.id.rbInappropriate) reason = "Inappropriate";
+            else if (selectedId == R.id.rbIrrelevant) reason = "Irrelevant";
+            else if (selectedId == R.id.rbOther) {
+                reason = dialogBinding.etOtherReason.getText().toString().trim();
+                if (reason.isEmpty()) {
+                    dialogBinding.etOtherReason.setError("Please specify a reason");
+                    return;
+                }
+            }
+
+            // Route to the correct ViewModel method based on the type
+            if ("location".equals(targetType)) {
+                reportViewModel.reportLocation(targetId, reason);
+            } else if ("review".equals(targetType)) {
+                reportViewModel.reportReview(targetId, reason);
+            }
+
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     @Override

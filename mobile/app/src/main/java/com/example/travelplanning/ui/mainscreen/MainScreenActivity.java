@@ -9,10 +9,11 @@ import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
-
+import android.view.View;
 import com.example.travelplanning.R;
 import com.example.travelplanning.databinding.ActivityMainScreenBinding;
 import com.example.travelplanning.ui.util.LocaleHelper;
@@ -37,6 +38,43 @@ public class MainScreenActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
 
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
+
+//       Custom bottom nav logic for account tab, default for the other tabs
+        binding.bottomNavigation.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_account) {
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setLaunchSingleTop(true)
+                        .setRestoreState(false)
+                        .setPopUpTo(navController.getGraph().getStartDestinationId(), false, true)
+                        .build();
+
+                navController.navigate(id, null, navOptions);
+                return true;
+            } else {
+                return NavigationUI.onNavDestinationSelected(item, navController);
+            }
+        });
+
+        // Handle re-clicking the account tab
+        binding.bottomNavigation.setOnItemReselectedListener(item -> {
+            navController.popBackStack(item.getItemId(), false);
+        });
+
+        binding.getRoot().getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            android.graphics.Rect r = new android.graphics.Rect();
+            binding.getRoot().getWindowVisibleDisplayFrame(r);
+            int screenHeight = binding.getRoot().getRootView().getHeight();
+            
+            int keypadHeight = screenHeight - r.bottom;
+
+            if (keypadHeight > screenHeight * 0.15) { 
+                binding.bottomNavigation.setVisibility(View.GONE);
+            } else { 
+                binding.bottomNavigation.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

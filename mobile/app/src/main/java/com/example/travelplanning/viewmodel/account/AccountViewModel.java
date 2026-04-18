@@ -18,6 +18,8 @@ public class AccountViewModel extends ViewModel {
     public static final int ID_FAV = 5;
     public static final int ID_ADMIN = 6;
     public static final int ID_LOGOUT = 7;
+    public static final int ID_MODERATOR = 8;
+
     private final MutableLiveData<List<AccountOption>> _menuItems = new MutableLiveData<>();
 
     public LiveData<List<AccountOption>> getMenuItems() {

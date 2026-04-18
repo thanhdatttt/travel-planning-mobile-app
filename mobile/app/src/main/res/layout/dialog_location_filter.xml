@@ -10,8 +10,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filter search results"
-        android:textColor="#333333"
+        android:text="@string/filter_search_results"
+        android:textColor="@color/text"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="24dp"/>
@@ -19,8 +19,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Category"
-        android:textColor="#555555"
+        android:text="@string/category"
+        android:textColor="@color/text"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginBottom="12dp"/>
@@ -37,8 +37,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Price Level"
-        android:textColor="#555555"
+        android:text="@string/price_level"
+        android:textColor="@color/text"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginBottom="12dp"/>
@@ -48,14 +48,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="24dp"
-    app:singleSelection="true">
+    app:singleSelection="true"
+    app:selectionRequired="false">
 
     <com.google.android.material.chip.Chip
         android:id="@+id/chipPrice1"
         style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$ (Cheap)"
+        android:text="@string/price_cheap"
         android:tag="1"/>
 
     <com.google.android.material.chip.Chip
@@ -63,7 +64,7 @@
         style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$$ (Moderate)"
+        android:text="@string/price_moderate"
         android:tag="2"/>
 
     <com.google.android.material.chip.Chip
@@ -71,7 +72,7 @@
         style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$$$ (Expensive)"
+        android:text="@string/price_expensive"
         android:tag="3"/>
 
     <com.google.android.material.chip.Chip
@@ -79,7 +80,7 @@
         style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$$$$ (Very Expensive)"
+        android:text="@string/price_very_expensive"
         android:tag="4"/> </com.google.android.material.chip.ChipGroup>
 
     <LinearLayout

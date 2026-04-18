@@ -10,15 +10,21 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.data.model.itinerary.ItineraryItem;
 import com.example.travelplanning.databinding.FragmentTripPublicLocationListBinding;
+import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.itinerary.ItineraryViewModel;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TripPublicLocationListFragment extends Fragment {
     private FragmentTripPublicLocationListBinding binding;
     private ItineraryViewModel viewModel;
+    private final TripPublicLocationAdapter adapter = new TripPublicLocationAdapter(this::navigateToLocationDetail);
+    private String currentTripId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,20 +51,41 @@ public class TripPublicLocationListFragment extends Fragment {
 
     private void setupRecyclerView() {
         binding.rvLocations.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvLocations.setAdapter(adapter);
     }
 
     private void setupObservers() {
         viewModel.getSelectedItinerary().observe(getViewLifecycleOwner(), itinerary -> {
-           if (itinerary != null && itinerary.getItineraryItems() != null) {
-               List<ItineraryItem> items = itinerary.getItineraryItems();
+            if (itinerary == null) return;
+            currentTripId = itinerary.getId();
+            showLocationList(itinerary);
+        });
 
-               String locationText = items.size() + (items.size() <= 1 ? " location" : " locations");
-               binding.tvLocationCount.setText(locationText);
-           }
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
+            if (msg != null && !msg.isEmpty()) {
+                SnackBarHelper.showTopSnackBar(requireView(), msg, SnackBarHelper.SnackBarType.ERROR);
+            }
         });
     }
 
     private void setupListeners() {
+
+    }
+
+    private void showLocationList(Itinerary itinerary) {
+        List<ItineraryItem> items = itinerary.getItineraryItems();
+
+        if (items == null || items.isEmpty()) {
+            binding.tvLocationCount.setText("0 locations");
+            adapter.submitList(Collections.emptyList());
+        } else {
+            String locationNum = items.size() + (items.size() == 1 ? " location" : " locations");
+            binding.tvLocationCount.setText(locationNum);
+            adapter.submitList(new ArrayList<>(items));
+        }
+    }
+
+    private void navigateToLocationDetail(ItineraryItem item) {
 
     }
 }

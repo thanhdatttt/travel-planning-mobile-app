@@ -1,5 +1,10 @@
 package com.example.travelplanning.data.model.profile;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +16,15 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.Map;
 
+@Entity(tableName = "user_profiles")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = {@Ignore})
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserProfile {
+    @PrimaryKey
+    @NonNull
     String id;
     String email;
     String username;
