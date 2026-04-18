@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -503,10 +504,13 @@ public class ItineraryViewModel extends AndroidViewModel {
     // handle filter unschedule item in selected itinerary
     public LiveData<List<ItineraryItem>> getUnscheduleItems() {
         return Transformations.map(selectedItinerary, itinerary -> {
-            if (itinerary == null) return new ArrayList<>();
+            if (itinerary == null || itinerary.getItineraryItems() == null) {
+                return new ArrayList<>();
+            }
+
             return itinerary.getItineraryItems().stream()
                     .filter(item -> item.getDate() == null)
-                    .toList();
+                    .collect(Collectors.toList());
         });
     }
 

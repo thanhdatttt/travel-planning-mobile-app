@@ -63,9 +63,9 @@ public class ItineraryFragment extends Fragment {
             if (itinerary == null) return;
 
             currentTripId = itinerary.getId(); // keep cached for the launcher callback
-
-            showItinerary();
         });
+
+        showItinerary();
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
             if (msg != null && !msg.isEmpty()) {

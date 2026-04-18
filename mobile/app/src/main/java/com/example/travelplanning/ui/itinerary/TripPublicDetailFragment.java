@@ -76,6 +76,7 @@ public class TripPublicDetailFragment extends Fragment {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             binding.loadingOverlay.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            binding.btnCloneTrip.setEnabled(!isLoading);
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
