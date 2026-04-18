@@ -14,6 +14,8 @@ public class LocationReportResponse {
     String reportId;
     String reporterId;
     String locationId;
+
+    String reporterName;
     String reason;
     String photoURL;
     String locationName;

@@ -62,8 +62,8 @@ public class ModeratorReviewFragment extends Fragment {
 
     private void showPopupMenu(View anchor, ReviewReport report) {
         PopupMenu popup = new PopupMenu(requireContext(), anchor);
-        popup.getMenu().add(0, 1, 0, "Ban User");
-        popup.getMenu().add(0, 2, 1, "Dismiss Report");
+        popup.getMenu().add(0, 1, 0, R.string.ban_user);
+        popup.getMenu().add(0, 2, 1, R.string.dismiss_report);
 
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
@@ -83,7 +83,9 @@ public class ModeratorReviewFragment extends Fragment {
     private void setupObservers() {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (Boolean.TRUE.equals(isLoading)) {
-                binding.tvEmptyState.setVisibility(View.GONE);
+                showLoading(getString(R.string.fetching_review_reports));
+            } else {
+                hideLoading();
             }
         });
 
@@ -148,6 +150,17 @@ public class ModeratorReviewFragment extends Fragment {
                 })
                 .setNegativeButton( R.string.cancel , null)
                 .show();
+    }
+
+    private void showLoading(String message) {
+        if (binding == null) return;
+        binding.loadingOverlay.getRoot().setVisibility(View.VISIBLE);
+        binding.loadingOverlay.tvLoadingMessage.setText(message);
+    }
+
+    private void hideLoading() {
+        if (binding == null) return;
+        binding.loadingOverlay.getRoot().setVisibility(View.GONE);
     }
 
     @Override

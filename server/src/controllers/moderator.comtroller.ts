@@ -75,6 +75,11 @@ export const moderatorController = {
         skip,
         take,
         orderBy: { createdAt: "desc" },
+        include: {
+        user: {
+            select: { username: true, fullName: true }
+          }
+        },
       });
 
       if (reports.length === 0) {
@@ -100,6 +105,7 @@ export const moderatorController = {
           reporterId: report.reporterId,
           targetId: report.targetId,
           reason: report.reason,
+          reporterName: report.user?.username || report.user?.fullName ||  "Unknown User",
           photoURL: loc?.locationPhotos?.[0]?.url || null,
           locationName: loc?.name || "Unknown",
           locationAddress: loc?.address || "No address",
@@ -172,24 +178,23 @@ export const moderatorController = {
   },
 
   async banUser(req: Request, res: Response) {
-    try {
-      const { userId } = req.params;
-      const { ban } = req.body; 
+    const { id } = req.params;
+    const { ban } = req.body; 
 
-      const updatedUser = await prisma.user.update({
-        where: { id: String(userId) },
-        data: { isBanned: Boolean(ban) },
-      });
+    console.log(req.params);
+    console.log(req.body);
 
-      return res.status(200).json(
-        createResponse({
-          message: `User ${ban ? 'banned' : 'unbanned'} successfully`,
-          data: updatedUser,
-        })
-      );
-    } catch (error) {
-      throw new ApiError(500, "Failed to update user status");
-    }
+    const updatedUser = await prisma.user.update({
+      where: { id: String(id) },
+      data: { isBanned: Boolean(ban) },
+    });
+
+    return res.status(200).json(
+      createResponse({
+        message: `User ${ban ? 'banned' : 'unbanned'} successfully`,
+        data: updatedUser,
+      })
+    );
   },
   
   async dismissReport(req: Request, res: Response) {

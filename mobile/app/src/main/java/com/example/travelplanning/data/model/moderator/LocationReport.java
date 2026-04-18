@@ -17,6 +17,7 @@ public class LocationReport {
     String reporterId;
     String locationId;
 
+    String reporterName;
     String reason;
     String status;
     String photoURL;

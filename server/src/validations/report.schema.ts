@@ -15,8 +15,7 @@ export const ReportCreateSchema = {
     targetId: z.uuid("Invalid target ID"),
     reason: z
       .string()
-      .min(10, "Reason must be at least 10 characters long")
-      .max(500),
+      .max(50, "Reason must be at most 50 characters long")
   }),
 };
 

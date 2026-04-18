@@ -265,4 +265,16 @@
     <string name="trip_creator_avatar">Trip creator avatar</string>
     <string name="floating_minus_sign">-</string>
     <string name="loading">Loading</string>
+    <string name="fetching_itinerary_reports">Fetching itinerary reports</string>
+    <string name="fetching_review_reports">Fetching review reports</string>
+    <string name="fetching_location_reports">Fetching location reports</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="other">Other</string>
+    <string name="inappropriate">Inappropriate</string>
+    <string name="spam_or_fake">Spam or fake</string>
+    <string name="report">Report</string>
+    <string name="not_relevant">Not relevant</string>
+    <string name="please_specify">Please specify...</string>
+    <string name="dismiss_report">Dismiss report</string>
+    <string name="ban_creator">Ban creator</string>
 </resources>

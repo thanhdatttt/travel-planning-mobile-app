@@ -246,4 +246,17 @@
     <string name="reported_by">Báo cáo bởi:</string>
     <string name="trip_creator_avatar">Ảnh đại diện người tạo chuyến đi</string>
     <string name="floating_minus_sign">-</string>
+    <string name="loading">Đang tải</string>
+    <string name="fetching_itinerary_reports">Đang tải báo cáo lộ trình</string>
+    <string name="fetching_review_reports">Đang tải báo cáo đánh giá</string>
+    <string name="fetching_location_reports">Đang tải báo cáo địa điểm</string>
+    <string name="submit_report">Gửi báo cáo</string>
+    <string name="other">Khác</string>
+    <string name="inappropriate">Không phù hợp</string>
+    <string name="spam_or_fake">Spam hoặc giả mạo</string>
+    <string name="report">Báo cáo</string>
+    <string name="not_relevant">Không liên quan</string>
+    <string name="please_specify">Vui lòng nêu chi tiết...</string>
+    <string name="dismiss_report">Đã xử lý</string>
+    <string name="ban_creator">Cấm người tạo</string>
 </resources>

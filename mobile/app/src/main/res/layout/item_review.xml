@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/background"
+    app:cardBackgroundColor="@color/card_background"
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp">
 
@@ -38,6 +38,15 @@
                 android:textColor="@color/text"
                 android:textSize="12sp"
                 android:alpha="0.6" />
+
+            <ImageButton
+                android:id="@+id/btnReviewOptions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_option"
+                android:contentDescription="Review Options" />
         </LinearLayout>
 
         <RatingBar

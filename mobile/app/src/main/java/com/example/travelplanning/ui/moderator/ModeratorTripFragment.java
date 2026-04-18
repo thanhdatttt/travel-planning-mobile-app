@@ -63,18 +63,14 @@ public class ModeratorTripFragment extends Fragment {
 
     private void showPopupMenu(View anchor, ItineraryReport report) {
         PopupMenu popup = new PopupMenu(requireContext(), anchor);
-        popup.getMenu().add(0, 1, 0, "Ban Creator");
-        popup.getMenu().add(0, 2, 1, "Delete Trip");
-        popup.getMenu().add(0, 3, 2, "Dismiss Report");
+        popup.getMenu().add(0, 1, 0, R.string.ban_creator);
+        popup.getMenu().add(0, 2, 1, R.string.dismiss_report);
 
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == 1) {
                 showBanConfirmationDialog(report);
             } else if (id == 2) {
-                // TODO: Delegate to Service/API layer to delete the itinerary
-                Toast.makeText(getContext(), "Trip deleted", Toast.LENGTH_SHORT).show();
-            } else if (id == 3) {
                 viewModel.dismissReport(report.getReportId());
                 Toast.makeText(getContext(), "Report dismissed", Toast.LENGTH_SHORT).show();
             }
@@ -84,6 +80,14 @@ public class ModeratorTripFragment extends Fragment {
     }
 
     private void setupObservers() {
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (Boolean.TRUE.equals(isLoading)) {
+                showLoading(getString(R.string.fetching_itinerary_reports));
+            } else {
+                hideLoading();
+            }
+        });
+
         viewModel.getReports().observe(getViewLifecycleOwner(), reports -> {
             if (reports != null) {
                 reportList.clear();
@@ -112,6 +116,17 @@ public class ModeratorTripFragment extends Fragment {
                 .setPositiveButton(R.string.ban, (dialog, which) -> viewModel.banUserFromReport(report.getOwnerId()))
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+    }
+
+    private void showLoading(String message) {
+        if (binding == null) return;
+        binding.loadingOverlay.getRoot().setVisibility(View.VISIBLE);
+        binding.loadingOverlay.tvLoadingMessage.setText(message);
+    }
+
+    private void hideLoading() {
+        if (binding == null) return;
+        binding.loadingOverlay.getRoot().setVisibility(View.GONE);
     }
 
     @Override

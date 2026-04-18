@@ -18,6 +18,7 @@ public class ReviewReportMapper implements BaseMapper<ReviewReportResponse, Revi
                 .formattedRating(dto.getRating() + "/5")
                 .title(dto.getReviewTitle())
                 .reviewText(dto.getReviewBody())
+                .reviewDate(dto.getReviewDate().split("T")[0])
                 .reporterName(dto.getReporterUsername())
                 .reportReason(dto.getReportReason())
                 .reviewerId(dto.getReviewerId())

@@ -5,6 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.moderator.ItineraryReport;
 import com.example.travelplanning.databinding.ItemModeratorTripBinding;
 import java.util.List;
@@ -67,6 +70,18 @@ public class ModeratorTripAdapter extends RecyclerView.Adapter<ModeratorTripAdap
                     binding.tvReadMore.setVisibility(View.GONE);
                 }
             });
+
+            if (report.getAvatarUrl() != null && !report.getAvatarUrl().isEmpty()) {
+                Glide.with(binding.getRoot().getContext())
+                        .load(report.getAvatarUrl())
+                        .placeholder(R.drawable.ic_user)
+                        .error(R.drawable.ic_user)
+                        .circleCrop()
+                        .into(binding.imgTripAvatar); // Change ID if necessary
+            } else {
+                Glide.with(binding.getRoot().getContext()).clear(binding.imgTripAvatar);
+                binding.imgTripAvatar.setImageResource(R.drawable.ic_user);
+            }
 
             binding.tvReadMore.setOnClickListener(v -> {
                 binding.tvDescription.setMaxLines(Integer.MAX_VALUE);

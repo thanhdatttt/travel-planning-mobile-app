@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.moderator.ReviewReport;
 import com.example.travelplanning.databinding.ItemModeratorReviewBinding;
@@ -70,6 +71,20 @@ public class ModeratorReviewAdapter extends RecyclerView.Adapter<ModeratorReview
                     binding.tvReadMore.setVisibility(View.GONE);
                 }
             });
+
+            if (report.getAvatarUrl() != null && !report.getAvatarUrl().isEmpty()) {
+                Glide.with(binding.getRoot().getContext())
+                        .load(report.getAvatarUrl())
+                        .placeholder(R.drawable.ic_user) // Assuming you have a user placeholder
+                        .error(R.drawable.ic_user)
+                        .circleCrop() // Circular crop looks best for avatars
+                        .into(binding.imgAvatar); // Change ID if necessary
+            } else {
+                Glide.with(binding.getRoot().getContext()).clear(binding.imgAvatar);
+                binding.imgAvatar.setImageResource(R.drawable.ic_user);
+            }
+
+            binding.tvDate.setText(report.getReviewDate());
 
             binding.tvReadMore.setOnClickListener(v -> {
                 binding.tvReviewText.setMaxLines(Integer.MAX_VALUE);

@@ -22,6 +22,7 @@ public class ReviewReport {
     String formattedRating;
     String title;
     String reviewText;
+    String reviewDate;
     String reporterName;
     String reportReason;
 }

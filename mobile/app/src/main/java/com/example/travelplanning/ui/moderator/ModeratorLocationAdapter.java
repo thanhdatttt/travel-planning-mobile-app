@@ -5,6 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.moderator.LocationReport;
 import com.example.travelplanning.databinding.ItemModeratorLocationBinding;
 import java.util.List;
@@ -53,7 +56,7 @@ public class ModeratorLocationAdapter extends RecyclerView.Adapter<ModeratorLoca
             binding.tvLocationName.setText(report.getLocationName());
             binding.tvDescription.setText(report.getLocationDescription());
             binding.tvReportReason.setText(report.getReason());
-            binding.tvReportedBy.setText(report.getReporterId());
+            binding.tvReportedBy.setText(report.getReporterName());
 
             binding.tvDescription.post(() -> {
                 if (binding.tvDescription.getLineCount() > 4) {
@@ -67,6 +70,18 @@ public class ModeratorLocationAdapter extends RecyclerView.Adapter<ModeratorLoca
                 binding.tvDescription.setMaxLines(Integer.MAX_VALUE);
                 binding.tvReadMore.setVisibility(View.GONE);
             });
+            if (report.getPhotoURL() != null && !report.getPhotoURL().isEmpty()) {
+                Glide.with(binding.getRoot().getContext())
+                        .load(report.getPhotoURL())
+                        .placeholder(R.drawable.ic_placeholder)
+                        .error(R.drawable.ic_placeholder)
+                        .centerCrop()
+                        .into(binding.ivImage); // Change ID if necessary
+            } else {
+                Glide.with(binding.getRoot().getContext()).clear(binding.ivImage);
+                binding.ivImage.setImageResource(R.drawable.ic_placeholder);
+            }
+
 
             binding.btnMoreOptions.setOnClickListener(v -> listener.onOptionClick(v, report));
         }

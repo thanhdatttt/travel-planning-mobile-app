@@ -14,6 +14,7 @@ public class LocationReportMapper implements BaseMapper<LocationReportResponse, 
                 .reportId(dto.getReportId())
                 .reporterId(dto.getReporterId())
                 .locationId(dto.getLocationId())
+                .reporterName(dto.getReporterName())
                 .reason(dto.getReason())
                 .photoURL(dto.getPhotoURL())
                 .locationName(dto.getLocationName())
