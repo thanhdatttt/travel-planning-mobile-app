@@ -1,11 +1,14 @@
 package com.example.travelplanning.ui.itinerary;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -15,6 +18,8 @@ import com.example.travelplanning.data.model.itinerary.Itinerary;
 import com.example.travelplanning.databinding.FragmentTripPublicDetailBinding;
 import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.itinerary.ItineraryViewModel;
+import com.example.travelplanning.databinding.DialogReviewReportBinding;
+import com.example.travelplanning.viewmodel.report.ReportViewmodel;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.text.SimpleDateFormat;
@@ -23,6 +28,7 @@ import java.util.Locale;
 public class TripPublicDetailFragment extends Fragment {
     private FragmentTripPublicDetailBinding binding;
     private ItineraryViewModel viewModel;
+    private ReportViewmodel reportViewModel;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     // newInstance to pass data to fragment
@@ -55,6 +61,7 @@ public class TripPublicDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(ItineraryViewModel.class);
+        reportViewModel = new ViewModelProvider(this).get(ReportViewmodel.class);
 
         if (tripId != null) {
             viewModel.fetchItineraryById(tripId);
@@ -77,11 +84,18 @@ public class TripPublicDetailFragment extends Fragment {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             binding.loadingOverlay.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            binding.btnCloneTrip.setEnabled(!isLoading);
         });
 
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
             if (msg != null && !msg.isEmpty())
                 SnackBarHelper.showTopSnackBar(binding.getRoot(), msg, SnackBarHelper.SnackBarType.ERROR);
+        });
+
+        reportViewModel.getReportSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (success != null && success) {
+                Toast.makeText(getContext(), getString(R.string.submit_report) + " thành công!", Toast.LENGTH_SHORT).show();
+            }
         });
 
         viewModel.getSelectedItinerary().observe(getViewLifecycleOwner(), itinerary -> {
@@ -92,7 +106,7 @@ public class TripPublicDetailFragment extends Fragment {
 
         viewModel.getCloneSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success) {
-                SnackBarHelper.showTopSnackBar(binding.getRoot(), "Trip cloned successfully!", SnackBarHelper.SnackBarType.SUCCESS);
+                Toast.makeText(requireContext(), "Trip clone successfully", Toast.LENGTH_SHORT).show();
                 viewModel.getCloneSuccess().setValue(false);
             }
         });
@@ -104,9 +118,63 @@ public class TripPublicDetailFragment extends Fragment {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
 
+        binding.btnReport.setOnClickListener(v -> {
+            if (tripId != null) {
+                showReportDialog(tripId);
+            }
+        });
+
+
         binding.btnCloneTrip.setOnClickListener(v -> {
             viewModel.cloneItinerary(tripId);
         });
+    }
+
+    private void showReportDialog(String targetId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        DialogReviewReportBinding dialogBinding = DialogReviewReportBinding.inflate(getLayoutInflater());
+
+        builder.setView(dialogBinding.getRoot());
+        AlertDialog dialog = builder.create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+        }
+
+        dialogBinding.btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        dialogBinding.rgReportReasons.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.rbOther) {
+                dialogBinding.tilOtherReason.setVisibility(View.VISIBLE);
+            } else {
+                dialogBinding.tilOtherReason.setVisibility(View.GONE);
+            }
+        });
+
+        dialogBinding.btnSubmitReport.setOnClickListener(v -> {
+            int selectedId = dialogBinding.rgReportReasons.getCheckedRadioButtonId();
+            if (selectedId == -1) {
+                Toast.makeText(requireContext(), getString(R.string.please_specify), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String reason = "";
+            if (selectedId == R.id.rbSpam) reason = "Spam";
+            else if (selectedId == R.id.rbInappropriate) reason = "Inappropriate";
+            else if (selectedId == R.id.rbIrrelevant) reason = "Irrelevant";
+            else if (selectedId == R.id.rbOther) {
+                reason = dialogBinding.etOtherReason.getText().toString().trim();
+                if (reason.isEmpty()) {
+                    dialogBinding.etOtherReason.setError(getString(R.string.please_specify));
+                    return;
+                }
+            }
+
+            reportViewModel.reportItinerary(targetId, reason);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private void setupTabUI() {

@@ -10,6 +10,7 @@ import {
 } from "./middlewares/error.middleware";
 import adminRoutes from "./routes/admin/index.routes";
 import itineraryRoutes from "./routes/itinerary/index.routes";
+import moderatorRoutes from "./routes/moderator.routes";
 
 const app = express();
 
@@ -24,7 +25,8 @@ app.use("/api", authRoutes);
 // protected
 app.use(requireAuth);
 app.use("/api", userRoutes);
-app.use("/api/admin", requireRole("admin"), adminRoutes);
+app.use("/api/admin", requireRole("admin"), requireAuth, adminRoutes);
+app.use("/api/moderator", requireRole("moderator"), requireAuth, moderatorRoutes);
 app.use("/api", itineraryRoutes);
 
 app.use(notFoundHandler);

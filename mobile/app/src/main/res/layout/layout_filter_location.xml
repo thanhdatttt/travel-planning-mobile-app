@@ -14,7 +14,8 @@
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
         android:paddingTop="16dp"
-        android:paddingBottom="20dp">
+        android:paddingBottom="20dp"
+        android:background="@color/white">
 
         <!-- Title Row -->
         <RelativeLayout
@@ -45,7 +46,7 @@
                     android:textSize="17sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="10dp"
-                    android:textColor="#1A1A1A" />
+                    android:textColor="@color/text" />
 
                 <View
                     android:layout_width="match_parent"
@@ -73,7 +74,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="5dp"
-                android:textColor="#1A1A1A" />
+                android:textColor="@color/text" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -138,7 +139,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="5dp"
-                android:textColor="#1A1A1A" />
+                android:textColor="@color/text" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -204,7 +205,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="5dp"
-                android:textColor="#1A1A1A" />
+                android:textColor="@color/text" />
 
             <!-- Sort Dropdowns Row -->
             <LinearLayout

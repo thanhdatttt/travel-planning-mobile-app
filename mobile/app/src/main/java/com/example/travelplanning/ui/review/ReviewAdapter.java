@@ -22,6 +22,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     private OnDeleteClickListener deleteClickListener;
 
+    public interface OnReviewOptionsClickListener {
+        void onOptionsClick(View anchorView, String reviewId);
+    }
+
+    private OnReviewOptionsClickListener optionsClickListener;
+
+    public void setOnOptionsClickListener(OnReviewOptionsClickListener listener) {
+        this.optionsClickListener = listener;
+    }
+
     public void setOnDeleteClickListener(OnDeleteClickListener listener) {
         this.deleteClickListener = listener;
     }
@@ -62,6 +72,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         } else {
             holder.binding.btnDeleteReview.setVisibility(View.GONE);
         }
+
+        holder.binding.btnReviewOptions.setOnClickListener(v -> {
+            if (optionsClickListener != null) {
+                optionsClickListener.onOptionsClick(v, review.getId());
+            }
+        });
     }
 
     @Override

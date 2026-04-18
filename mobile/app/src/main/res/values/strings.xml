@@ -156,15 +156,30 @@
     <string name="save_change">Save change</string>
     <string name="detail">Detail</string>
 
+    // home
+    <string name="explore_itinerary">Explore Itinerary</string>
+    <string name="search_hint">Search locations...</string>
+
     //category
     <string name="cat_food_and_drink">Food &amp; Drink</string>
     <string name="cat_accommodation">Accommodation</string>
     <string name="cat_attractions">Attractions</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_services">Services</string>
+    <string name="cat_unknown">Unknown</string>
     <string name="trip">Trip</string>
     <string name="review">Review</string>
 
+    //priceLevel
+    <string name="price_cheap">Cheap</string>
+    <string name="price_moderate">Moderate</string>
+    <string name="price_expensive">Expensive</string>
+    <string name="price_very_expensive">Very Expensive</string>
+
+    //filter
+    <string name="filter_search_results">Filter Search Results</string>
+    <string name="category">Category</string>
+    <string name="price_level">Price Level</string>
 
     //location detail
     <string name="location_on_map">Location on map</string>
@@ -228,7 +243,39 @@
     <string name="review_body">Your feelings</string>
     <string name="post_review">Post</string>
     <string name="empty_bookmark_list">You haven\'t save any locations</string>
+    <string name="choose_a_location">Choose a location</string>
     <string name="favorite_trips_title">Favorite Trips</string>
     <string name="empty_favorite_message">You do not have any favorite trips yet</string>
 
+    // moderator
+    <string name="locations">Locations</string>
+    <string name="moderator_dashboard">Enter moderator dashboard</string>
+    <string name="are_you_sure_you_want_to_ban_the_user">Are you sure you want to ban the user </string>
+    <string name="ban">Ban</string>
+    <string name="read_more">Read more</string>
+    <string name="no_report_found">No report found</string>
+    <string name="reviews_Cap">Reviews</string>
+    <string name="dot">·</string>
+    <string name="private_dot">Private • </string>
+    <string name="user_avatar">User avatar</string>
+    <string name="_20_12_2026">20/12/2026</string>
+    <string name="_4_5">4/5</string>
+    <string name="option">Option</string>
+    <string name="reason">Reason:</string>
+    <string name="reported_by">Reported by:</string>
+    <string name="trip_creator_avatar">Trip creator avatar</string>
+    <string name="floating_minus_sign">-</string>
+    <string name="loading">Loading</string>
+    <string name="fetching_itinerary_reports">Fetching itinerary reports</string>
+    <string name="fetching_review_reports">Fetching review reports</string>
+    <string name="fetching_location_reports">Fetching location reports</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="other">Other</string>
+    <string name="inappropriate">Inappropriate</string>
+    <string name="spam_or_fake">Spam or fake</string>
+    <string name="report">Report</string>
+    <string name="not_relevant">Not relevant</string>
+    <string name="please_specify">Please specify...</string>
+    <string name="dismiss_report">Dismiss report</string>
+    <string name="ban_creator">Ban creator</string>
 </resources>

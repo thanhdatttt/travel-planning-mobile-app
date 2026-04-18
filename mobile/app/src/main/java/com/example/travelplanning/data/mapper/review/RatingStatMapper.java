@@ -13,6 +13,7 @@ public class RatingStatMapper implements BaseMapper<RatingStatResponse, RatingSt
         if (dto == null) return null;
 
         return new RatingStat(
+                "",
                 dto.getRating(),
                 dto.getCount()
         );

@@ -110,4 +110,28 @@
         android:label="fragment_admin_stat"
         tools:layout="@layout/fragment_admin_stat" />
 
+    <fragment
+        android:id="@+id/nav_trip_public_detail"
+        android:name="com.example.travelplanning.ui.itinerary.TripPublicDetailFragment"
+        android:label="Trip Detail">
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_moderator_review"
+        android:name="com.example.travelplanning.ui.moderator.ModeratorReviewFragment"
+        android:label="ModeratorReviewFragment"
+        tools:layout="@layout/fragment_moderator_review"/>
+
+    <fragment
+        android:id="@+id/nav_moderator_location"
+        android:name="com.example.travelplanning.ui.moderator.ModeratorLocationFragment"
+        android:label="ModeratorLocationFragment"
+        tools:layout="@layout/fragment_moderator_location"/>
+
+    <fragment
+        android:id="@+id/nav_moderator_trip"
+        android:name="com.example.travelplanning.ui.moderator.ModeratorTripFragment"
+        android:label="ModeratorTripFragment"
+        tools:layout="@layout/fragment_moderator_trip"/>
+
 </navigation>

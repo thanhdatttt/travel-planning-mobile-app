@@ -52,7 +52,9 @@ public class AccountFragment extends Fragment {
                 new DividerItemDecoration(binding.rvAccountMenu.getContext(), layoutManager.getOrientation());
         binding.rvAccountMenu.addItemDecoration(dividerItemDecoration);
 
-        // 1. Thiết lập Observer để lắng nghe khi có dữ liệu Profile
+        List<AccountOption> defaultMenu = getMenuItemsByRole(null);
+        binding.rvAccountMenu.setAdapter(new AccountAdapter(defaultMenu, this::handleMenuClick));
+
         profileViewModel.getUserProfile().observe(getViewLifecycleOwner(), user -> {
             Log.d("ACCOUNT_DEBUG", "Observer triggered!");
             if (user != null) {
@@ -66,19 +68,14 @@ public class AccountFragment extends Fragment {
                 } else {
                     binding.ivAvatar.setImageResource(R.drawable.ic_user);
                 }
-                // Tạo danh sách menu dựa trên user vừa nhận được
-                List<AccountOption> menuItems = getMenuItemsByRole(user);
 
-                // Cập nhật Adapter
-                AccountAdapter adapter = new AccountAdapter(menuItems, this::handleMenuClick);
-                binding.rvAccountMenu.setAdapter(adapter);
+                List<AccountOption> updatedMenu = getMenuItemsByRole(user);
+                binding.rvAccountMenu.setAdapter(new AccountAdapter(updatedMenu, this::handleMenuClick));
             }
         });
 
-        // 2. Gọi API lấy thông tin Profile
         profileViewModel.fetchUserProfile();
 
-        // logout
         observeLogoutStatus();
         handleLogout();
     }
@@ -93,6 +90,9 @@ public class AccountFragment extends Fragment {
         //check role then add admin board
         if (profile != null && profile.getRole() == UserRole.ADMIN) {
             list.add(new AccountOption(AccountViewModel.ID_ADMIN, R.drawable.ic_admin, R.string.menu_admin));
+        }
+        if (profile != null && profile.getRole() == UserRole.MODERATOR) {
+            list.add(new AccountOption(AccountViewModel.ID_MODERATOR, R.drawable.ic_moderator, R.string.moderator_dashboard));
         }
 
         return list;
@@ -114,6 +114,8 @@ public class AccountFragment extends Fragment {
             Navigation.findNavController(requireView()).navigate(R.id.nav_favorite_trips);
         }else if (option.getId() == AccountViewModel.ID_ADMIN){
             Navigation.findNavController(requireView()).navigate(R.id.nav_admin);
+        } else if (option.getId() == AccountViewModel.ID_MODERATOR){
+            Navigation.findNavController(requireView()).navigate(R.id.nav_moderator_review);
         }  else if (option.getId() == AccountViewModel.ID_LOGOUT) {
             // Logout
 
