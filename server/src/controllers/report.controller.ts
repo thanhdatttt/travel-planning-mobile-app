@@ -1,30 +1,24 @@
+// src/controllers/report.controller.ts
 import { Request, Response } from "express";
 import { createResponse } from "../utils/response";
 import { prisma } from "../libs/prisma";
-import ApiError from "../utils/apiError";
+import { objType } from "../generated/prisma/enums";
 
 export const reportController = {
   async create(req: Request, res: Response) {
     const reporterId = req.user.id;
+    
     const { targetType, targetId, reason } = req.body;
 
-    const existingReport = await prisma.report.findUnique({
-      where: {
-        reporterId_targetId: { reporterId, targetId },
-      },
-    });
-
-    if (existingReport) {
-      throw new ApiError(400, "You have already reported this item");
-    }
+    console.log(req.body);
+    console.log(reporterId);
 
     const report = await prisma.report.create({
       data: {
         reporterId,
-        targetType,
+        targetType: targetType as objType, 
         targetId,
         reason,
-        status: "pending",
       },
     });
 

@@ -84,6 +84,9 @@ public class AccountFragment extends Fragment {
         if (profile != null && profile.getRole() == UserRole.ADMIN) {
             list.add(new AccountOption(AccountViewModel.ID_ADMIN, R.drawable.ic_admin, R.string.menu_admin));
         }
+        if (profile != null && profile.getRole() == UserRole.MODERATOR) {
+            list.add(new AccountOption(AccountViewModel.ID_MODERATOR, R.drawable.ic_moderator, R.string.moderator_dashboard));
+        }
 
         return list;
     }
@@ -102,6 +105,8 @@ public class AccountFragment extends Fragment {
             Navigation.findNavController(requireView()).navigate(R.id.nav_favorite_trips);
         }else if (option.getId() == AccountViewModel.ID_ADMIN){
             Navigation.findNavController(requireView()).navigate(R.id.nav_admin);
+        } else if (option.getId() == AccountViewModel.ID_MODERATOR){
+            Navigation.findNavController(requireView()).navigate(R.id.nav_moderator_review);
         }  else if (option.getId() == AccountViewModel.ID_LOGOUT) {
             // Logout
 
