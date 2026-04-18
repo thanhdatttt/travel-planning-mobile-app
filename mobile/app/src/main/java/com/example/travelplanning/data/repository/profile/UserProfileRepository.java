@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
@@ -71,21 +72,27 @@ public class UserProfileRepository {
             public void onResponse(@NonNull Call<ApiResponse<UserProfileResponse>> call,
                                    @NonNull Response<ApiResponse<UserProfileResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getData() != null) {
-                        UserProfile cleanUser = userProfileMapper.mapToDomain(response.body().getData());
+                    ApiResponse<UserProfileResponse> apiResponse = response.body();
+
+                    if (apiResponse.getData() != null) {
+                        UserProfile cleanUser = userProfileMapper.mapToDomain(apiResponse.getData());
                         
+                        // Lưu dữ liệu người dùng vào cache cục bộ
                         executorService.execute(() -> userProfileDao.insertProfile(cleanUser));
+                        
                         callback.onSuccess(cleanUser);
                     } else {
                         callback.onError("Không tìm thấy dữ liệu người dùng");
                     }
                 } else {
+//                    Log.e("REPO_DEBUG", "Lỗi Response: " + response.errorBody());
                     callback.onError("Lỗi máy chủ. Vui lòng thử lại sau.");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<UserProfileResponse>> call, @NonNull Throwable t) {
+//                Log.e("REPO_DEBUG", "Lỗi kết nối hoàn toàn: " + t.getMessage());
                 callback.onError("Lỗi kết nối mạng: " + t.getMessage());
             }
         });

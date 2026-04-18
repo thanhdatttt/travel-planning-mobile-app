@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -21,12 +23,16 @@ import com.example.travelplanning.R;
 import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.databinding.FragmentProfileBinding;
 import com.example.travelplanning.viewmodel.profile.ProfileViewModel;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ProfileFragment extends Fragment {
     private ProfileAdapter adapter;
@@ -55,8 +61,16 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupRecyclerView(){
-        adapter = new ProfileAdapter(profileItems);
+        adapter = new ProfileAdapter(profileItems, item -> {
+            if ("dob".equals(item.getFieldKey())) {
+                int position = profileItems.indexOf(item);
+                showDatePicker(item, position);
+            }
+        });
         binding.rvProfileInfo.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(binding.rvProfileInfo.getContext(), LinearLayoutManager.VERTICAL);
+        binding.rvProfileInfo.addItemDecoration(dividerItemDecoration);
         binding.rvProfileInfo.setAdapter(adapter);
     }
 
@@ -75,20 +89,26 @@ public class ProfileFragment extends Fragment {
         profileItems.add(new ProfileItem(R.string.label_address, user.getAddress(), "address", false));
         profileItems.add(new ProfileItem(R.string.label_phone, user.getPhone(), "phone", false));
         String dobString = (user.getDob() != null) ? user.getDob().toString() : "";
-        profileItems.add(new ProfileItem(R.string.label_birthdate, dobString, "birthdate", false));
+        profileItems.add(new ProfileItem(R.string.label_birthdate, dobString, "dob", false));
 
         adapter.notifyDataSetChanged();
 
         if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
             Glide.with(this)
                     .load(user.getAvatarUrl())
-                    .placeholder(R.drawable.suprised_car) // Ảnh mặc định khi đang load
-                    .circleCrop() // Bo tròn ảnh
+                    .placeholder(R.drawable.suprised_car)
+                    .circleCrop()
                     .into(binding.ivAvatar);
         }
     }
 
     private void setupListeners() {
+        binding.toolbar.setNavigationOnClickListener(v -> {
+            if (getActivity() != null) {
+                Navigation.findNavController(v).popBackStack();
+            }
+        });
+
         binding.btnEdit.setOnClickListener(v -> {
             adapter.setEditMode(true);
             binding.btnSave.setVisibility(View.VISIBLE);
@@ -115,20 +135,18 @@ public class ProfileFragment extends Fragment {
         UserProfile user = new UserProfile();
         for (ProfileItem item : profileItems) {
             String value = item.getValue();
-            if (value == null) value = "";
+            String finalValue = (value == null || value.trim().isEmpty()) ? null : value;
 
             switch (item.getFieldKey()) {
-                case "name": user.setFullName(item.getValue()); break;
-                case "email": user.setEmail(item.getValue()); break;
-                case "address": user.setAddress(item.getValue()); break;
-                case "phone": user.setPhone(item.getValue()); break;
-                case "birthdate":
-                    if (!value.isEmpty()) {
-                        try {
-                            user.setDob(LocalDate.parse(value));
-                        } catch (DateTimeParseException e) {
-                            Log.e("PROFILE", "Sai định dạng ngày: " + value);
-                        }
+                case "name": user.setFullName(finalValue); break;
+                case "email": user.setEmail(finalValue); break;
+                case "address": user.setAddress(finalValue); break;
+                case "phone": user.setPhone(finalValue); break;
+                case "dob":
+                    if (finalValue != null) {
+                        user.setDob(LocalDate.parse(finalValue));
+                    } else {
+                        user.setDob(null);
                     }
                     break;
             }
@@ -139,9 +157,25 @@ public class ProfileFragment extends Fragment {
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 if (uri != null) {
-                    //hiển thị ảnh tạm thời bằng Glide (cho mượt UX)
                     Glide.with(this).load(uri).circleCrop().into(binding.ivAvatar);
                     viewModel.uploadAvatar(uri);
                 }
             });
+
+    private void showDatePicker(ProfileItem item, int position) {
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(R.string.select_date)
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build();
+
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String dateString = sdf.format(new Date(selection));
+
+            item.setValue(dateString);
+            adapter.notifyItemChanged(position);
+        });
+
+        datePicker.show(getParentFragmentManager(), "DATE_PICKER");
+    }
 }

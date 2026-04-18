@@ -26,6 +26,7 @@ export const updateUserSchema = {
       .nullable(),
     address: z.string().max(255).optional().nullable(),
     avatarUrl: z.url({ message: "Invalid image URL" }).optional().nullable(),
+    dob: z.coerce.date().optional().nullable(),
     bio: z
       .string()
       .max(500, "Bio must be under 500 characters")

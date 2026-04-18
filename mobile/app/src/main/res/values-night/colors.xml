@@ -20,5 +20,6 @@
     <color name="text_hint">#A0A0A0</color>
     <color name="chat_input_bg">#2A2A2C</color>
     <color name="chat_input_stroke">#444446</color>
+    <color name="icon">#FFFFFFFF</color>
     <color name="light_gray">#333333</color>
 </resources>

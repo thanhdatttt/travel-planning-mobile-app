@@ -1,11 +1,16 @@
 package com.example.travelplanning.data.mapper.profile;
 
+import android.util.Log;
+
 import com.example.travelplanning.data.enum_converter.EnumMapper;
 import com.example.travelplanning.data.mapper.BaseMapper;
 import com.example.travelplanning.data.model.profile.UserProfile;
 import com.example.travelplanning.data.model.profile.UserRole;
 import com.example.travelplanning.data.remote.profile.dto.request.UpdateMeRequest;
 import com.example.travelplanning.data.remote.profile.dto.response.UserProfileResponse;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class UserProfileMapper implements BaseMapper<UserProfileResponse, UserProfile> {
 
@@ -14,6 +19,20 @@ public class UserProfileMapper implements BaseMapper<UserProfileResponse, UserPr
         if (dto == null)
             return null;
         UserRole domainRole = EnumMapper.fromString(UserRole.class, dto.getRole(), UserRole.UNKNOWN);
+
+        LocalDate parsedDob = null;
+        if (dto.getDob() != null && !dto.getDob().isEmpty()) {
+            try {
+                //chỉ lấy 10 ký tự đầu
+                String dateOnly = dto.getDob().length() > 10
+                        ? dto.getDob().substring(0, 10)
+                        : dto.getDob();
+                parsedDob = LocalDate.parse(dateOnly);
+            } catch (DateTimeParseException e) {
+                Log.e("MAPPER_ERROR", "Không thể parse DOB: " + dto.getDob());
+            }
+        }
+
         return UserProfile.builder()
                 .id(dto.getId())
                 .username(dto.getUsername())
@@ -24,7 +43,7 @@ public class UserProfileMapper implements BaseMapper<UserProfileResponse, UserPr
                 .email(dto.getEmail())
                 .avatarUrl(dto.getAvatarUrl())
                 .fullName(dto.getFullName())
-                .dob(dto.getDob())
+                .dob(parsedDob)
                 .build();
     }
 
@@ -38,6 +57,7 @@ public class UserProfileMapper implements BaseMapper<UserProfileResponse, UserPr
                 .email(domain.getEmail())
                 .phone(domain.getPhone())
                 .address(domain.getAddress())
+                .dob(domain.getDob() != null ? domain.getDob().toString() : null)
                 .bio(domain.getBio())
                 .avatarUrl(domain.getAvatarUrl())
                 .preference(domain.getPreference())
