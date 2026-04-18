@@ -188,15 +188,21 @@ public class TripSettingFragment extends Fragment {
     }
 
     private void confirmAndDelete() {
-        new MaterialAlertDialogBuilder(requireContext())
+        androidx.appcompat.app.AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
                 .setIcon(R.drawable.ic_delete)
                 .setTitle("Delete this trip?")
                 .setMessage("Are you sure you want to delete this trip? This cannot be undone.")
-                .setPositiveButton("Delete", (dialog, which) -> {
-                    if (tripId != null) viewModel.deleteItinerary(tripId);
+                .setPositiveButton("Remove", (d, which) -> {
+                    if (tripId != null)
+                        viewModel.deleteItinerary(tripId);
                 })
                 .setNegativeButton("Cancel", null)
-                .show();
+                .create();
+
+        dialog.show();
+
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(getResources().getColor(R.color.error, requireContext().getTheme()));
     }
 
     @Nullable
