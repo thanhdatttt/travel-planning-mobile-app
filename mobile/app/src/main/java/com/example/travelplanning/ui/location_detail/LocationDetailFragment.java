@@ -474,22 +474,14 @@ public class LocationDetailFragment extends Fragment {
             binding.tvDetailRatingScore.setText("0.0");
             binding.ratingBar.setRating(0f);
             binding.tvDetailRatingCount.setText("(0 reviews)");
+
+            summaryBinding.tvTotalReviews.setText("(0 " + getString(R.string.reviews) + ")");
+            summaryBinding.tvAverageRating.setText("0.0");
+            summaryBinding.miniRatingBar.setRating(0f);
         }
 
         // Gán tổng số lượng vào TextView trong summary
         summaryBinding.tvTotalReviews.setText("(" + totalReviews + ")");
-
-        // Duyệt qua danh sách stats
-        for (RatingStat stat : stats) {
-            int progress = (stat.getCount() * 100) / totalReviews;
-            switch (stat.getRating()) {
-                case 5: summaryBinding.pbStar5.setProgress(progress); break;
-                case 4: summaryBinding.pbStar4.setProgress(progress); break;
-                case 3: summaryBinding.pbStar3.setProgress(progress); break;
-                case 2: summaryBinding.pbStar2.setProgress(progress); break;
-                case 1: summaryBinding.pbStar1.setProgress(progress); break;
-            }
-        }
     }
 
     private void setupAddReviewLogic() {
