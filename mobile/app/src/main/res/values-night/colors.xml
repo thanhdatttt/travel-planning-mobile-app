@@ -14,5 +14,11 @@
     <color name="facebook_color">#007BFF</color>
     <color name="card_background">#1E1E1E</color>
     <color name="background">#121212</color>
+    <color name="reverse_background">#FFFFFF</color>
+    <color name="surface_chat_input">#2C2C2C</color>
+    <color name="surface_drawer">#1E1E1E</color>
+    <color name="text_hint">#A0A0A0</color>
+    <color name="chat_input_bg">#2A2A2C</color>
+    <color name="chat_input_stroke">#444446</color>
     <color name="light_gray">#333333</color>
 </resources>

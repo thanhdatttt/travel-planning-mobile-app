@@ -30,19 +30,20 @@ import com.google.android.material.chip.ChipGroup;
 import android.content.Intent;
 import com.example.travelplanning.data.model.category.Category;
 import com.example.travelplanning.ui.location_detail.LocationDetailFragment;
+import com.example.travelplanning.ui.mainscreen.MainScreenActivity;
+import com.example.travelplanning.ui.util.CategoryHelper;
+
 public class LocationSearchActivity extends AppCompatActivity {
     private LocationViewModel locationViewModel;
     private LocationAdapter adapter;
 
-    // constants for Intent extras
     public static final String EXTRA_MODE                  = "mode";
     public static final String EXTRA_ITINERARY_ID          = "itinerary_id";
     public static final String EXTRA_SELECTED_LOCATION_ID  = "selected_location_id";
     public static final String MODE_PICK                   = "pick";
     private String launchMode = "browse";
     
-    // UI
-    private ImageButton btnBack; // THÊM NÚT BACK
+    private ImageButton btnBack; 
     private EditText edtSearch;
     private ImageButton btnFilter;
     private RecyclerView rvLocations;
@@ -80,7 +81,6 @@ public class LocationSearchActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvLocations.setLayoutManager(layoutManager);
-
         rvLocations.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         adapter = new LocationAdapter();
@@ -94,17 +94,16 @@ public class LocationSearchActivity extends AppCompatActivity {
 
         adapter.setOnLocationClickListener(location -> {
             if (MODE_PICK.equals(launchMode)) {
-                // pick mode: return locationId to the fragment
                 Intent result = new Intent();
                 result.putExtra(EXTRA_SELECTED_LOCATION_ID, location.getId());
                 setResult(RESULT_OK, result);
                 finish();
             } else {
-                Bundle bundle = new Bundle();
-                bundle.putString("location_id", location.getId());
-
-//                        Navigation.findNavController(binding.getRoot())
-//                                .navigate(R.id.nav_location_detail, bundle);
+                Intent intent = new Intent(LocationSearchActivity.this, MainScreenActivity.class);
+                intent.putExtra("ACTION_OPEN_DETAIL", location.getId());
+                
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
             }
         });
 
@@ -173,7 +172,6 @@ public class LocationSearchActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(edtSearch.getWindowToken(), 0);
     }
 
- 
     private void showFilterBottomSheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         View view = getLayoutInflater().inflate(R.layout.dialog_location_filter, null);
@@ -189,15 +187,14 @@ public class LocationSearchActivity extends AppCompatActivity {
             
             chipGroupCategory.removeAllViews();
             for (Category cat : categories) {
-                Chip chip = new Chip(this);
-                chip.setText(cat.getNameVi()); 
+                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.item_filter_chip, chipGroupCategory, false);
+                chip.setText(CategoryHelper.getCategoryName(this, cat.getSlug())); 
                 chip.setCheckable(true);
                 chip.setTag(cat.getId()); 
                 
                 if (currentCategoryId != null && currentCategoryId.equals(cat.getId())) {
                     chip.setChecked(true);
                 }
-                
                 chipGroupCategory.addView(chip);
             }
         });
@@ -230,7 +227,6 @@ public class LocationSearchActivity extends AppCompatActivity {
                 Chip selectedChip = view.findViewById(selectedPriceId);
                 Object tagValue = selectedChip.getTag();
                 if (tagValue != null) {
-
                     currentPriceLevel = Integer.valueOf(tagValue.toString());
                 }
             } else {

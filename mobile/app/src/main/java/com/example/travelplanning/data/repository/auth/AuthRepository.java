@@ -52,6 +52,7 @@ public class AuthRepository {
                         TokenManager.saveTokens(context,
                                 signInData.getAccessToken(),
                                 signInData.getRefreshToken());
+                        TokenManager.saveUserId(context, signInData.getUserId());
 
                         callback.onSuccess(signInData);
                     } else {

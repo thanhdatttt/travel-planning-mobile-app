@@ -15,7 +15,9 @@ import com.example.travelplanning.data.model.review.Review;
 import com.example.travelplanning.data.model.review.ReviewPagination;
 import com.example.travelplanning.data.repository.bookmark.BookmarkRepository;
 import com.example.travelplanning.data.repository.location.LocationRepository;
+import com.example.travelplanning.data.repository.profile.UserProfileRepository;
 import com.example.travelplanning.data.repository.review.ReviewRepository;
+import com.example.travelplanning.data.remote.review.dto.request.ReviewRequest;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +31,7 @@ public class LocationDetailViewModel extends AndroidViewModel {
     private final LocationRepository repository;
     private final ReviewRepository reviewRepo;
     private final BookmarkRepository bookmarkRepo;
+    private final UserProfileRepository userRepo;
     private final MutableLiveData<Location> locationDetail = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
@@ -42,16 +45,20 @@ public class LocationDetailViewModel extends AndroidViewModel {
     private int currentReviewPage = 1;
     private boolean isLastPage = false;
     private final MutableLiveData<List<RatingStat>> reviewStats = new MutableLiveData<>();
-    public LiveData<List<Review>> getReviews() { return reviews; }
-    public LiveData<List<RatingStat>> getReviewStats() { return reviewStats; }
 
     //bookmark
     private final MutableLiveData<Boolean> isBookmarked = new MutableLiveData<>(false);
+
+    //review
+    private final MutableLiveData<Boolean> reviewSubmissionSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> canUserReview = new MutableLiveData<>(true);
+
     public LocationDetailViewModel(@NotNull Application application) {
         super(application);
         this.repository = new LocationRepository(application);
         this.reviewRepo = new ReviewRepository(application);
         this.bookmarkRepo = new BookmarkRepository(application);
+        this.userRepo = new UserProfileRepository(application);
     }
 
     public LiveData<Location> getLocationDetail() { return locationDetail; }
@@ -61,6 +68,12 @@ public class LocationDetailViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<Location>> nearbyLocations = new MutableLiveData<>();
     public LiveData<List<Location>> getNearbyLocations() { return nearbyLocations; }
+
+    public LiveData<List<Review>> getReviews() { return reviews; }
+    public LiveData<List<RatingStat>> getReviewStats() { return reviewStats; }
+
+    public LiveData<Boolean> getCanUserReview() { return canUserReview; }
+    public LiveData<Boolean> getReviewSubmissionSuccess() { return reviewSubmissionSuccess; }
 
     public void fetchDetail(String id) {
         isLoading.setValue(true);
@@ -146,7 +159,7 @@ public class LocationDetailViewModel extends AndroidViewModel {
         reviewRepo.getReviewsByLocation(id, currentReviewPage, 5, new ReviewRepository.ReviewCallback<ReviewPagination>() {
             @Override
             public void onSuccess(ReviewPagination data) {
-                List<Review> newList = data.getReviews(); // Không còn lỗi getReviews()
+                List<Review> newList = data.getReviews();
                 List<Review> currentList = isLoadMore ? reviews.getValue() : new ArrayList<>();
 
                 if (newList != null) {
@@ -156,6 +169,16 @@ public class LocationDetailViewModel extends AndroidViewModel {
                 reviews.setValue(currentList);
                 isLastPage = (currentReviewPage >= data.getLastPage());
                 isLoading.setValue(false);
+
+                String currentUserId = userRepo.getCurrentUserId();
+                if (!isLoadMore && data.getReviews() != null) {
+                    for (Review r : data.getReviews()) {
+                        if (r.getUserId().equals(currentUserId)) {
+                            canUserReview.setValue(false);
+                            break;
+                        }
+                    }
+                }
             }
 
             @Override
@@ -216,4 +239,81 @@ public class LocationDetailViewModel extends AndroidViewModel {
         });
     }
 
+    public void postReview(String title, String body, int rating, String locationId) {
+        if (title.isEmpty() || body.isEmpty() || rating == 0) {
+            error.setValue("Vui lòng nhập đầy đủ thông tin và đánh giá sao");
+            return;
+        }
+
+        isLoading.setValue(true);
+        ReviewRequest request = ReviewRequest.builder()
+                .title(title)
+                .body(body)
+                .rating(rating)
+                .locationId(locationId)
+                .build();
+
+        reviewRepo.createReview(request, new ReviewRepository.ReviewCallback<Review>() {
+            @Override
+            public void onSuccess(Review newReview) {
+                isLoading.setValue(false);
+                reviewSubmissionSuccess.setValue(true);
+
+                // Cập nhật danh sách review hiện tại
+                List<Review> currentReviews = reviews.getValue();
+                if (currentReviews == null) currentReviews = new ArrayList<>();
+                currentReviews.add(0, newReview); // Thêm vào đầu danh sách
+                reviews.setValue(currentReviews);
+
+                // Refresh lại stats (sao trung bình)
+                fetchReviewStats(locationId);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                isLoading.setValue(false);
+                error.setValue(errorMessage);
+            }
+        });
+    }
+
+    // Thêm vào LocationDetailViewModel.java
+
+    public void deleteReview(String reviewId, String locationId) {
+        isLoading.setValue(true);
+        reviewRepo.deleteReview(reviewId, new ReviewRepository.ReviewCallback<String>() {
+            @Override
+            public void onSuccess(String data) {
+                List<Review> currentList = reviews.getValue();
+                if (currentList != null) {
+                    currentList.removeIf(review -> review.getId().equals(reviewId));
+                    reviews.setValue(currentList);
+                }
+
+                canUserReview.setValue(true);
+
+                fetchReviewStats(locationId);
+                isLoading.setValue(false);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                error.setValue(errorMessage);
+                isLoading.setValue(false);
+            }
+        });
+    }
+
+    public void checkBookmarkStatus(String locationId) {
+        bookmarkRepo.checkBookmarkStatus(locationId, new BookmarkRepository.BookmarkCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean isBookmarkedFromDb, int lp) {
+                isBookmarked.setValue(isBookmarkedFromDb);
+            }
+            @Override
+            public void onError(String msg) {
+                isBookmarked.setValue(false);
+            }
+        });
+    }
 }

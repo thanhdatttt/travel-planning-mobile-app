@@ -4,6 +4,7 @@
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_search"
         android:title="@string/discover" />
+    
     <item
         android:id="@+id/nav_nearby"
         android:icon="@drawable/ic_nearby"

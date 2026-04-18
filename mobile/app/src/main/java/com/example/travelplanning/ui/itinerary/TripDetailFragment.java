@@ -62,9 +62,11 @@ public class TripDetailFragment extends Fragment {
         // fetch detail data of trip
         if (tripId != null) {
             viewModel.fetchItineraryById(tripId);
+            viewModel.checkFavoriteStatus(tripId);
         }
 
         setupTabUI();
+        setupFavoriteActions(tripId);
         setupObservers();
         setupListeners();
     }
@@ -100,9 +102,8 @@ public class TripDetailFragment extends Fragment {
         });
         binding.btnBack.setOnClickListener(v -> {
             viewModel.getSelectedItinerary().setValue(null);
-            requireActivity().getSupportFragmentManager().popBackStack();
-//            assert getParentFragment() != null;
-//            ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), false);
+            assert getParentFragment() != null;
+            ((TripContainerFragment) getParentFragment()).navigateTo(new TripFragment(), false);
         });
     }
 
@@ -152,5 +153,21 @@ public class TripDetailFragment extends Fragment {
         String dates = dateFormat.format(itinerary.getStartDate()) + " – " + dateFormat.format(itinerary.getEndDate());
         binding.tvTripDates.setText(dates);
         if (itinerary.getDescription() != null) binding.tvTripDescription.setText(itinerary.getDescription());
+    }
+
+    private void setupFavoriteActions(String itineraryId) {
+        binding.btnFavorite.setOnClickListener(v -> {
+            if (itineraryId != null) {
+                viewModel.toggleFavorite(itineraryId);
+            }
+        });
+
+        viewModel.getIsFavorited().observe(getViewLifecycleOwner(), favorited -> {
+            if (favorited) {
+                binding.btnFavorite.setImageResource(R.drawable.ic_heart);
+            } else {
+                binding.btnFavorite.setImageResource(R.drawable.ic_heart_outline);
+            }
+        });
     }
 }

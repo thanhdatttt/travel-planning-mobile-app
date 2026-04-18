@@ -14,10 +14,11 @@ public class AccountViewModel extends ViewModel {
     public static final int ID_INFO = 1;
     public static final int ID_SETTING = 2;
     public static final int ID_REVIEW = 3;
-    public static final int ID_FAV = 4;
-    public static final int ID_ADMIN = 5;
-    public static final int ID_LOGOUT = 6;
-    public static final int ID_MODERATOR = 7;
+    public static final int ID_BOOKMARK = 4;
+    public static final int ID_FAV = 5;
+    public static final int ID_ADMIN = 6;
+    public static final int ID_LOGOUT = 7;
+    public static final int ID_MODERATOR = 8;
 
     private final MutableLiveData<List<AccountOption>> _menuItems = new MutableLiveData<>();
 
@@ -31,10 +32,6 @@ public class AccountViewModel extends ViewModel {
 
     private void loadMenuData() {
         List<AccountOption> list = new ArrayList<>();
-//        list.add(new AccountOption(ID_INFO, R.drawable.ic_user, "Thông tin cá nhân"));
-//        list.add(new AccountOption(ID_SETTING, R.drawable.ic_setting, "Cài đặt"));
-//        list.add(new AccountOption(ID_LOGOUT, R.drawable.ic_logout, "Đăng xuất"));
-
         _menuItems.setValue(list);
     }
 

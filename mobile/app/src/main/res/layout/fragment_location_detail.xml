@@ -29,7 +29,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:contentDescription="@string/back"
-                    android:background="@drawable/bg_circle_yellow"
+                    android:background="@drawable/bg_circle_back"
                     android:src="@drawable/ic_back" />
             </androidx.appcompat.widget.Toolbar>
 
@@ -85,7 +85,7 @@
                         android:layout_height="40dp"
                         android:layout_marginStart="4dp"
                         android:background="?attr/selectableItemBackground"
-                        android:src="@drawable/ic_heart_outline"
+                        android:src="@drawable/ic_bookmark"
                         app:tint="@color/primary" />
                 </LinearLayout>
             </RelativeLayout>
@@ -203,6 +203,9 @@
 
             <include android:id="@+id/layoutReviewSummary"
                 layout="@layout/layout_review_summary"/>
+
+            <include android:id="@+id/layoutAddReview"
+                layout="@layout/layout_add_review" />
 
             <include android:id="@+id/layoutReviewList"
                 layout="@layout/layout_review_list" />

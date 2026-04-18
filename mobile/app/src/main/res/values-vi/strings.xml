@@ -43,7 +43,7 @@
     <string name="ai">AI</string>
     <string name="map">Bản đồ</string>
     <string name="account">Tài khoản</string>
-    <string name="title_activity_main_screen">MainScreenActivity</string>
+    <string name="title_activity_main_screen">TourGuide</string>
     <string name="profile">Hồ sơ</string>
     <string name="search">Tìm kiếm</string>
     <string name="map_enter_location">Nhập địa điểm</string>
@@ -53,7 +53,7 @@
     <string name="personal_info">Thông tin cá nhân</string>
     <string name="setting">Cài đặt</string>
     <string name="my_reviews">Đánh giá của tôi</string>
-    <string name="my_fav_location">Địa điểm yêu thích</string>
+    <string name="saved_location">Địa điểm đã lưu</string>
     <string name="admin_board">Bảng điều trị</string>
     <string name="version">Phiên bản 1.0.0</string>
 
@@ -149,14 +149,27 @@
     <string name="cat_attractions">Tham quan</string>
     <string name="cat_shopping">Mua sắm</string>
     <string name="cat_services">Dịch vụ khác</string>
+    <string name="cat_unknown">Không xác định</string>
+    // chatbot
+    <string name="new_conversation">Cuộc trò chuyện mới</string>
+    <string name="Hello">Xin chào! Mình có thể giúp gì cho bạn?</string>
+    <string name="ask_tourguide">Hỏi TourGuide...</string>
+    <string name="answering">Đang trả lời...</string>
+    <string name="action_delete">Xóa</string>
+    <string name="action_cancel">Hủy</string>
 
+    <string name="dialog_delete_session_title">Xóa cuộc trò chuyện</string>
+    <string name="dialog_delete_session_message">Bạn có chắc muốn xóa vĩnh viễn cuộc trò chuyện này không?</string>
 
     //thông tin chi tiết địa điểm
+    <string name="trip">Chuyến đi</string>
+    <string name="review">Đánh giá</string>
     <string name="location_on_map">Vị trí trên bản đồ</string>
     <string name="view_on_map">Xem trên bản đồ</string>
     <string name="save_change">Lưu thay đổi</string>
     <string name="detail">Chi tiết</string>
 
+    <string name="reviews">đánh giá</string>
     <string name="enter_name">Nhập tên</string>
     <string name="full_name">Họ và tên</string>
     <string name="enter_email">Nhập email</string>
@@ -194,9 +207,27 @@
     <string name="edit_location">Chỉnh sửa địa điểm</string>
     <string name="delete_location">Xóa địa điểm</string>
     <string name="restore_location">Khôi phục địa điểm</string>
+    <string name="write_a_review">How would you rate your experience</string>
+    <string name="review_body">Cảm nhận của bạn</string>
+    <string name="post_review">Đăng</string>
+    <string name="empty_bookmark_list">Bạn chưa lưu bất kì địa điểm nào</string>
+
+    //priceLevel
+    <string name="price_cheap">Rẻ</string>
+    <string name="price_moderate">Trung bình</string>
+    <string name="price_expensive">Đắt</string>
+    <string name="price_very_expensive">Rất đắt</string>
+
+    // home
+    <string name="explore_itinerary">Khám phá lịch trình</string>
+    <string name="search_hint">Tìm điểm đến...</string>
+
+    //filter
+    <string name="filter_search_results">Lọc kết quả tìm kiếm</string>
+    <string name="category">Danh mục</string>
+    <string name="price_level">Mức giá</string>
 
     // moderator
-    <string name="reviews">Đánh giá</string>
     <string name="locations">Địa điểm</string>
     <string name="moderator_dashboard">Vào trang kiểm duyệt</string>
     <string name="are_you_sure_you_want_to_ban_the_user">Bạn có chắc muốn xóa người dùng </string>

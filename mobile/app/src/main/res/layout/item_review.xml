@@ -68,5 +68,16 @@
             android:text="The place was amazing and the service was great."
             android:textColor="@color/text" />
 
+        <ImageButton
+            android:id="@+id/btnDeleteReview"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_delete"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            app:tint="@color/red"
+            android:contentDescription="Delete Review" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -193,7 +193,9 @@ model Itinerary {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   user           User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
   itineraryItems ItineraryItem[]
+  favorite       Favorite[]
 
   @@index([ownerId])
 }
@@ -217,6 +219,8 @@ model Favorite {
   itineraryId String
   createdAt   DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, itineraryId])
   @@index([userId])
@@ -251,7 +255,8 @@ model ChatMessage {
   sessionId String
   role      String
   content   String      @db.Text
-  session   ChatSession @relation(fields: [sessionId], references: [id])
+  createdAt DateTime    @default(now())
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.

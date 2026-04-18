@@ -13,6 +13,8 @@ import com.example.travelplanning.data.remote.itinerary.dto.request.CreateItiner
 import com.example.travelplanning.data.remote.itinerary.dto.request.ScheduleItineraryItemRequest;
 import com.example.travelplanning.data.remote.itinerary.dto.request.UpdateItineraryItemNoteRequest;
 import com.example.travelplanning.data.remote.itinerary.dto.request.UpdateItineraryRequest;
+import com.example.travelplanning.data.repository.bookmark.BookmarkRepository;
+import com.example.travelplanning.data.repository.favorite.FavoriteRepository;
 import com.example.travelplanning.data.repository.itinerary.ItineraryRepository;
 
 import java.text.SimpleDateFormat;
@@ -51,9 +53,13 @@ public class ItineraryViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> addItemSuccess = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> deleteItemSuccess = new MutableLiveData<>(false);
 
+    //favorite
+    private final FavoriteRepository favoriteRepo;
+    private final MutableLiveData<Boolean> isFavorited = new MutableLiveData<>(false);
     public ItineraryViewModel(@NonNull Application application) {
         super(application);
         this.itineraryRepository = new ItineraryRepository(application);
+        this.favoriteRepo = new FavoriteRepository(application);
     }
 
     // itinerary api calls
@@ -486,5 +492,34 @@ public class ItineraryViewModel extends AndroidViewModel {
     /** Functional interface for transforming an item list inside updateItineraryItems. */
     private interface ItemListTransform {
         List<ItineraryItem> apply(List<ItineraryItem> items);
+    }
+
+    public void checkFavoriteStatus(String itineraryId) {
+        if (itineraryId == null) return;
+
+        favoriteRepo.checkFavoriteStatus(itineraryId, new FavoriteRepository.FavoriteCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean status, int lp) {
+                isFavorited.setValue(status);
+            }
+
+            @Override
+            public void onError(String errorMsg) {
+                isFavorited.setValue(false);
+            }
+        });
+    }
+
+    public void toggleFavorite(String id) {
+        favoriteRepo.toggleFavorite(id, new FavoriteRepository.FavoriteCallback<String>() {
+            @Override
+            public void onSuccess(String msg, int lp) {
+                isFavorited.setValue(!msg.toLowerCase().contains("removed"));
+            }
+
+            @Override
+            public void onError(String msg) {
+            }
+        });
     }
 }

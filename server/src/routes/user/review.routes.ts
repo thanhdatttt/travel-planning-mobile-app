@@ -10,10 +10,17 @@ import { reviewController } from "../../controllers/review.controller";
 
 const router = express.Router();
 
+router.get("/me", validate(ReviewQuerySchema), reviewController.getAllByUserId);
 router.get("/:id", validate(ReviewParamsSchema), reviewController.getById);
-router.get("/", validate(ReviewQuerySchema), reviewController.getAllByLocationId);
+router.get(
+  "/",
+  validate(ReviewQuerySchema),
+  reviewController.getAllByLocationId,
+);
+
 router.post("/", validate(ReviewCreateSchema), reviewController.create);
 router.patch("/", validate(ReviewUpdateSchema), reviewController.update);
+router.delete("/:id", validate(ReviewParamsSchema), reviewController.delete);
 
 router.get("/stats/:locationId", reviewController.getStats);
 
