@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class Favorite {
     @PrimaryKey
     @NonNull
+    @Builder.Default
     private String id = "";
     private String userId;
     private String itineraryId;
