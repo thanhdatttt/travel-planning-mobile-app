@@ -184,7 +184,6 @@
     //location detail
     <string name="location_on_map">Location on map</string>
     <string name="view_on_map">View on map</string>
-    <string name="images">Location Photos</string>
     <string name="add_photos">Add Photos</string>
     <string name="reviews">reviews</string>
 
@@ -246,6 +245,7 @@
     <string name="choose_a_location">Choose a location</string>
     <string name="favorite_trips_title">Favorite Trips</string>
     <string name="empty_favorite_message">You do not have any favorite trips yet</string>
+    <string name="ha_noi_viet_nam">Ha Noi, Viet Nam</string>
 
     // moderator
     <string name="locations">Locations</string>
@@ -278,4 +278,21 @@
     <string name="please_specify">Please specify...</string>
     <string name="dismiss_report">Dismiss report</string>
     <string name="ban_creator">Ban creator</string>
+    <string name="add_location">Add location</string>
+    <string name="address_required">Address (Required)</string>
+    <string name="name_required">Name (Required)</string>
+    <string name="description_optional">Description (Optional)</string>
+    <string name="location_photos">Location Photos</string>
+    <string name="delete">delete</string>
+    <string name="are_you_sure_you_want_to_delete">"Are you sure you want to delete "</string>
+    <string name="average_rating_0_5">Average Rating (0–5)</string>
+    <string name="thumbnail_selector">Thumbnail Selector</string>
+    <string name="phone_number">Phone number</string>
+    <string name="select_category">Select Category</string>
+    <string name="select_price">Select Price</string>
+    <string name="s_information">\'s Information</string>
+    <string name="close">close</string>
+    <string name="edit_profile">"Edit Profile: "</string>
+    <string name="are_you_sure_you_want_to">Are you sure you want to</string>
+    <string name="yes">Yes</string>
 </resources>
