@@ -10,9 +10,6 @@ export const reportController = {
     
     const { targetType, targetId, reason } = req.body;
 
-    console.log(req.body);
-    console.log(reporterId);
-
     const report = await prisma.report.create({
       data: {
         reporterId,
