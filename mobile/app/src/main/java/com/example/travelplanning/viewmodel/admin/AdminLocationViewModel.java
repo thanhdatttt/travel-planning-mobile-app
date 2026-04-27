@@ -86,7 +86,6 @@ public class AdminLocationViewModel extends AndroidViewModel {
                         currentList.addAll(data);
                         locations.setValue(currentList);
                         currentOffset += data.size();
-                        System.out.println(data);
                     }
 
                     @Override

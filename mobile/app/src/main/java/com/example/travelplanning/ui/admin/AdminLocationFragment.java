@@ -89,7 +89,6 @@ public class AdminLocationFragment extends Fragment {
         adapter = new AdminLocationAdapter(locationList, this::showPopupMenu, (view, location) -> {
             Bundle bundle = new Bundle();
             bundle.putString("location_id", location.getId());
-            System.out.println(location.getId());
             Navigation.findNavController(view).navigate(R.id.nav_location_detail, bundle);
         });
         binding.rvLocations.setLayoutManager(new LinearLayoutManager(getContext()));
