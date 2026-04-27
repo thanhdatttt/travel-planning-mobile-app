@@ -246,7 +246,6 @@
     <string name="choose_a_location">Choose a location</string>
     <string name="favorite_trips_title">Favorite Trips</string>
     <string name="empty_favorite_message">You do not have any favorite trips yet</string>
-    <string name="ha_noi_viet_nam">Ha Noi, Viet Nam</string>
 
     // moderator
     <string name="locations">Locations</string>

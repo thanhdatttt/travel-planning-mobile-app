@@ -105,7 +105,6 @@
 
     <style name="WhiteDialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="android:backgroundTint">@color/white</item>
-        <item name="android:textColor">@color/text</item>
     </style>
 
     <style name="AdminStatLabel" parent="android:Widget.TextView">

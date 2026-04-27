@@ -30,7 +30,7 @@
             android:id="@+id/tvToolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/favorite_trips_title"
+            android:text="Favorite Trips"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
