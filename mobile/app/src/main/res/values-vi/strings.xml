@@ -153,8 +153,8 @@
     // chatbot
     <string name="new_conversation">Cuộc trò chuyện mới</string>
     <string name="Hello">Xin chào! Mình có thể giúp gì cho bạn?</string>
-    <string name="ask_tourguide">Hỏi TourGuide…</string>
-    <string name="answering">Đang trả lời…</string>
+    <string name="ask_tourguide">Hỏi TourGuide...</string>
+    <string name="answering">Đang trả lời...</string>
     <string name="action_delete">Xóa</string>
     <string name="action_cancel">Hủy</string>
 
@@ -220,7 +220,7 @@
 
     // home
     <string name="explore_itinerary">Khám phá lịch trình</string>
-    <string name="search_hint">Tìm điểm đến…</string>
+    <string name="search_hint">Tìm điểm đến...</string>
 
     //filter
     <string name="filter_search_results">Lọc kết quả tìm kiếm</string>
@@ -256,7 +256,7 @@
     <string name="spam_or_fake">Spam hoặc giả mạo</string>
     <string name="report">Báo cáo</string>
     <string name="not_relevant">Không liên quan</string>
-    <string name="please_specify">Vui lòng nêu chi tiết…</string>
+    <string name="please_specify">Vui lòng nêu chi tiết...</string>
     <string name="dismiss_report">Đã xử lý</string>
     <string name="ban_creator">Cấm người tạo</string>
     <string name="add_location">Thêm địa điểm</string>
