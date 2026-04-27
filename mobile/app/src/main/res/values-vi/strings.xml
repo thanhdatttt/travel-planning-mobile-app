@@ -5,7 +5,7 @@
     <string name="complete_account">Hoàn tất tài khoản</string>
     <string name="almost_there_just_a_few_more_details">Sắp xong rồi! Chỉ cần thêm vài thông tin nữa</string>
     <string name="enter_your_email_to_get_started">Nhập email của bạn để bắt đầu</string>
-    <string name="welcome_back">Chào mừng trở lại!</string>
+    <string name="welcome_back">Chào mừng quay trở lại!</string>
     <string name="log_in_to_continue_your_journey">Đăng nhập để tiếp tục hành trình</string>
     <string name="login">Đăng nhập</string>
     <string name="don_t_have_an_account">Chưa có tài khoản?</string>
@@ -120,24 +120,6 @@
     <string name="save">Lưu</string>
     <string name="show_less">Hiện bớt</string>
     <string name="error_cannot_open_link">Không thể mở liên kết này</string>
-    <string name="created_by">Tạo bởi</string>
-    <string name="user_name">Tên người dùng</string>
-    <string name="location_here">Địa điểm ở đây</string>
-    <string name="description_here">Mô tả ở đây</string>
-    <string name="save_to_your_trip">Lưu chuyến đi</string>
-    <string name="unschedule">Hủy lên lịch</string>
-    <string name="schedule">Đã lên lịch</string>
-    <string name="remove_this_location">Xóa địa điểm này?</string>
-    <string name="remove_this_location_message">Bạn có chắc muốn xóa địa điểm này? Hành động này không thể khôi phục.</string>
-    <string name="remove">Xóa</string>
-    <string name="delete_this_trip">Xóa chuyến đi này?</string>
-    <string name="delete_this_trip_message">Bạn có chắc muốn xóa chuyến đi này? Hành động này không thể khôi phục.</string>
-    <string name="choose_start_date">Chọn ngày bắt đầu</string>
-    <string name="choose_end_date">Chọn ngày kết thúc</string>
-    <string name="trip_name_is_required">Tên chuyến đi là bắt buộc</string>
-    <string name="start_date_is_required">Ngày bắt đầu là bắt buộc</string>
-    <string name="end_date_is_required">Ngày kết thúc là bắt buộc</string>
-    <string name="end_date_must_be_after_start_date">Ngày kết thúc phải sau ngày bắt đầu</string>
 
     <string name="menu_admin">Vào bảng quản trị Admin</string>
     <string name="manage_location">Quản lý địa điểm</string>
@@ -171,8 +153,8 @@
     // chatbot
     <string name="new_conversation">Cuộc trò chuyện mới</string>
     <string name="Hello">Xin chào! Mình có thể giúp gì cho bạn?</string>
-    <string name="ask_tourguide">Hỏi TourGuide …</string>
-    <string name="answering">Đang trả lời …</string>
+    <string name="ask_tourguide">Hỏi TourGuide...</string>
+    <string name="answering">Đang trả lời...</string>
     <string name="action_delete">Xóa</string>
     <string name="action_cancel">Hủy</string>
 
@@ -237,8 +219,8 @@
     <string name="price_very_expensive">Rất đắt</string>
 
     // home
-    <string name="explore_itinerary">Khám phá chuyến đi của cộng đồng</string>
-    <string name="search_hint">Tìm kiếm chuyến đi …</string>
+    <string name="explore_itinerary">Khám phá lịch trình</string>
+    <string name="search_hint">Tìm điểm đến...</string>
 
     //filter
     <string name="filter_search_results">Lọc kết quả tìm kiếm</string>

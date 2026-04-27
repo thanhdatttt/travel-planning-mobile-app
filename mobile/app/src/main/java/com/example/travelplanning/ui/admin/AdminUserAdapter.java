@@ -76,9 +76,13 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
                     .into(binding.ivAvatar);
 
             String roleName = user.getRole() != null ? user.getRole().name() : "USER";
-            binding.tvRole.setText(roleName.toLowerCase());
-
-            // Role Color Logic
+            if(roleName.equalsIgnoreCase("admin")){
+                binding.tvRole.setText(R.string.admin);
+            }
+            else if(roleName.equalsIgnoreCase("moderator")){
+                binding.tvRole.setText(R.string.moderator);
+            }
+            else binding.tvRole.setText(R.string.user);
             int color;
             if (user.getRole() == UserRole.ADMIN) {
                 color = Color.RED;

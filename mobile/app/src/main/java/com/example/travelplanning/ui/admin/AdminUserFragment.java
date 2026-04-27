@@ -44,7 +44,7 @@ public class AdminUserFragment extends Fragment {
     private AdminHeaderBinding adminHeaderBinding;
     private AdminUserViewModel viewModel;
     private AdminUserAdapter adapter;
-    private List<UserProfile> userList = new ArrayList<>();
+    private final List<UserProfile> userList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -138,10 +138,24 @@ public class AdminUserFragment extends Fragment {
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == 1) {
-                viewModel.toggleBanStatus(user);
+                AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(Boolean.TRUE.equals(user.getIsBanned()) ? R.string.unban_user : R.string.ban_user))
+                        .setMessage(getString(R.string.are_you_sure_you_want_to) + getString(Boolean.TRUE.equals(user.getIsBanned()) ? R.string.unban_user : R.string.ban_user).toLowerCase() + " " + user.getUsername() + "?")
+                        .setPositiveButton(getString(R.string.yes), (d, w) -> viewModel.toggleBanStatus(user))
+                        .setNegativeButton(getString(R.string.close), null)
+                        .show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_green));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
                 return true;
             } else if (id == 2) {
-                viewModel.toggleSoftDelete(user);
+                AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(Boolean.TRUE.equals(user.getIsDeleted()) ? R.string.restore_user : R.string.delete_user))
+                        .setMessage(getString(R.string.are_you_sure_you_want_to) + getString(Boolean.TRUE.equals(user.getIsDeleted()) ? R.string.restore_user : R.string.delete_user).toLowerCase() + " " + user.getUsername() + "?")
+                        .setPositiveButton(getString(R.string.yes), (d, w) -> viewModel.toggleSoftDelete(user))
+                        .setNegativeButton(getString(R.string.close), null)
+                        .show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_green));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
                 return true;
             } else if (id == 3){
                 showEditUserDialog(user);
@@ -165,29 +179,41 @@ public class AdminUserFragment extends Fragment {
         TextView tvBanned = dialogView.findViewById(R.id.tvValueBanned);
         TextView tvDeleted = dialogView.findViewById(R.id.tvValueDeleted);
 
-        tvId.setText(user.getId() != null ? user.getId() : "N/A");
+        tvId.setText(user.getId());
         tvFullName.setText(user.getFullName() != null ? user.getFullName() : "N/A");
         tvEmail.setText(user.getEmail() != null ? user.getEmail() : "N/A");
         tvAddress.setText(user.getAddress() != null ? user.getAddress() : "N/A");
         tvPhone.setText(user.getPhone() != null ? user.getPhone() : "N/A");
         tvDob.setText(user.getDob() != null ? user.getDob().toString() : "N/A");
-        tvRole.setText(user.getRole() != null ? user.getRole().toString() : "USER");
+
+        if (user.getRole() != null){
+            if(user.getRole() == UserRole.ADMIN) {
+                tvRole.setText(getString(R.string.admin));
+            }
+            else if (user.getRole() == UserRole.MODERATOR){
+                tvRole.setText(getString(R.string.moderator));
+            }
+            else {
+                tvRole.setText(getString(R.string.user));
+            }
+        }
+        else{
+            tvRole.setText(getString(R.string.user));
+        }
 
         // Banned Status Color Logic
         boolean isBanned = Boolean.TRUE.equals(user.getIsBanned());
         tvBanned.setText(isBanned ? "Yes" : "No");
         tvBanned.setTextColor(isBanned ? Color.RED : Color.parseColor("#4CAF50"));
 
-        // Deleted Status Color Logic
         boolean isDeleted = Boolean.TRUE.equals(user.getIsDeleted());
         tvDeleted.setText(isDeleted ? "Yes" : "No");
         tvDeleted.setTextColor(isDeleted ? Color.RED : Color.parseColor("#4CAF50"));
 
-        AlertDialog userDialog = new MaterialAlertDialogBuilder(requireContext(), R.style.WhiteDialog)
-                .setTitle(user.getUsername() + "'s Information")
-                .setIcon(R.drawable.ic_user)
+        AlertDialog userDialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(user.getUsername() + getString(R.string.s_information))
                 .setView(dialogView)
-                .setPositiveButton("Close", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton( getString(R.string.close), (dialog, which) -> dialog.dismiss())
                 .show();
 
         userDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
@@ -208,7 +234,7 @@ public class AdminUserFragment extends Fragment {
             etDob.setText(user.getDob().toString());
         }
 
-        tvId.setText(user.getId() != null ? user.getId() : "N/A");
+        tvId.setText(user.getId());
         etName.setText(user.getFullName() != null ? user.getFullName() : "");
         etEmail.setText(user.getEmail() != null ? user.getEmail() : "");
         etAddress.setText(user.getAddress() != null ? user.getAddress() : "");
@@ -253,10 +279,10 @@ public class AdminUserFragment extends Fragment {
             }
         }
 
-        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.WhiteDialog)
-                .setTitle("Edit Profile: " + user.getUsername())
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(getString(R.string.edit_profile) + user.getUsername())
                 .setView(view)
-                .setPositiveButton("Update", (d, which) -> {
+                .setPositiveButton(getString(R.string.edit), (d, which) -> {
                     user.setFullName(etName.getText().toString());
                     user.setEmail(etEmail.getText().toString());
                     user.setAddress(etAddress.getText().toString());
@@ -268,11 +294,14 @@ public class AdminUserFragment extends Fragment {
                     viewModel.editUser(user);
                     Toast.makeText(getContext(), "Updating " + user.getUsername() + "...", Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton("Cancel", (d, which) -> d.dismiss())
+                .setNegativeButton(getString(R.string.cancel), (d, which) -> d.dismiss())
                 .show();
 
         dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.dark_green));
+
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
     }
 
 

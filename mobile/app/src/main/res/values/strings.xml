@@ -120,17 +120,6 @@
     <string name="save_to_your_trip">Save to your trip</string>
     <string name="unschedule">Unscheduled</string>
     <string name="schedule">Scheduled</string>
-    <string name="remove_this_location">Remove this location?</string>
-    <string name="remove_this_location_message">Are you sure you want to remove this location? This cannot be undone.</string>
-    <string name="remove">Remove</string>
-    <string name="delete_this_trip">Delete this trip?</string>
-    <string name="delete_this_trip_message">Are you sure you want to delete this trip? This cannot be undone.</string>
-    <string name="choose_start_date">Choose start date</string>
-    <string name="choose_end_date">Choose end date</string>
-    <string name="trip_name_is_required">Trip name is required</string>
-    <string name="start_date_is_required">Start date is required</string>
-    <string name="end_date_is_required">End date is required</string>
-    <string name="end_date_must_be_after_start_date">End date must be after start date</string>
 
     //settings
     <string name="settings_title">Settings</string>
@@ -168,8 +157,8 @@
     <string name="detail">Detail</string>
 
     // home
-    <string name="explore_itinerary">Explore trips of community</string>
-    <string name="search_hint">Search trips …</string>
+    <string name="explore_itinerary">Explore Itinerary</string>
+    <string name="search_hint">Search locations...</string>
 
     //category
     <string name="cat_food_and_drink">Food &amp; Drink</string>
@@ -202,8 +191,8 @@
     // chatbot
     <string name="new_conversation">New Conversation</string>
     <string name="Hello">Hello! What can I help you with?</string>
-    <string name="ask_tourguide">Ask TourGuide …</string>
-    <string name="answering">Answering …</string>
+    <string name="ask_tourguide">Ask TourGuide...</string>
+    <string name="answering">Answering...</string>
     <string name="action_delete">Delete</string>
     <string name="action_cancel">Cancel</string>
 
@@ -257,6 +246,7 @@
     <string name="choose_a_location">Choose a location</string>
     <string name="favorite_trips_title">Favorite Trips</string>
     <string name="empty_favorite_message">You do not have any favorite trips yet</string>
+    <string name="ha_noi_viet_nam">Ha Noi, Viet Nam</string>
 
     // moderator
     <string name="locations">Locations</string>

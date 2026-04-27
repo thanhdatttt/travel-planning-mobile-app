@@ -16,15 +16,21 @@ import java.util.List;
 
 public class AdminLocationAdapter extends RecyclerView.Adapter<AdminLocationAdapter.LocationViewHolder> {
     private List<Location> locations;
-    private final OnLocationOptionClickListener listener;
+    private final OnLocationOptionClickListener optionListener;
+    private final OnLocationClickListener clickListener;
 
     public interface OnLocationOptionClickListener {
         void onOptionClick(View anchor, Location location);
     }
 
-    public AdminLocationAdapter(List<Location> locations, OnLocationOptionClickListener listener) {
+    public interface OnLocationClickListener {
+        void onLocationClick(View view, Location location);
+    }
+
+    public AdminLocationAdapter(List<Location> locations, OnLocationOptionClickListener listener, OnLocationClickListener clickListener) {
         this.locations = locations;
-        this.listener = listener;
+        this.optionListener = listener;
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -37,7 +43,7 @@ public class AdminLocationAdapter extends RecyclerView.Adapter<AdminLocationAdap
 
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
-        holder.bind(locations.get(position), listener);
+        holder.bind(locations.get(position), optionListener, clickListener);
     }
 
     @Override
@@ -53,7 +59,7 @@ public class AdminLocationAdapter extends RecyclerView.Adapter<AdminLocationAdap
             this.binding = binding;
         }
 
-        public void bind(Location location, OnLocationOptionClickListener listener) {
+        public void bind(Location location, OnLocationOptionClickListener listener, OnLocationClickListener clickListener) {
             binding.tvUsername.setText(location.getName());
             binding.tvRating.setText(String.valueOf(location.getAvgRating()));
 
@@ -67,19 +73,14 @@ public class AdminLocationAdapter extends RecyclerView.Adapter<AdminLocationAdap
             setRatingBalls(location.getAvgRating());
 
             binding.btnOptions.setOnClickListener(v -> listener.onOptionClick(v, location));
+            binding.getRoot().setOnClickListener(v -> clickListener.onLocationClick(v, location));
         }
 
         private void setRatingBalls(double rating) {
-            // Assuming you have a container or specific IDs for the 5 balls
-            // We use an array for easy looping if you give them IDs like ivBall1, ivBall2...
-            // Or if they are direct children of the rating layout:
             ViewGroup ratingContainer = (ViewGroup) binding.tvRating.getParent();
 
-            // Logic: 0-5 stars
             for (int i = 1; i <= 5; i++) {
-                // The rating images are usually after the TextView (index 0) and first ImageView (index 1)
-                // It's safer to bind them directly in your XML or use a List
-                ImageView ball = (ImageView) ratingContainer.getChildAt(i + 0); // Offset based on your XML
+                ImageView ball = (ImageView) ratingContainer.getChildAt(i + 0);
 
                 if (rating >= i) {
                     ball.setImageResource(R.drawable.ic_rating_full);

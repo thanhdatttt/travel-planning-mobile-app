@@ -9,8 +9,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.example.travelplanning.R;
 import com.example.travelplanning.databinding.FragmentCreateTripBinding;
 import com.example.travelplanning.ui.util.SnackBarHelper;
 import com.example.travelplanning.viewmodel.itinerary.ItineraryViewModel;
@@ -74,8 +72,8 @@ public class CreateTripFragment extends Fragment {
     }
 
     private void setupListeners() {
-        binding.edtStartDate.setOnClickListener(v -> showDatePicker(String.valueOf(R.string.choose_start_date), true));
-        binding.edtEndDate.setOnClickListener(v -> showDatePicker(String.valueOf(R.string.choose_end_date), false));
+        binding.edtStartDate.setOnClickListener(v -> showDatePicker("Choose start date", true));
+        binding.edtEndDate.setOnClickListener(v -> showDatePicker("Choose end date", false));
 
         binding.btnBack.setOnClickListener(v -> {
             assert getParentFragment() != null;
@@ -117,19 +115,19 @@ public class CreateTripFragment extends Fragment {
 
         // check valid data
         if (title.isEmpty()) {
-            binding.edtTripName.setError(String.valueOf(R.string.trip_name_is_required));
+            binding.edtTripName.setError("Trip name is required");
             return;
         }
 
         Date startDate = parseDate(startStr);
         Date endDate = parseDate(endStr);
         if (endDate == null || startDate == null) {
-            binding.edtStartDate.setError(String.valueOf(R.string.start_date_is_required));
-            binding.edtEndDate.setError(String.valueOf(R.string.end_date_is_required));
+            binding.edtStartDate.setError("Start date is required");
+            binding.edtEndDate.setError("End date is required");
             return;
         }
         if (endDate.before(startDate)) {
-            binding.edtEndDate.setError(String.valueOf(R.string.end_date_must_be_after_start_date));
+            binding.edtEndDate.setError("End date must be after start date");
             return;
         }
 
