@@ -1,33 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
     tools:context=".ui.admin.AdminLocationFragment">
-
-    <!--HEADER-->
-    <include android:id="@+id/adminHeader"
-        layout="@layout/admin_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <!--SEARCH AND FILTER-->
-    <include android:id="@+id/searchAndFilter"
-        layout="@layout/search_and_filter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <!--LIST-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvLocations"
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="12dp"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        tools:listitem="@layout/admin_item_location" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:background="@color/white"
+        tools:context=".ui.admin.AdminLocationFragment">
+
+        <!--HEADER-->
+        <include android:id="@+id/adminHeader"
+            layout="@layout/admin_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!--SEARCH AND FILTER-->
+        <include android:id="@+id/searchAndFilter"
+            layout="@layout/search_and_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!--LIST-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvLocations"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            tools:listitem="@layout/admin_item_location" />
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:contentDescription="@string/add_button"
+        app:srcCompat="@drawable/ic_add"
+        app:backgroundTint="@color/primary"
+        app:tint="@color/white"
+        app:rippleColor="@color/white"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircleComponent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
