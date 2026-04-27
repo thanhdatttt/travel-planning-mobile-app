@@ -91,8 +91,21 @@ export const updateLocationSchema = {
     address: z.string().optional(),
     priceLevel: z.coerce.number().min(1).max(4).optional(),
     phone: z.string().optional(),
-    avgRating: z.coerce.number().min(1).max(5).optional(),
+    avgRating: z.coerce.number().min(0).max(5).optional(),
     categoryId: z.coerce.number().optional(),
     imgUrls: z.string().optional(),
+  }),
+};
+
+export const createLocationSchema = {
+  body: z.object({
+    name: z.string().min(1, "Name is required"),
+    address: z.string().min(1, "Address is required"),
+    description: z.string().optional(),
+    website: z.string().url("Invalid website URL").optional().or(z.literal('')),
+    phone: z.string().optional(),
+    priceLevel: z.coerce.number().min(1).max(4).optional(),
+    categoryId: z.coerce.number().min(1, "Category ID is required"),
+    imgUrls: z.array(z.string()).optional()
   }),
 };

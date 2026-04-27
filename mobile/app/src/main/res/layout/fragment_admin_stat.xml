@@ -241,4 +241,11 @@
 
     </LinearLayout>
 
+    <include
+        android:id="@+id/loadingOverlay"
+        layout="@layout/view_loading_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dp" />
+
 </LinearLayout>

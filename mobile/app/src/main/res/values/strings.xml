@@ -275,7 +275,7 @@
     <string name="reason">Reason:</string>
     <string name="reported_by">Reported by:</string>
     <string name="trip_creator_avatar">Trip creator avatar</string>
-    <string name="floating_minus_sign">-</string>
+    <string name="floating_minus_sign"> -> </string>
     <string name="loading">Loading</string>
     <string name="fetching_itinerary_reports">Fetching itinerary reports</string>
     <string name="fetching_review_reports">Fetching review reports</string>
@@ -289,4 +289,25 @@
     <string name="please_specify">Please specify...</string>
     <string name="dismiss_report">Dismiss report</string>
     <string name="ban_creator">Ban creator</string>
+    <string name="add_location">Add location</string>
+    <string name="address_required">Address (Required)</string>
+    <string name="name_required">Name (Required)</string>
+    <string name="description_optional">Description (Optional)</string>
+    <string name="location_photos">Location Photos</string>
+    <string name="delete">delete</string>
+    <string name="are_you_sure_you_want_to_delete">"Are you sure you want to delete "</string>
+    <string name="average_rating_0_5">Average Rating (0–5)</string>
+    <string name="thumbnail_selector">Thumbnail Selector</string>
+    <string name="phone_number">Phone number</string>
+    <string name="select_category">Select Category</string>
+    <string name="select_price">Select Price</string>
+    <string name="s_information">\'s Information</string>
+    <string name="close">close</string>
+    <string name="edit_profile">"Edit Profile: "</string>
+    <string name="are_you_sure_you_want_to">Are you sure you want to</string>
+    <string name="yes">Yes</string>
+    <string name="report_dismissed">Report dismissed</string>
+    <string name="location_deleted">Location deleted</string>
+    <string name="fetching_locations">Fetching locations</string>
+    <string name="fetching_users">Fetching users</string>
 </resources>

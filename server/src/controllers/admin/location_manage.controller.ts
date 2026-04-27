@@ -2,10 +2,8 @@ import axios from "axios";
 import { Request, Response } from "express";
 import { prisma } from "../../libs/prisma";
 import { Prisma } from '../../generated/prisma/client';
-import { config } from "../../configs/config";
 import { createResponse } from "../../utils/response";
-import { userRole } from "../../generated/prisma/browser";
-import { equal } from "node:assert";
+import { geocodeAddress } from "../../utils/geocoder";
 
 const MAX_VALUE = 32767;
 
@@ -22,7 +20,7 @@ export const getList = async (req: Request, res: Response) => {
     take = 20
   } = req.query;
   const categoryParam = req.query.categoryId as string;
-  const categoryId = categoryParam ? categoryParam.split(",").map((c) => Number(c.trim())).filter(val => !isNaN(val)) : [1, 2, 3, 4];
+  const categoryId = categoryParam ? categoryParam.split(",").map((c) => Number(c.trim())).filter(val => !isNaN(val)) : [1, 2, 3, 4, 5];
 
   const searchName = `%${name}%`;
   const categoryIds = Array.isArray(categoryId) ? categoryId : [categoryId];
@@ -113,3 +111,98 @@ export const toggleSoftDelete = async (req: Request, res: Response) => {
         })
     );
 }
+
+export const createLocation = async (req: Request, res: Response) => {
+  const { 
+    name, 
+    address, 
+    description, 
+    website, 
+    phone,
+    priceLevel, 
+    categoryId, 
+    imgUrls
+  } = req.body;
+
+  const createdBy = req.user?.id || null;
+
+  const coords = await geocodeAddress(address);
+    
+    if (!coords) {
+      return res.status(400).json(
+        createResponse({
+          message: "Could not find coordinates for this address. Please try a more specific address.",
+          data: null
+        })
+      );
+    }
+
+  const newLocation = await prisma.$transaction(async (tx) => {
+    
+    const result = await tx.$queryRaw`
+      INSERT INTO "Location" (
+        id, name, address, description, website, phone, "priceLevel", "categoryId", "createdBy", location, "updatedAt"
+      ) 
+      VALUES (
+        gen_random_uuid(), 
+        ${name}, 
+        ${address}, 
+        ${description || null}, 
+        ${website || null}, 
+        ${phone || null},
+        ${priceLevel || null}, 
+        ${Number(categoryId)}, 
+        ${createdBy}, 
+        ST_SetSRID(ST_MakePoint(${coords.lng}, ${coords.lat}), 4326)::geography, 
+        NOW()
+      ) 
+      RETURNING *;
+    `;
+
+    const insertedLocation = (result as any[])[0];
+
+    if (imgUrls && Array.isArray(imgUrls) && imgUrls.length > 0) {
+      const photoData = imgUrls.map((url, index) => ({
+        locationId: insertedLocation.id,
+        uploaderId: createdBy,
+        url: url,
+        isFeature: index === 0
+      }));
+
+      await tx.locationPhoto.createMany({
+        data: photoData
+      });
+    }
+
+    return insertedLocation;
+  });
+
+  return res.status(201).json(
+    createResponse({
+      message: "Location created successfully",
+      data: newLocation,
+    })
+  );
+};
+
+export const uploadLocationPhotos = async (req: Request, res: Response) => {
+  const files = req.files as Express.Multer.File[];
+  
+  if (!files || files.length === 0) {
+    return res.status(400).json(
+      createResponse({
+        message: "No files uploaded",
+        data: []
+      })
+    );
+  }
+
+  const imageUrls = files.map((file: any) => file.path);
+
+  return res.status(200).json(
+    createResponse({
+      message: "Uploaded location photos successfully",
+      data: imageUrls,
+    })
+  );
+};

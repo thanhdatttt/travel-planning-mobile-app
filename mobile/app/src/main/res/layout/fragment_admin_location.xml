@@ -9,17 +9,28 @@
     android:background="@color/white"
     tools:context=".ui.admin.AdminLocationFragment">
 
-    <!--HEADER-->
-    <include android:id="@+id/adminHeader"
-        layout="@layout/admin_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <!--SEARCH AND FILTER-->
-    <include android:id="@+id/searchAndFilter"
-        layout="@layout/search_and_filter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            <!--LIST-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLocations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
+                tools:listitem="@layout/admin_item_location" />
+
+            <include
+                android:id="@+id/loadingOverlay"
+                layout="@layout/view_loading_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="10dp" />
+        </FrameLayout>
+    </LinearLayout>
 
     <!--LIST-->
     <androidx.recyclerview.widget.RecyclerView

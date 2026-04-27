@@ -84,6 +84,14 @@ public class AdminLocationFragment extends Fragment {
         viewModel.getError().observe(getViewLifecycleOwner(), error -> {
             if (error != null) Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
         });
+
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (Boolean.TRUE.equals(isLoading)) {
+                showLoading(getString(R.string.fetching_locations));
+            } else {
+                hideLoading();
+            }
+        });
     }
 
     private void setupListeners() {
@@ -107,6 +115,10 @@ public class AdminLocationFragment extends Fragment {
 
         adminHeaderBinding.btnUser.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.nav_admin);
+        });
+
+        adminHeaderBinding.ivBack.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigateUp();
         });
 
         // SCROLLING LISTENER
@@ -233,5 +245,16 @@ public class AdminLocationFragment extends Fragment {
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_green));
+    }
+
+    private void showLoading(String message) {
+        if (binding == null) return;
+        binding.loadingOverlay.getRoot().setVisibility(View.VISIBLE);
+        binding.loadingOverlay.tvLoadingMessage.setText(message);
+    }
+
+    private void hideLoading() {
+        if (binding == null) return;
+        binding.loadingOverlay.getRoot().setVisibility(View.GONE);
     }
 }
