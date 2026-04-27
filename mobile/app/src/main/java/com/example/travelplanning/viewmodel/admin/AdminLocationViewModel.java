@@ -1,13 +1,11 @@
 package com.example.travelplanning.viewmodel.admin;
 
 import android.app.Application;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import com.example.travelplanning.data.model.location.Location;
-import com.example.travelplanning.data.model.location.Photo;
 import com.example.travelplanning.data.repository.admin.AdminRepository;
 
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ public class AdminLocationViewModel extends AndroidViewModel {
 
     private void debounceFetch() {
         if (searchRunnable != null) searchHandler.removeCallbacks(searchRunnable);
-        searchRunnable =  () -> fetchLocations(false);
+        searchRunnable =  () -> fetchLocations(true);
         searchHandler.postDelayed(searchRunnable, 300);
     }
 
@@ -86,6 +84,7 @@ public class AdminLocationViewModel extends AndroidViewModel {
                         currentList.addAll(data);
                         locations.setValue(currentList);
                         currentOffset += data.size();
+                        System.out.println(data);
                     }
 
                     @Override
@@ -175,57 +174,6 @@ public class AdminLocationViewModel extends AndroidViewModel {
             public void onError(String err) {
                 isLoading.setValue(false);
                 error.setValue(err);
-            }
-        });
-    }
-
-    public void createLocation(Location location) {
-        isLoading.setValue(true);
-        adminRepository.createLocation(location, new AdminRepository.AdminCallback<Location>() {
-            @Override
-            public void onSuccess(Location newLocation) {
-                isLoading.setValue(false);
-                List<Location> currentList = locations.getValue();
-                if (currentList != null) {
-                    currentList.add(0, newLocation);
-                    locations.setValue(currentList);
-                }
-            }
-
-            @Override
-            public void onError(String err) {
-                isLoading.setValue(false);
-                error.setValue(err);
-            }
-        });
-    }
-
-    public void createLocationWithPhotos(Location location, List<Uri> photoUris) {
-        if (photoUris == null || photoUris.isEmpty()) {
-            createLocation(location);
-            return;
-        }
-
-        isLoading.setValue(true);
-
-        adminRepository.uploadLocationPhotos(getApplication().getApplicationContext(), photoUris, new AdminRepository.AdminCallback<List<String>>() {
-            @Override
-            public void onSuccess(List<String> uploadedUrls) {
-
-                List<Photo> photos = new ArrayList<>();
-                for (int i = 0; i < uploadedUrls.size(); i++) {
-                    photos.add(new Photo(null, uploadedUrls.get(i), i == 0));
-                }
-
-                location.setPhotos(photos);
-
-                createLocation(location);
-            }
-
-            @Override
-            public void onError(String err) {
-                isLoading.setValue(false);
-                error.setValue("Failed to upload photos: " + err);
             }
         });
     }

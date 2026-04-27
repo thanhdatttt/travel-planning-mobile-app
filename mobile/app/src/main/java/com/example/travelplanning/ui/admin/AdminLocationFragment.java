@@ -33,12 +33,6 @@ import com.example.travelplanning.databinding.AdminHeaderBinding;
 import com.example.travelplanning.viewmodel.admin.AdminLocationViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import android.net.Uri;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
-import android.widget.ImageButton;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +43,6 @@ public class AdminLocationFragment extends Fragment {
     private AdminLocationViewModel viewModel;
     private AdminLocationAdapter adapter;
     private final List<Location> locationList = new ArrayList<>();
-    private final List<Uri> selectedPhotoUris = new ArrayList<>();
-    private PhotoUriAdapter createPhotoAdapter;
 
     @Nullable
     @Override
@@ -74,23 +66,8 @@ public class AdminLocationFragment extends Fragment {
         viewModel.fetchLocations(false);
     }
 
-    private final ActivityResultLauncher<PickVisualMediaRequest> pickIncrementalPhoto =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                if (uri != null) {
-                    selectedPhotoUris.add(uri); // Add to the end of the list
-                    if (createPhotoAdapter != null) {
-                        // Tell the adapter to draw the newly added photo
-                        createPhotoAdapter.notifyItemInserted(selectedPhotoUris.size() - 1);
-                    }
-                }
-            });
-
     private void setupRecyclerView() {
-        adapter = new AdminLocationAdapter(locationList, this::showPopupMenu, (view, location) -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("location_id", location.getId());
-            Navigation.findNavController(view).navigate(R.id.nav_location_detail, bundle);
-        });
+        adapter = new AdminLocationAdapter(locationList, this::showPopupMenu);
         binding.rvLocations.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvLocations.setAdapter(adapter);
     }
@@ -120,8 +97,6 @@ public class AdminLocationFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-
-        binding.fabAddLocation.setOnClickListener(v -> showCreateLocationDialog());
 
         searchAndFilterBinding.btnFilter.setOnClickListener(v ->
                 new AdminLocationFilterDialog().show(getChildFragmentManager(), "AdminLocationFilter"));
@@ -166,15 +141,12 @@ public class AdminLocationFragment extends Fragment {
                 showEditLocationDialog(location);
                 return true;
             } else if (item.getItemId() == 2) {
-                AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.delete_location))
-                        .setMessage(getString(R.string.are_you_sure_you_want_to_delete) + location.getName() + "?")
-                        .setPositiveButton(getString(R.string.delete), (d, w) -> viewModel.deleteLocation(location))
-                        .setNegativeButton(getString(R.string.cancel), null)
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Delete Location")
+                        .setMessage("Are you sure you want to delete " + location.getName() + "?")
+                        .setPositiveButton("Delete", (d, w) -> viewModel.deleteLocation(location))
+                        .setNegativeButton("Cancel", null)
                         .show();
-
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_green));
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
                 return true;
             }
             return false;
@@ -212,10 +184,10 @@ public class AdminLocationFragment extends Fragment {
             autoPrice.setText(priceLabels[location.getPriceLevel() - 1], false);
         }
 
-        String[] categories = {getString(R.string.restaurant), getString(R.string.hotel), getString(R.string.attraction), getString(R.string.shopping), getString(R.string.service)};
+        String[] categories = {"Restaurant", "Hotel", "Attraction", "Shopping", "Service"};
         ArrayAdapter<String> catAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
         autoCategory.setAdapter(catAdapter);
-        autoCategory.setText(categories[location.getCategoryId()], false);
+        autoCategory.setText(location.getCategoryName(), false);
 
         final String[] selectedUrl = {location.getImageUrl()};
         Glide.with(this).load(selectedUrl[0]).into(ivPreview);
@@ -227,11 +199,13 @@ public class AdminLocationFragment extends Fragment {
         rvPhotos.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvPhotos.setAdapter(photoAdapter);
 
-        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.edit_location) + location.getName())
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.WhiteDialog)
+                .setTitle("Edit Location: " + location.getName())
+                .setIcon(R.drawable.ic_location) // Make sure this icon exists
                 .setView(view)
-                .setPositiveButton(getString(R.string.edit), (d, which) -> {
+                .setPositiveButton("Update", (d, which) -> {
                     try {
+                        // Collect modified data
                         location.setName(etName.getText().toString());
                         location.setAddress(etAddress.getText().toString());
                         location.setPhone(etPhone.getText().toString());
@@ -254,99 +228,10 @@ public class AdminLocationFragment extends Fragment {
                         Toast.makeText(getContext(), "Invalid input format!", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton(getString(R.string.cancel), (d, which) -> d.dismiss())
+                .setNegativeButton("Cancel", (d, which) -> d.dismiss())
                 .show();
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_green));
-
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
-    }
-
-    private void showCreateLocationDialog() {
-        View view = getLayoutInflater().inflate(R.layout.dialog_create_location, null);
-
-        EditText etName = view.findViewById(R.id.etCreateName);
-        EditText etAddress = view.findViewById(R.id.etCreateAddress);
-        EditText etDesc = view.findViewById(R.id.etCreateDesc);
-
-        AutoCompleteTextView autoPrice = view.findViewById(R.id.autoCompleteCreatePriceLevel);
-        AutoCompleteTextView autoCategory = view.findViewById(R.id.autoCompleteCreateCategory);
-        RecyclerView rvPhotos = view.findViewById(R.id.rvCreatePhotoSelector);
-        ImageButton btnAddPhotos = view.findViewById(R.id.btnIncrementalAddPhoto);
-
-        selectedPhotoUris.clear();
-        createPhotoAdapter = new PhotoUriAdapter(selectedPhotoUris);
-        rvPhotos.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        rvPhotos.setAdapter(createPhotoAdapter);
-
-        if (btnAddPhotos != null) {
-            btnAddPhotos.setOnClickListener(v -> {
-                pickIncrementalPhoto.launch(new PickVisualMediaRequest.Builder()
-                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                        .build());
-            });
-        }
-
-        String[] priceLabels = {"$", "$$", "$$$", "$$$$"};
-        ArrayAdapter<String> priceAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, priceLabels);
-        autoPrice.setAdapter(priceAdapter);
-        autoPrice.setText(priceLabels[0], false);
-
-        String[] categories = {getString(R.string.restaurant), getString(R.string.hotel), getString(R.string.attraction), getString(R.string.shopping), getString(R.string.service)};
-        ArrayAdapter<String> catAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
-        autoCategory.setAdapter(catAdapter);
-        autoCategory.setText(categories[0], false);
-
-        // get index of selected category and price
-        final int[] selectedPriceLevel = {1};
-        final int[] selectedCategoryId = {1};
-
-        autoPrice.setOnItemClickListener((parent, view1, position, id) -> {
-            selectedPriceLevel[0] = position + 1;
-        });
-
-        autoCategory.setOnItemClickListener((parent, view1, position, id) -> {
-            selectedCategoryId[0] = position + 1;
-        });
-
-
-        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.add_location))
-                .setView(view)
-                .setPositiveButton(getString(R.string.create), (d, which) -> {
-                    String name = etName.getText().toString();
-                    String address = etAddress.getText().toString();
-
-                    if (name.isEmpty() || address.isEmpty()) {
-                        Toast.makeText(getContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    try {
-                        Location newLocation = new Location();
-                        newLocation.setName(name);
-                        newLocation.setAddress(address);
-                        newLocation.setDescription(etDesc.getText().toString());
-
-                        newLocation.setPriceLevel(selectedPriceLevel[0]);
-                        newLocation.setCategoryId(selectedCategoryId[0]);
-
-                        viewModel.createLocationWithPhotos(newLocation, new ArrayList<>(selectedPhotoUris));
-                        Toast.makeText(getContext(), "Creating " + name + "...", Toast.LENGTH_SHORT).show();
-
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(getContext(), "Invalid coordinate formats!", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), (d, which) -> d.dismiss())
-                .show();
-
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(ContextCompat.getColor(requireContext(), R.color.primary));
-
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
     }
 }
