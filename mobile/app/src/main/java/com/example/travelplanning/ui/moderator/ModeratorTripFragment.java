@@ -106,6 +106,9 @@ public class ModeratorTripFragment extends Fragment {
     }
 
     private void setupListeners() {
+        headerBinding.ivBack.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigateUp();
+        });
         headerBinding.btnReview.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_moderator_review));
         headerBinding.btnLocations.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_moderator_location));
     }

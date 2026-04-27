@@ -89,6 +89,10 @@ public class AdminStatFragment extends Fragment {
         binding.LLModeratorUser.setOnClickListener(v -> showUserListDialog(UserRole.MODERATOR));
         binding.LLAdminUser.setOnClickListener(v -> showUserListDialog(UserRole.ADMIN));
 
+        adminHeaderBinding.ivBack.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigateUp();
+        });
+
         adminHeaderBinding.btnUser.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_admin));
         adminHeaderBinding.btnLocation.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_admin_location));
     }

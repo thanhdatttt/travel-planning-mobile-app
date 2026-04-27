@@ -5,7 +5,7 @@
     <string name="complete_account">Hoàn tất tài khoản</string>
     <string name="almost_there_just_a_few_more_details">Sắp xong rồi! Chỉ cần thêm vài thông tin nữa</string>
     <string name="enter_your_email_to_get_started">Nhập email của bạn để bắt đầu</string>
-    <string name="welcome_back">Chào mừng trở lại!</string>
+    <string name="welcome_back">Chào mừng quay trở lại!</string>
     <string name="log_in_to_continue_your_journey">Đăng nhập để tiếp tục hành trình</string>
     <string name="login">Đăng nhập</string>
     <string name="don_t_have_an_account">Chưa có tài khoản?</string>
@@ -171,8 +171,8 @@
     // chatbot
     <string name="new_conversation">Cuộc trò chuyện mới</string>
     <string name="Hello">Xin chào! Mình có thể giúp gì cho bạn?</string>
-    <string name="ask_tourguide">Hỏi TourGuide …</string>
-    <string name="answering">Đang trả lời …</string>
+    <string name="ask_tourguide">Hỏi TourGuide...</string>
+    <string name="answering">Đang trả lời...</string>
     <string name="action_delete">Xóa</string>
     <string name="action_cancel">Hủy</string>
 
@@ -237,8 +237,8 @@
     <string name="price_very_expensive">Rất đắt</string>
 
     // home
-    <string name="explore_itinerary">Khám phá chuyến đi của cộng đồng</string>
-    <string name="search_hint">Tìm kiếm chuyến đi …</string>
+    <string name="explore_itinerary">Khám phá lịch trình</string>
+    <string name="search_hint">Tìm điểm đến...</string>
 
     //filter
     <string name="filter_search_results">Lọc kết quả tìm kiếm</string>
@@ -263,7 +263,7 @@
     <string name="reason">Lý do:</string>
     <string name="reported_by">Báo cáo bởi:</string>
     <string name="trip_creator_avatar">Ảnh đại diện người tạo chuyến đi</string>
-    <string name="floating_minus_sign">-</string>
+    <string name="floating_minus_sign"> -> </string>
     <string name="loading">Đang tải</string>
     <string name="fetching_itinerary_reports">Đang tải báo cáo lộ trình</string>
     <string name="fetching_review_reports">Đang tải báo cáo đánh giá</string>
@@ -277,4 +277,30 @@
     <string name="please_specify">Vui lòng nêu chi tiết...</string>
     <string name="dismiss_report">Đã xử lý</string>
     <string name="ban_creator">Cấm người tạo</string>
+    <string name="add_location">Thêm địa điểm</string>
+    <string name="address_required">Địa chỉ (Bắt buộc)</string>
+    <string name="name_required">Tên (Bắt buộc)</string>
+    <string name="description_optional">Mô tả (Tùy chọn)</string>
+    <string name="location_photos">Ảnh địa điểm</string>
+    <string name="delete">xóa</string>
+    <string name="are_you_sure_you_want_to_delete">"Bạn có chắc chắn muốn xóa "</string>
+    <string name="average_rating_0_5">Đánh giá trung bình (0–5)</string>
+    <string name="thumbnail_selector">Chọn ảnh thu nhỏ</string>
+    <string name="phone_number">Số điện thoại</string>
+    <string name="select_category">Chọn danh mục</string>
+    <string name="select_price">Chọn mức giá</string>
+    <string name="s_information"> - Thông tin</string>
+    <string name="close">Đóng</string>
+    <string name="edit_profile">"Chỉnh sửa hồ sơ: "</string>
+    <string name="are_you_sure_you_want_to">Bạn có chắc chắn muốn </string>
+    <string name="yes">Có</string>
+
+    <string name="choose_a_location">Chọn địa điểm</string>
+    <string name="favorite_trips_title">Chuyến đi yêu thích</string>
+    <string name="empty_favorite_message">Bạn chưa có chuyến đi yêu thích nào</string>
+
+    <string name="add_photos">Thêm ảnh</string>
+    <string name="fetching_locations">Đang tải địa điểm</string>
+    <string name="fetching_users">Đang tải người dùng</string>
+
 </resources>

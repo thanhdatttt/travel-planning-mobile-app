@@ -97,7 +97,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reported by: "
+            android:text="@string/reported_by"
             android:textSize="12sp"
             android:textColor="@color/text_secondary" />
 
@@ -114,7 +114,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reason: "
+            android:text="@string/reason"
             android:textSize="12sp"
             android:textColor="@color/text_secondary" />
 

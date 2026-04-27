@@ -181,9 +181,6 @@ export const moderatorController = {
     const { id } = req.params;
     const { ban } = req.body; 
 
-    console.log(req.params);
-    console.log(req.body);
-
     const updatedUser = await prisma.user.update({
       where: { id: String(id) },
       data: { isBanned: Boolean(ban) },
