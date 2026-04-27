@@ -125,13 +125,13 @@ public class ItineraryFragment extends Fragment {
     private void confirmAndDelete(ItineraryItem item) {
         androidx.appcompat.app.AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
                 .setIcon(R.drawable.ic_delete)
-                .setTitle("Remove this location?")
-                .setMessage("Are you sure you want to remove this location? This cannot be undone.")
-                .setPositiveButton("Remove", (d, which) -> {
+                .setTitle(R.string.remove_this_location)
+                .setMessage(R.string.remove_this_location_message)
+                .setPositiveButton(R.string.remove, (d, which) -> {
                     if (currentTripId != null)
                         viewModel.deleteItineraryItem(currentTripId, item.getId());
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(R.string.cancel, null)
                 .create();
 
         dialog.show();

@@ -225,13 +225,13 @@ public class TripFragment extends Fragment {
             // alert dialog before delete
             new MaterialAlertDialogBuilder(requireContext())
                     .setIcon(R.drawable.ic_delete)
-                    .setTitle("Delete this trip?")
-                    .setMessage("Are you sure you want to delete this trip? This cannot be undone")
+                    .setTitle(R.string.delete_this_trip)
+                    .setMessage(R.string.delete_this_trip_message)
                     .setCancelable(false) // Ensure user makes a choice, can't dismiss by tapping outside
-                    .setNegativeButton("Cancel", (dialogInterface, i) -> {
+                    .setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
                         dialogInterface.dismiss();
                     })
-                    .setPositiveButton("Delete", (dialogInterface, i) -> {
+                    .setPositiveButton(R.string.action_delete, (dialogInterface, i) -> {
                         viewModel.deleteItinerary(itinerary.getId());
                         dialogInterface.dismiss();
                         dialog.dismiss();
