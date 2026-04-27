@@ -120,24 +120,6 @@
     <string name="save">Lưu</string>
     <string name="show_less">Hiện bớt</string>
     <string name="error_cannot_open_link">Không thể mở liên kết này</string>
-    <string name="created_by">Tạo bởi</string>
-    <string name="user_name">Tên người dùng</string>
-    <string name="location_here">Địa điểm ở đây</string>
-    <string name="description_here">Mô tả ở đây</string>
-    <string name="save_to_your_trip">Lưu chuyến đi</string>
-    <string name="unschedule">Hủy lên lịch</string>
-    <string name="schedule">Đã lên lịch</string>
-    <string name="remove_this_location">Xóa địa điểm này?</string>
-    <string name="remove_this_location_message">Bạn có chắc muốn xóa địa điểm này? Hành động này không thể khôi phục.</string>
-    <string name="remove">Xóa</string>
-    <string name="delete_this_trip">Xóa chuyến đi này?</string>
-    <string name="delete_this_trip_message">Bạn có chắc muốn xóa chuyến đi này? Hành động này không thể khôi phục.</string>
-    <string name="choose_start_date">Chọn ngày bắt đầu</string>
-    <string name="choose_end_date">Chọn ngày kết thúc</string>
-    <string name="trip_name_is_required">Tên chuyến đi là bắt buộc</string>
-    <string name="start_date_is_required">Ngày bắt đầu là bắt buộc</string>
-    <string name="end_date_is_required">Ngày kết thúc là bắt buộc</string>
-    <string name="end_date_must_be_after_start_date">Ngày kết thúc phải sau ngày bắt đầu</string>
 
     <string name="menu_admin">Vào bảng quản trị Admin</string>
     <string name="manage_location">Quản lý địa điểm</string>
@@ -237,8 +219,8 @@
     <string name="price_very_expensive">Rất đắt</string>
 
     // home
-    <string name="explore_itinerary">Khám phá chuyến đi của cộng đồng</string>
-    <string name="search_hint">Tìm kiếm chuyến đi …</string>
+    <string name="explore_itinerary">Khám phá lịch trình</string>
+    <string name="search_hint">Tìm điểm đến...</string>
 
     //filter
     <string name="filter_search_results">Lọc kết quả tìm kiếm</string>
@@ -263,7 +245,7 @@
     <string name="reason">Lý do:</string>
     <string name="reported_by">Báo cáo bởi:</string>
     <string name="trip_creator_avatar">Ảnh đại diện người tạo chuyến đi</string>
-    <string name="floating_minus_sign">-</string>
+    <string name="floating_minus_sign"> -> </string>
     <string name="loading">Đang tải</string>
     <string name="fetching_itinerary_reports">Đang tải báo cáo lộ trình</string>
     <string name="fetching_review_reports">Đang tải báo cáo đánh giá</string>
@@ -300,6 +282,14 @@
     <string name="empty_favorite_message">Bạn chưa có chuyến đi yêu thích nào</string>
 
     <string name="add_photos">Thêm ảnh</string>
+    <string name="created_by">Tạo bởi</string>
+    <string name="user_name">Tên người dùng</string>
+    <string name="location_here">Địa điểm tại đây</string>
+    <string name="description_here">Mô tả tại đây</string>
+    <string name="save_to_your_trip">Lưu vào chuyến đi của bạn</string>
+    <string name="unschedule">Chưa lên lịch</string>
+    <string name="schedule">Đã lên lịch</string>
+    <string name="review_title">Tiêu đề</string>
     <string name="fetching_locations">Đang tải địa điểm</string>
     <string name="fetching_users">Đang tải người dùng</string>
 

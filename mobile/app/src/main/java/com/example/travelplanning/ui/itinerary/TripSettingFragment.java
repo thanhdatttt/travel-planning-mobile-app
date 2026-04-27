@@ -127,8 +127,8 @@ public class TripSettingFragment extends Fragment {
     private void setupListeners() {
         binding.btnBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
 
-        binding.edtStartDate.setOnClickListener(v -> showDatePicker(String.valueOf(R.string.choose_start_date), true));
-        binding.edtEndDate.setOnClickListener(v -> showDatePicker(String.valueOf(R.string.choose_end_date), false));
+        binding.edtStartDate.setOnClickListener(v -> showDatePicker("Choose start date", true));
+        binding.edtEndDate.setOnClickListener(v -> showDatePicker("Choose end date", false));
         binding.btnCopyTrip.setOnClickListener(v -> {
             if (tripId != null) viewModel.cloneItinerary(tripId);
         });
@@ -144,22 +144,22 @@ public class TripSettingFragment extends Fragment {
         String privacy = binding.swPrivacy.isChecked() ? "public" : "private";
 
         if (title.isEmpty()) {
-            binding.edtTripName.setError(String.valueOf(R.string.trip_name_is_required));
+            binding.edtTripName.setError("Trip name is required");
             return;
         }
 
         Date startDate = parseDate(binding.edtStartDate.getText().toString());
         Date endDate = parseDate(binding.edtEndDate.getText().toString());
         if (startDate == null) {
-            binding.edtStartDate.setError(String.valueOf(R.string.start_date_is_required));
+            binding.edtStartDate.setError("Start date is required");
             return;
         }
         if (endDate == null) {
-            binding.edtEndDate.setError(String.valueOf(R.string.end_date_is_required));
+            binding.edtEndDate.setError("End date is required");
             return;
         }
         if (endDate.before(startDate)) {
-            binding.edtEndDate.setError(String.valueOf(R.string.end_date_must_be_after_start_date));
+            binding.edtEndDate.setError("End date must be after start date");
             return;
         }
 
@@ -190,13 +190,13 @@ public class TripSettingFragment extends Fragment {
     private void confirmAndDelete() {
         androidx.appcompat.app.AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
                 .setIcon(R.drawable.ic_delete)
-                .setTitle(R.string.delete_this_trip)
-                .setMessage(R.string.delete_this_trip_message)
-                .setPositiveButton(R.string.action_delete, (d, which) -> {
+                .setTitle("Delete this trip?")
+                .setMessage("Are you sure you want to delete this trip? This cannot be undone.")
+                .setPositiveButton("Remove", (d, which) -> {
                     if (tripId != null)
                         viewModel.deleteItinerary(tripId);
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton("Cancel", null)
                 .create();
 
         dialog.show();
