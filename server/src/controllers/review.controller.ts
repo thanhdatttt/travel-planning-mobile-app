@@ -102,7 +102,16 @@ export const reviewController = {
         take: limit,
         orderBy: { createdAt: "desc" },
         include: {
-          location: { select: { name: true } },
+          location: {
+            select: {
+              name: true,
+              locationPhotos: {
+                where: { isFeature: true },
+                take: 1,
+                select: { url: true },
+              },
+            },
+          },
         },
       }),
       prisma.review.count({ where: { userId, isDeleted: false } }),

@@ -456,6 +456,7 @@ public class LocationDetailFragment extends Fragment {
         binding.layoutPhotos.btnNext.setAlpha(page < totalPages - 1 ? 1.0f : 0.3f);
     }
 
+    // REVIEW
     private void updateReviewStatsUI(List<RatingStat> stats) {
         var summaryBinding = binding.layoutReviewSummary;
         if (stats == null) return;
@@ -490,16 +491,14 @@ public class LocationDetailFragment extends Fragment {
                 }
             }
         } else {
-            String zeroStr = "(0 " + getString(R.string.reviews) + ")";
-            
             binding.tvDetailRatingScore.setText("0.0");
             binding.ratingBar.setRating(0f);
-            binding.tvDetailRatingCount.setText(zeroStr);
+            binding.tvDetailRatingCount.setText("(0 reviews)");
 
-            summaryBinding.tvTotalReviews.setText(zeroStr);
+            summaryBinding.tvTotalReviews.setText("(0 " + getString(R.string.reviews) + ")");
             summaryBinding.tvAverageRating.setText("0.0");
             summaryBinding.miniRatingBar.setRating(0f);
-            
+
             summaryBinding.pbStar5.setProgress(0);
             summaryBinding.pbStar4.setProgress(0);
             summaryBinding.pbStar3.setProgress(0);
