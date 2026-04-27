@@ -19,8 +19,8 @@ public class ItineraryReportMapper implements BaseMapper<ItineraryReportResponse
                 .ownerName(dto.getOwnerUsername())
                 .privacyStatus(dto.getPrivacy())
                 // Depending on your date parsing needs, you might want to format these strings here
-                .formattedStartDate(dto.getStartDate())
-                .formattedEndDate(dto.getEndDate())
+                .formattedStartDate(dto.getStartDate().split("T")[0])
+                .formattedEndDate(dto.getEndDate().split("T")[0])
                 .description(dto.getDescription())
                 .reporterName(dto.getReporterUsername())
                 .reportReason(dto.getReportReason())

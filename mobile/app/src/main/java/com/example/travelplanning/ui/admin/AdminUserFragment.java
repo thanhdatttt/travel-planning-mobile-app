@@ -88,6 +88,14 @@ public class AdminUserFragment extends Fragment {
         viewModel.getError().observe(getViewLifecycleOwner(), error -> {
             if (error != null) Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
         });
+
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (Boolean.TRUE.equals(isLoading)) {
+                showLoading(getString(R.string.fetching_users));
+            } else {
+                hideLoading();
+            }
+        });
     }
 
     private void setupListeners() {
@@ -105,7 +113,7 @@ public class AdminUserFragment extends Fragment {
         });
 
         adminHeaderBinding.ivBack.setOnClickListener(v -> {
-            if (getActivity() != null) getActivity();
+            Navigation.findNavController(v).navigateUp();
         });
 
         searchAndFilterBinding.btnFilter.setOnClickListener(v -> {
@@ -301,5 +309,16 @@ public class AdminUserFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void showLoading(String message) {
+        if (binding == null) return;
+        binding.loadingOverlay.getRoot().setVisibility(View.VISIBLE);
+        binding.loadingOverlay.tvLoadingMessage.setText(message);
+    }
+
+    private void hideLoading() {
+        if (binding == null) return;
+        binding.loadingOverlay.getRoot().setVisibility(View.GONE);
     }
 }

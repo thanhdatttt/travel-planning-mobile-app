@@ -8,6 +8,8 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -19,6 +21,7 @@ import com.example.travelplanning.data.model.moderator.LocationReport;
 import com.example.travelplanning.databinding.FragmentModeratorLocationBinding;
 import com.example.travelplanning.databinding.ModeratorHeaderBinding;
 import com.example.travelplanning.viewmodel.moderator.ModeratorLocationViewModel;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,17 +63,25 @@ public class ModeratorLocationFragment extends Fragment {
 
     private void showPopupMenu(View anchor, LocationReport report) {
         PopupMenu popup = new PopupMenu(requireContext(), anchor);
-        popup.getMenu().add(0, 1, 1, "Delete Location");
+//        popup.getMenu().add(0, 1, 1, getString(R.string.delete_location));
         popup.getMenu().add(0, 2, 2, R.string.dismiss_report);
 
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
              if (id == 1) {
-                // TODO: Call API to delete location
-                Toast.makeText(getContext(), "Location deleted", Toast.LENGTH_SHORT).show();
+                 AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                         .setTitle(getString(R.string.delete_location))
+                         .setMessage(getString(R.string.are_you_sure_you_want_to) + getString(R.string.delete_location).toLowerCase() + "?")
+//                         .setPositiveButton(getString(R.string.yes), (d, w) -> viewModel)
+                         .setNegativeButton(getString(R.string.close), null)
+                         .show();
+                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_green));
+                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
+                 Toast.makeText(getContext(), R.string.location_deleted, Toast.LENGTH_SHORT).show();
+                 return true;
             } else if (id == 2) {
                 viewModel.dismissReport(report.getReportId());
-                Toast.makeText(getContext(), "Report dismissed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.report_dismissed, Toast.LENGTH_SHORT).show();
             }
             return true;
         });
@@ -141,6 +152,10 @@ public class ModeratorLocationFragment extends Fragment {
                     }
                 }
             }
+        });
+
+        headerBinding.ivBack.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigateUp();
         });
 
         headerBinding.btnReview.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_moderator_review));

@@ -137,6 +137,10 @@ public class ModeratorReviewFragment extends Fragment {
             Navigation.findNavController(v).navigate(R.id.nav_moderator_location);
         });
 
+        headerBinding.ivBack.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigateUp();
+        });
+
         headerBinding.btnTrips.setOnClickListener( v -> {
             Navigation.findNavController(v).navigate(R.id.nav_moderator_trip);
         });

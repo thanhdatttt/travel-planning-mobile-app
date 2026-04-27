@@ -245,7 +245,7 @@
     <string name="reason">Lý do:</string>
     <string name="reported_by">Báo cáo bởi:</string>
     <string name="trip_creator_avatar">Ảnh đại diện người tạo chuyến đi</string>
-    <string name="floating_minus_sign">-</string>
+    <string name="floating_minus_sign"> -> </string>
     <string name="loading">Đang tải</string>
     <string name="fetching_itinerary_reports">Đang tải báo cáo lộ trình</string>
     <string name="fetching_review_reports">Đang tải báo cáo đánh giá</string>
@@ -290,5 +290,7 @@
     <string name="unschedule">Chưa lên lịch</string>
     <string name="schedule">Đã lên lịch</string>
     <string name="review_title">Tiêu đề</string>
+    <string name="fetching_locations">Đang tải địa điểm</string>
+    <string name="fetching_users">Đang tải người dùng</string>
 
 </resources>
