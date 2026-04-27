@@ -237,8 +237,8 @@
     <string name="price_very_expensive">Rất đắt</string>
 
     // home
-    <string name="explore_itinerary">Khám phá lịch trình</string>
-    <string name="search_hint">Tìm điểm đến...</string>
+    <string name="explore_itinerary">Khám phá chuyến đi của cộng đồng</string>
+    <string name="search_hint">Tìm kiếm chuyến đi …</string>
 
     //filter
     <string name="filter_search_results">Lọc kết quả tìm kiếm</string>
@@ -263,7 +263,7 @@
     <string name="reason">Lý do:</string>
     <string name="reported_by">Báo cáo bởi:</string>
     <string name="trip_creator_avatar">Ảnh đại diện người tạo chuyến đi</string>
-    <string name="floating_minus_sign"> -> </string>
+    <string name="floating_minus_sign">-</string>
     <string name="loading">Đang tải</string>
     <string name="fetching_itinerary_reports">Đang tải báo cáo lộ trình</string>
     <string name="fetching_review_reports">Đang tải báo cáo đánh giá</string>
