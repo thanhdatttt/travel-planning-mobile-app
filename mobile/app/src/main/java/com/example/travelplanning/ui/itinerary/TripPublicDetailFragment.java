@@ -64,8 +64,8 @@ public class TripPublicDetailFragment extends Fragment {
         reportViewModel = new ViewModelProvider(this).get(ReportViewmodel.class);
 
         if (tripId != null) {
+            viewModel.getSelectedItinerary().setValue(null);
             viewModel.fetchItineraryById(tripId);
-            viewModel.checkFavoriteStatus(tripId);
         }
 
         setupTabUI();
@@ -201,16 +201,24 @@ public class TripPublicDetailFragment extends Fragment {
         }
 
         // creator info
-        binding.tvCreatorName.setText(itinerary.getUser().getUsername());
-        if (itinerary.getUser().getAvatarUrl() != null) {
-            Glide.with(this).load(itinerary.getUser().getAvatarUrl()).into(binding.ivCreatorAvatar);
+        if (itinerary.getUser() != null) {
+            binding.tvCreatorName.setText(itinerary.getUser().getUsername());
+            if (itinerary.getUser().getAvatarUrl() != null) {
+                Glide.with(this).load(itinerary.getUser().getAvatarUrl()).into(binding.ivCreatorAvatar);
+            } else {
+                binding.ivCreatorAvatar.setImageResource(R.drawable.ic_user);
+            }
         } else {
+            // Hiển thị tạm thời trong khi chờ API trả về bản full
+            binding.tvCreatorName.setText("Loading...");
             binding.ivCreatorAvatar.setImageResource(R.drawable.ic_user);
         }
 
         binding.tvTripTitle.setText(itinerary.getTitle());
-        String dates = dateFormat.format(itinerary.getStartDate()) + " – " + dateFormat.format(itinerary.getEndDate());
-        binding.tvTripDates.setText(dates);
+        if (itinerary.getStartDate() != null && itinerary.getEndDate() != null) {
+            String dates = dateFormat.format(itinerary.getStartDate()) + " – " + dateFormat.format(itinerary.getEndDate());
+            binding.tvTripDates.setText(dates);
+        }
         if (itinerary.getItineraryItems() != null && !itinerary.getItineraryItems().isEmpty()) {
             binding.tvTripLocation.setText(itinerary.getItineraryItems().get(0).getLocation().getName());
         }

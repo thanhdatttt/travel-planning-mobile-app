@@ -38,57 +38,49 @@ export const favoriteController = {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const offset = (page - 1) * limit;
 
     try {
-      const [favorites, total] = await Promise.all([
-        prisma.favorite.findMany({
-          where: { userId },
-          skip,
-          take: limit,
-          orderBy: { createdAt: "desc" },
-          include: {
-            itinerary: true,
-          },
-        }),
-        prisma.favorite.count({ where: { userId } }),
-      ]);
+      const favorites = await prisma.$queryRaw`
+      SELECT 
+        f.id, 
+        f."userId", 
+        f."itineraryId", 
+        f."createdAt",
+        i.title as "itineraryTitle",
+        i.description as "itineraryDescription",
+        -- Subquery lấy URL ảnh của địa điểm có orderIdx nhỏ nhất (đầu tiên)
+        (
+          SELECT lp.url 
+          FROM "ItineraryItem" ii
+          JOIN "LocationPhoto" lp ON ii."locationId" = lp."locationId"
+          WHERE ii."itineraryId" = f."itineraryId"
+          ORDER BY lp."isFeature" DESC, ii."orderIdx" ASC
+          LIMIT 1
+        ) as "imageUrl"
+      FROM "Favorite" f
+      JOIN "Itinerary" i ON f."itineraryId" = i.id
+      WHERE f."userId" = ${userId}
+      ORDER BY f."createdAt" DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `;
 
-      const formattedFavorites = favorites.map((fav: any) => {
-        const itinerary = fav.itinerary;
-
-        let finalImageUrl = itinerary.imageUrl || null;
-
-        if (
-          !finalImageUrl &&
-          itinerary.itineraryPhotos &&
-          itinerary.itineraryPhotos.length > 0
-        ) {
-          finalImageUrl = itinerary.itineraryPhotos[0].url;
-        }
-
-        return {
-          id: fav.id,
-          userId: fav.userId,
-          itineraryId: fav.itineraryId,
-          createdAt: fav.createdAt,
-          itinerary: {
-            ...itinerary,
-            imageUrl: finalImageUrl,
-          },
-        };
-      });
+      const total: any = await prisma.$queryRaw`
+      SELECT COUNT(*) FROM "Favorite" WHERE "userId" = ${userId}
+    `;
 
       return res.json(
         createResponse({
-          data: formattedFavorites,
-          metadata: { total, page, lastPage: Math.ceil(total / limit) },
+          data: favorites,
+          metadata: {
+            total: Number(total[0].count),
+            page,
+            lastPage: Math.ceil(Number(total[0].count) / limit),
+          },
         }),
       );
     } catch (error) {
-      console.error("Lỗi khi lấy favorite:", error);
-      return res
-        .status(500)
-        .json(createResponse({ message: "Internal Server Error" }));
+      res.status(500).json({ message: "Raw query error", error });
     }
   },
 

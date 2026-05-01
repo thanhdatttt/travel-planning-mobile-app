@@ -1,4 +1,4 @@
-package com.example.travelplanning.data.repository.favorite;
+package com.example.travelplanning.ui.favorite;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;

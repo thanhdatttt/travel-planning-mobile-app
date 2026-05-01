@@ -141,13 +141,17 @@ public class FavoriteRepository {
 
                     if (favList != null) {
                         for (FavoriteResponse fav : favList) {
-                            if (fav.getItinerary() != null) {
-                                Itinerary domainModel = itineraryMapper.mapToDomain(fav.getItinerary());
-                                if (domainModel != null) {
-                                    itineraries.add(domainModel);
-                                    if (userId != null) {
-                                        favorites.add(new Favorite(userId + "_" + domainModel.getId(), userId, domainModel.getId(), null));
-                                    }
+                            Itinerary domainModel = Itinerary.builder()
+                                    .id(fav.getItineraryId())
+                                    .title(fav.getItineraryTitle())
+                                    .description(fav.getItineraryDescription())
+                                    .image(fav.getImageUrl())
+                                    .build();
+
+                            if (domainModel != null) {
+                                itineraries.add(domainModel);
+                                if (userId != null) {
+                                    favorites.add(new Favorite(userId + "_" + domainModel.getId(), userId, domainModel.getId(), null));
                                 }
                             }
                         }

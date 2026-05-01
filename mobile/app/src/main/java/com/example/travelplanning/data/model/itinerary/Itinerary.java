@@ -33,6 +33,7 @@ public class Itinerary {
     Date createdAt;
     Date updatedAt;
     User user;
+    String image;
     List<ItineraryItem> itineraryItems;
 
     @Data

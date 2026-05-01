@@ -16,11 +16,21 @@ public class ItineraryMapper implements BaseMapper<ItineraryResponse, Itinerary>
         if (dto == null) return null;
 
         List<ItineraryItem> items = new ArrayList<>();
+        String photoFromLocation = null;
         if (dto.getItineraryItems() != null) {
-            for (ItineraryItemResponse itemDto : dto.getItineraryItems()) {
-                items.add(itemMapper.mapToDomain(itemDto));
+            for (int i = 0; i < dto.getItineraryItems().size(); i++) {
+                ItineraryItemResponse itemDto = dto.getItineraryItems().get(i);
+                ItineraryItem domainItem = itemMapper.mapToDomain(itemDto);
+                items.add(domainItem);
+
+                if (i == 0 && itemDto.getLocation() != null &&
+                        itemDto.getLocation().getPhotos() != null &&
+                        !itemDto.getLocation().getPhotos().isEmpty()) {
+                    photoFromLocation = itemDto.getLocation().getPhotos().get(0).getUrl();
+                }
             }
         }
+        String finalThumbnail = (dto.getImageUrl() != null) ? dto.getImageUrl() : photoFromLocation;
 
         Itinerary.User owner = null;
         if (dto.getUser() != null) {
@@ -43,6 +53,7 @@ public class ItineraryMapper implements BaseMapper<ItineraryResponse, Itinerary>
                 .updatedAt(dto.getUpdatedAt())
                 .user(owner)
                 .itineraryItems(items)
+                .image(finalThumbnail)
                 .build();
     }
 }
