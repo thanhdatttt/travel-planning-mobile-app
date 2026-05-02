@@ -49,13 +49,35 @@ public class ModeratorLocationAdapter extends RecyclerView.Adapter<ModeratorLoca
             this.binding = binding;
         }
 
+        private int getLocalizedReasonResId(String rawReason) {
+            if (rawReason == null) return R.string.reason;
+
+            switch (rawReason.toLowerCase()) {
+                case "spam":
+                    return R.string.spam;
+                case "inappropriate":
+                    return R.string.inappropriate;
+                case "irrelevant":
+                    return R.string.irrelevant;
+                default:
+                    return -1;
+            }
+        }
+
         public void bind(LocationReport report, OnReportActionListener listener) {
             binding.tvDescription.setMaxLines(4);
             binding.tvReadMore.setVisibility(View.GONE);
 
             binding.tvLocationName.setText(report.getLocationName());
             binding.tvDescription.setText(report.getLocationDescription());
-            binding.tvReportReason.setText(report.getReason());
+
+            int reasonResId = getLocalizedReasonResId(report.getReason());
+            String localizedReason;
+            if (reasonResId != -1) localizedReason = binding.getRoot().getContext().getString(reasonResId);
+            else localizedReason = report.getReason();
+
+            binding.tvReportReason.setText(localizedReason);
+
             binding.tvReportedBy.setText(report.getReporterName());
 
             binding.tvDescription.post(() -> {

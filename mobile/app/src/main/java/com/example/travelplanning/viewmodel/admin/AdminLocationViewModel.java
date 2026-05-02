@@ -61,7 +61,7 @@ public class AdminLocationViewModel extends AndroidViewModel {
             currentOffset = 0;
             isLastPage = false;
         }
-        isLoading.setValue(true);
+        if (!isLoadMore) isLoading.setValue(true);
 
         adminRepository.getAllLocations(
                 searchQuery,
@@ -131,7 +131,7 @@ public class AdminLocationViewModel extends AndroidViewModel {
                 location.getPriceLevel(),
                 location.getAvgRating(),
                 location.getImageUrl(),
-                location.getCategoryName(),
+                location.getCategoryId(),
                 new AdminRepository.AdminCallback<Location>() {
                     @Override
                     public void onSuccess(Location updatedLocation) {

@@ -266,7 +266,7 @@ public class LocationDetailFragment extends Fragment {
 
         reportViewModel.getReportSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success != null && success) {
-                Toast.makeText(getContext(), "Report submitted successfully!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.submitted_report_succesfully), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -553,7 +553,7 @@ public class LocationDetailFragment extends Fragment {
 
     private void showReviewOptionsMenu(View anchor, String reviewId) {
         android.widget.PopupMenu popupMenu = new android.widget.PopupMenu(requireContext(), anchor);
-        popupMenu.getMenu().add(0, 1, 0, "Report Review");
+        popupMenu.getMenu().add(0, 1, 0, R.string.report_review);
 
         popupMenu.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == 1) {
@@ -591,7 +591,7 @@ public class LocationDetailFragment extends Fragment {
         dialogBinding.btnSubmitReport.setOnClickListener(v -> {
             int selectedId = dialogBinding.rgReportReasons.getCheckedRadioButtonId();
             if (selectedId == -1) {
-                Toast.makeText(requireContext(), "Please select a reason", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.please_select_a_reason), Toast.LENGTH_SHORT).show();
                 return;
             }
 

@@ -69,15 +69,6 @@
         </LinearLayout>
 
         <LinearLayout style="@style/AdminInfoRow" android:orientation="vertical">
-            <TextView style="@style/AdminInfoLabel" android:text="@string/average_rating_0_5" />
-            <EditText android:id="@+id/etEditRating"
-                style="@style/AdminEditInfoValue"
-                android:inputType="numberDecimal"
-                android:hint="e.g. 4.5"
-                android:layout_width="match_parent"/>
-        </LinearLayout>
-
-        <LinearLayout style="@style/AdminInfoRow" android:orientation="vertical">
             <TextView style="@style/AdminInfoLabel" android:text="@string/category" />
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"

@@ -84,7 +84,7 @@ public class AdminUserFilterDialog extends BottomSheetDialogFragment {
         AutoCompleteTextView actvBy = v.findViewById(R.id.actvSortBy);
         AutoCompleteTextView actvOrder = v.findViewById(R.id.actvSortOrder);
 
-        String[] byOptions = {"username", "email", "created_at"};
+        String[] byOptions = {"username", "email", "createdAt"};
         String[] orderOptions = {"asc", "desc"};
 
         actvBy.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, byOptions));

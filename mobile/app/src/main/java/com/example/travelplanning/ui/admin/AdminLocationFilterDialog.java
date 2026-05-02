@@ -66,6 +66,7 @@ public class AdminLocationFilterDialog extends BottomSheetDialogFragment {
             if (((Chip) view.findViewById(R.id.chipShopping)).isChecked()) categoryId.add("4");
             if (((Chip) view.findViewById(R.id.chipService)).isChecked()) categoryId.add("5");
             if (((Chip) view.findViewById(R.id.chipDeletedLocation)).isChecked()) isDeleted = true;
+            else isDeleted = false;
 
             viewModel.applyFilters(currentMinPrice, currentMaxPrice, currentMinRating, currentMaxRating, categoryId, currentSortBy, currentSortOrder, isDeleted);
             dismiss();

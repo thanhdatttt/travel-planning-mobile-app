@@ -300,4 +300,11 @@
     <string name="location_deleted">Location deleted</string>
     <string name="fetching_locations">Fetching locations</string>
     <string name="fetching_users">Fetching users</string>
+    <string name="editing">editing </string>
+
+    <string name="submitted_report_succesfully">Submitted report succesfully!</string>
+    <string name="report_review">Report Review</string>
+    <string name="please_select_a_reason">Please select a reason</string>
+    <string name="spam">Spam</string>
+    <string name="irrelevant">Irrelevant</string>
 </resources>

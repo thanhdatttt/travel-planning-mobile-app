@@ -201,7 +201,6 @@ public class AdminLocationFragment extends Fragment {
         EditText etName = view.findViewById(R.id.etEditName);
         EditText etAddress = view.findViewById(R.id.etEditAddress);
         EditText etPhone = view.findViewById(R.id.etEditPhone);
-        EditText etRating = view.findViewById(R.id.etEditRating);
 
         AutoCompleteTextView autoPrice = view.findViewById(R.id.autoCompletePriceLevel);
         AutoCompleteTextView autoCategory = view.findViewById(R.id.autoCompleteCategory);
@@ -213,7 +212,6 @@ public class AdminLocationFragment extends Fragment {
         etName.setText(location.getName());
         etAddress.setText(location.getAddress());
         etPhone.setText(location.getPhone());
-        etRating.setText(String.valueOf(location.getAvgRating()));
 
         String[] priceLabels = {"$", "$$", "$$$", "$$$$"};
         ArrayAdapter<String> priceAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, priceLabels);
@@ -227,7 +225,9 @@ public class AdminLocationFragment extends Fragment {
         String[] categories = {getString(R.string.restaurant), getString(R.string.hotel), getString(R.string.attraction), getString(R.string.shopping), getString(R.string.service)};
         ArrayAdapter<String> catAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
         autoCategory.setAdapter(catAdapter);
-        autoCategory.setText(categories[location.getCategoryId()], false);
+        if (location.getCategoryId() >= 1 && location.getCategoryId() <= categories.length) {
+            autoCategory.setText(categories[location.getCategoryId() - 1], false);
+        }
 
         final String[] selectedUrl = {location.getImageUrl()};
         Glide.with(this).load(selectedUrl[0]).into(ivPreview);
@@ -247,9 +247,16 @@ public class AdminLocationFragment extends Fragment {
                         location.setName(etName.getText().toString());
                         location.setAddress(etAddress.getText().toString());
                         location.setPhone(etPhone.getText().toString());
-                        location.setAvgRating(Double.parseDouble(etRating.getText().toString()));
                         location.setImageUrl(selectedUrl[0]);
-                        location.setCategoryName(autoCategory.getText().toString());
+
+                        String categoryText = autoCategory.getText().toString();
+                        location.setCategoryName(categoryText);
+                        for (int i = 0; i < categories.length; i++) {
+                            if (categories[i].equals(categoryText)) {
+                                location.setCategoryId(i + 1);
+                                break;
+                            }
+                        }
 
                         String priceText = autoPrice.getText().toString();
                         for (int i = 0; i < priceLabels.length; i++) {
