@@ -166,8 +166,8 @@ public class AdminRepository {
         });
     }
 
-    public void updateLocation(String id, String name, String address, String phone, int priceLevel, double avgRating, String imageUrl, String categoryName, AdminCallback<Location> callback){
-        EditLocationRequest request = new EditLocationRequest(name, address, phone, priceLevel, avgRating, imageUrl, categoryName);
+    public void updateLocation(String id, String name, String address, String phone, int priceLevel, double avgRating, String imageUrl, int categoryId, AdminCallback<Location> callback){
+        EditLocationRequest request = new EditLocationRequest(name, address, phone, priceLevel, avgRating, imageUrl, categoryId);
 
         adminApi.updateLocation(id, request).enqueue(new Callback<ApiResponse<AdminLocationResponse>>() {
             @Override

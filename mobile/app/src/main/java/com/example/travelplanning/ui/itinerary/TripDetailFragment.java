@@ -93,7 +93,7 @@ public class TripDetailFragment extends Fragment {
 
         reportViewModel.getReportSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success != null && success) {
-                Toast.makeText(getContext(), getString(R.string.submit_report) + " thành công!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.submitted_report_succesfully), Toast.LENGTH_SHORT).show();
             }
         });
 

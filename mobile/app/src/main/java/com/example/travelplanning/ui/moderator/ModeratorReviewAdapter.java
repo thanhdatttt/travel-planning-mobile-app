@@ -52,13 +52,34 @@ public class ModeratorReviewAdapter extends RecyclerView.Adapter<ModeratorReview
             this.binding = binding;
         }
 
+        private int getLocalizedReasonResId(String rawReason) {
+            if (rawReason == null) return R.string.reason;
+
+            switch (rawReason.toLowerCase()) {
+                case "spam":
+                    return R.string.spam;
+                case "inappropriate":
+                    return R.string.inappropriate;
+                case "irrelevant":
+                    return R.string.irrelevant;
+                default:
+                    return -1;
+            }
+        }
+
         public void bind(ReviewReport report, OnReportActionListener listener) {
             binding.tvReviewText.setMaxLines(4);
             binding.tvReadMore.setVisibility(View.GONE);
 
             binding.tvReviewText.setText(report.getReviewText());
             binding.tvReviewerUsername.setText(report.getReviewerName());
-            binding.tvReportReason.setText(report.getReportReason());
+
+            int reasonResId = getLocalizedReasonResId(report.getReportReason());
+            String localizedReason;
+            if (reasonResId != -1) localizedReason = binding.getRoot().getContext().getString(reasonResId);
+            else localizedReason = report.getReportReason();
+            binding.tvReportReason.setText(localizedReason);
+
             binding.tvReportedBy.setText(report.getReporterName());
 
             binding.tvTitle.setText(report.getTitle());

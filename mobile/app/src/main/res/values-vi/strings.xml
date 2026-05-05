@@ -292,5 +292,12 @@
     <string name="review_title">Tiêu đề</string>
     <string name="fetching_locations">Đang tải địa điểm</string>
     <string name="fetching_users">Đang tải người dùng</string>
-
+    <string name="report_dismissed">Báo cáo bỏ qua</string>
+    <string name="location_deleted">Địa điểm đã được xóa</string>
+    <string name="editing">Đang chỉnh sửa </string>
+    <string name="submitted_report_succesfully">Gửi báo cáo thành công!</string>
+    <string name="report_review">Báo cáo bài đánh giá</string>
+    <string name="please_select_a_reason">Hãy chọn lý do</string>
+    <string name="spam">Spam</string>
+    <string name="irrelevant">Không liên quan</string>
 </resources>

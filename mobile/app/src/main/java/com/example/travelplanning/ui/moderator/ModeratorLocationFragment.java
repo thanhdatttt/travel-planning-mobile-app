@@ -64,22 +64,12 @@ public class ModeratorLocationFragment extends Fragment {
     private void showPopupMenu(View anchor, LocationReport report) {
         PopupMenu popup = new PopupMenu(requireContext(), anchor);
 //        popup.getMenu().add(0, 1, 1, getString(R.string.delete_location));
-        popup.getMenu().add(0, 2, 2, R.string.dismiss_report);
+        popup.getMenu().add(0, 1, 1, R.string.dismiss_report);
 
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
-             if (id == 1) {
-                 AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
-                         .setTitle(getString(R.string.delete_location))
-                         .setMessage(getString(R.string.are_you_sure_you_want_to) + getString(R.string.delete_location).toLowerCase() + "?")
-//                         .setPositiveButton(getString(R.string.yes), (d, w) -> viewModel)
-                         .setNegativeButton(getString(R.string.close), null)
-                         .show();
-                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_green));
-                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
-                 Toast.makeText(getContext(), R.string.location_deleted, Toast.LENGTH_SHORT).show();
-                 return true;
-            } else if (id == 2) {
+            if (id == 1) {
+                System.out.println(report);
                 viewModel.dismissReport(report.getReportId());
                 Toast.makeText(getContext(), R.string.report_dismissed, Toast.LENGTH_SHORT).show();
             }
@@ -115,16 +105,6 @@ public class ModeratorLocationFragment extends Fragment {
                 binding.tvEmptyState.setVisibility(View.GONE);
                 binding.rvLocations.setVisibility(View.VISIBLE);
             }
-        });
-
-        viewModel.getReports().observe(getViewLifecycleOwner(), reports -> {
-            if (reports != null) {
-                reportList.clear();
-                reportList.addAll(reports);
-                adapter.notifyDataSetChanged();
-            }
-            binding.tvEmptyState.setVisibility((reports == null || reports.isEmpty()) ? View.VISIBLE : View.GONE);
-            binding.rvLocations.setVisibility((reports == null || reports.isEmpty()) ? View.GONE : View.VISIBLE);
         });
 
         viewModel.getError().observe(getViewLifecycleOwner(), error -> {

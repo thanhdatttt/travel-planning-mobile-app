@@ -19,5 +19,5 @@ public class EditLocationRequest {
     private int priceLevel;
     private double avgRating;
     private String imageUrl;
-    private String categoryName;
+    private int categoryId;
 }

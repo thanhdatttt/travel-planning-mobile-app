@@ -261,9 +261,9 @@ public class AdminUserFragment extends Fragment {
             datePicker.show();
         });
 
-        UserRole[] roles = {UserRole.USER, UserRole.MODERATOR, UserRole.ADMIN};
-
-        ArrayAdapter<UserRole> roleAdapter = new ArrayAdapter<>(
+        String[] roles = {getString(R.string.user), getString(R.string.moderator), getString(R.string.admin)};
+        UserRole[] URrole = {UserRole.USER, UserRole.MODERATOR, UserRole.ADMIN};
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 roles
@@ -272,7 +272,13 @@ public class AdminUserFragment extends Fragment {
 
         if (user.getRole() != null) {
             for (int i = 0; i < roles.length; i++) {
-                if (roles[i] == user.getRole()) {
+                String role = user.getRole().getStringValue().toLowerCase();
+                if (role.equals("admin"))   role = getString(R.string.admin);
+                if (role.equals("user"))   role = getString(R.string.user);
+                if (role.equals("moderator"))   role = getString(R.string.moderator);
+
+                System.out.println(role);
+                if (roles[i].equals(role)) {
                     spRole.setSelection(i);
                     break;
                 }
@@ -288,11 +294,13 @@ public class AdminUserFragment extends Fragment {
                     user.setAddress(etAddress.getText().toString());
                     user.setPhone(etPhone.getText().toString());
 
-                    UserRole selectedRole = (UserRole) spRole.getSelectedItem();
+
+                    UserRole selectedRole = URrole[spRole.getSelectedItemPosition()];
                     user.setRole(selectedRole);
 
                     viewModel.editUser(user);
-                    Toast.makeText(getContext(), "Updating " + user.getUsername() + "...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.editing) + user.getUsername() + "...", Toast.LENGTH_SHORT).show();
+                    viewModel.fetchUsers();
                 })
                 .setNegativeButton(getString(R.string.cancel), (d, which) -> d.dismiss())
                 .show();
