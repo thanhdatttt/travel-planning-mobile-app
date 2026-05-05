@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment {
         });
 
         itineraryViewModel.getPublicItineraries().observe(getViewLifecycleOwner(), itineraries -> {
-            if (itineraries != null && isResumed()) { 
+            if (itineraries != null) {
                 publicTripAdapter.submitList(itineraries);
 
                 isLoadingMore = false;
