@@ -27,6 +27,9 @@ public class ItineraryResponse {
     @SerializedName("itineraryItems")
     private List<ItineraryItemResponse> itineraryItems;
 
+    @SerializedName("imageUrl")
+    private String imageUrl;
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

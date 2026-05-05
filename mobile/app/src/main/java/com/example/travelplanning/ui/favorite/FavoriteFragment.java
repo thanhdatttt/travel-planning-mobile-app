@@ -13,8 +13,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.travelplanning.R;
-import com.example.travelplanning.data.repository.favorite.PaginationScrollListener;
-import com.example.travelplanning.databinding.FragmentBookmarkListBinding;
 import com.example.travelplanning.databinding.FragmentFavoriteListBinding;
 import com.example.travelplanning.ui.itinerary.TripAdapter;
 import com.example.travelplanning.viewmodel.favorite.FavoriteViewModel;
@@ -23,7 +21,7 @@ import java.util.ArrayList;
 
 public class FavoriteFragment extends Fragment {
     private FavoriteViewModel viewModel;
-    private TripAdapter adapter;
+    private FavoriteAdapter adapter;
 
     private FragmentFavoriteListBinding binding;
 
@@ -41,22 +39,20 @@ public class FavoriteFragment extends Fragment {
 
         viewModel.fetchCurrentUserId();
 
-        adapter = new TripAdapter(
-                itinerary -> {
-                    Bundle bundle = new Bundle();
-                    String currentUserId = viewModel.getCurrentUserId();
+        adapter = new FavoriteAdapter(itinerary -> {
+            Bundle bundle = new Bundle();
+            String tripId = itinerary.getId();
+            String ownerId = itinerary.getOwnerId();
+            String currentUserId = viewModel.getCurrentUserId();
 
-                    if (currentUserId != null && currentUserId.equals(itinerary.getOwnerId())) {
-                        bundle.putString("arg_trip_id", itinerary.getId());
-                        Navigation.findNavController(view).navigate(R.id.nav_trip_detail, bundle);
-                    } else {
-                        bundle.putString("arg_public_trip_id", itinerary.getId());
-                        Navigation.findNavController(view).navigate(R.id.nav_public_trip_detail, bundle);
-                    }
-                },
-                itinerary -> {
-                }
-        );
+            if (currentUserId != null && currentUserId.equals(ownerId)) {
+                bundle.putString("arg_trip_id", tripId);
+                Navigation.findNavController(requireView()).navigate(R.id.nav_trip_detail, bundle);
+            } else {
+                bundle.putString("arg_public_trip_id", tripId);
+                Navigation.findNavController(requireView()).navigate(R.id.nav_public_trip_detail, bundle);
+            }
+        });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.rvFavorites.setLayoutManager(layoutManager);
