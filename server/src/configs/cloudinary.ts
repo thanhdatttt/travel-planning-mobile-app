@@ -30,5 +30,5 @@ const storage = new CloudinaryStorage({
 
 export const uploadCloud = multer({
   storage: storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // Giới hạn 2MB
+  limits: { fileSize: 5 * 1024 * 1024 }, // Giới hạn 5MB
 });
