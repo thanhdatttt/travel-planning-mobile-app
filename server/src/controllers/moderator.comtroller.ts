@@ -101,7 +101,7 @@ export const moderatorController = {
         const loc = locationMap.get(report.targetId);
         
         return {
-          id: report.id,
+          reportId: report.id,
           reporterId: report.reporterId,
           targetId: report.targetId,
           reason: report.reason,
@@ -114,6 +114,8 @@ export const moderatorController = {
           createdAt: report.createdAt.toISOString()
         };
       });
+
+      console.log(result);
       
       return res.status(200).json(
         createResponse({ message: "Reports fetched successfully", data: result, metadata: { total: result.length, skip, take } })

@@ -54,7 +54,17 @@ export const locationListQuerySchema = {
         maxRating: z.coerce.number().min(0).max(10).default(10),
         sortBy: z.enum(["name", "priceLevel", "distance", "avgRating"]).default("name"),
         sortOrder: z.enum(["asc", "desc"]).default("asc"),
-        categoryId: z.coerce.number().optional(),
+        categoryId: z.preprocess(
+            (val) => {
+            if (val === undefined) return undefined;
+
+            if (typeof val === 'string') {
+                return val.split(',').map(Number);
+            }
+            return val;
+            },
+            z.array(z.number()).optional()
+        ),
         isDeleted: z.preprocess((val) => val === 'true', z.boolean()).default(false),
         skip: z.coerce.number().min(0).default(0),
         take: z.coerce.number().min(1).max(100).default(20),

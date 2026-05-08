@@ -56,7 +56,7 @@ export const getList = async (req: Request, res: Response) => {
     AND l."categoryId" IN (${Prisma.join(categoryIds)})
     AND l."isDeleted" = ${isDeleted}
   ORDER BY 
-    l.${Prisma.raw(sortByStr)} ${Prisma.raw(sortOrderStr)}
+    l."${Prisma.raw(sortByStr)}" ${Prisma.raw(sortOrderStr)}
   LIMIT ${Number(take)} 
   OFFSET ${Number(skip)}
 `;
@@ -72,6 +72,7 @@ export const getList = async (req: Request, res: Response) => {
 export const updateLocation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, address, priceLevel, phone, avgRating, categoryId, imgUrl } = req.body;
+  console.log(req.body)
 
   const updateData: any = {};
   if (name) updateData.name = name;
